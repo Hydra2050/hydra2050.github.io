@@ -2,10 +2,10 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://yoursite.com
-title: My Octopress Blog
+url: http://Hydra2050.github.io
+title: 王仙客的博客
 subtitle: A blogging framework for hackers.
-author: Your Name
+author: 王仙客
 simple_search: http://google.com/search
 description:
 
@@ -19,7 +19,7 @@ date_format: "ordinal"
 subscribe_rss: /atom.xml
 subscribe_email:
 # RSS feeds can list your email address if you like
-email:
+email: wh2050@sina.cn
 
 # ----------------------- #
 #    Jekyll & Plugins     #
@@ -67,10 +67,6 @@ github_user:
 github_repo_count: 0
 github_show_profile_link: true
 github_skip_forks: true
-
-# Twitter
-twitter_user:
-twitter_tweet_button: true
 
 # Google +1
 google_plus_one: false
