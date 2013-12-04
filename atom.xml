@@ -4,7 +4,7 @@
   <title><![CDATA[王仙客的博客]]></title>
   <link href="http://Hydra2050.github.io/atom.xml" rel="self"/>
   <link href="http://Hydra2050.github.io/"/>
-  <updated>2013-12-04T21:50:50+08:00</updated>
+  <updated>2013-12-04T22:34:18+08:00</updated>
   <id>http://Hydra2050.github.io/</id>
   <author>
     <name><![CDATA[王仙客]]></name>
@@ -12,6 +12,188 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Object-c的函数调用机制]]></title>
+    <link href="http://Hydra2050.github.io/blog/2013/12/04/object-cde-han-shu-diao-yong-ji-zhi/"/>
+    <updated>2013-12-04T22:01:26+08:00</updated>
+    <id>http://Hydra2050.github.io/blog/2013/12/04/object-cde-han-shu-diao-yong-ji-zhi</id>
+    <content type="html"><![CDATA[<h2>起因</h2>
+
+<p>有一次，被问到，下面这段代码执行，会得到什么结果：</p>
+
+<pre><code>@interface ClassA : NSObject  
+-(void) foo;  
+@end  
+@implementation ClassA  
+-(void) foo  
+{  
+    NSLog(@"fork Class A's function");  
+}  
+@end  
+
+@interface ClassB : NSObject  
+-(void) foo;  
+@end  
+@implementation ClassB  
+-(void) foo  
+{  
+    NSLog(@"fork Class B's function");  
+}  
+@end  
+
+ClassA* a = [[ClassA alloc] init];  
+[a foo];  
+ClassB* b = (ClassB*)a;  
+[b foo];
+</code></pre>
+
+<p>说来惭愧，这么久竟然不清楚object-c的函数调用机制，于是网上查阅了一些资料，整理出一篇文章。</p>
+
+<h2>Object-C的函数调用的机制</h2>
+
+<p>OC的方法调用与C++不同： Ｃ++中的方法调用可能是动态的，也可能是静态的；而ObjC中的函数调用都为动态的，通过消息传递的方式调用。</p>
+
+<p>首先通过command＋shift＋o，查找NSObject类，可以看到类的定义：</p>
+
+<pre><code>@interface NSObject &lt;NSObject&gt; {  
+Class isa  OBJC_ISA_AVAILABILITY;  
+}  
+
+typedef struct objc_selector *SEL;  
+
+typedef id (*IMP)(id, SEL, ...);  
+</code></pre>
+
+<p>在object-c中，每个对象都有一个isa成员，指向自己的类结构体，这也是object-c自省的特性实现。
+为了理解消息调用机制，需要理解以上三个定义：Class   SEL   IMP</p>
+
+<h3>Class  SEL IMP</h3>
+
+<p>先来看一看Class的定义：</p>
+
+<pre><code>struct objc_class {  
+Class isa  OBJC_ISA_AVAILABILITY;  
+
+#if !__OBJC2__  
+Class super_class                                        OBJC2_UNAVAILABLE;  
+const charchar *name                                         OBJC2_UNAVAILABLE;  
+long version                                             OBJC2_UNAVAILABLE;  
+long info                                                OBJC2_UNAVAILABLE;  
+long instance_size                                       OBJC2_UNAVAILABLE;  
+struct objc_ivar_list *ivars                             OBJC2_UNAVAILABLE;  
+struct objc_method_list **methodLists                    OBJC2_UNAVAILABLE;  
+struct objc_cache *cache                                 OBJC2_UNAVAILABLE;  
+struct objc_protocol_list *protocols                     OBJC2_UNAVAILABLE;  
+#endif  
+
+} OBJC2_UNAVAILABLE; 
+</code></pre>
+
+<p>其中我们比较关心的是参数列表ivars，方法列表methodLists，协议列表protocols。当一个类有调用方法时：</p>
+
+<pre><code>[receiver message]
+</code></pre>
+
+<p>会调用消息函数，objc_msgSend：</p>
+
+<pre><code>objc_msgSend(receiver, selector)
+</code></pre>
+
+<p>如果有参数要传递的话：</p>
+
+<pre><code>objc_msgSend(receiver, selector, arg1, arg2, ...)
+</code></pre>
+
+<p><img src="./images/messaging.jpg" alt="Selector" /></p>
+
+<p>当一个消息传递给一个对象的时候，objc_msgSend根据对象的isa指针，到类结构体methodLists链表找指定selector，如果没有，向父类寻找，知道找到NSObject类位置。这样就实现了动态方法调用。</p>
+
+<p>那么IMP又是什么呢？
+简单来说，就是一个函数指针，指向SEL的方法的地址。NSObject 类中的methodForSelector：方法就是这样一个获取指向方法实现IMP 的指针。
+下面的例子展示了怎么使用指针来调用setFilled:的方法实现：</p>
+
+<pre><code>void (*setter)(id, SEL, BOOL);  
+int i;  
+setter = (void (*)(id, SEL, BOOL))[target methodForSelector:@selector(setFilled:)];  
+for ( i = 0 ; i &lt; 1000 ; i++ )  
+    setter(targetList[i], @selector(setFilled:), YES); 
+</code></pre>
+
+<p>查找IMP 时：</p>
+
+<ol>
+<li><p>首先去该类的方法 cache 中查找，如果找到了就返回它；</p></li>
+<li><p>如果没有找到，就去该类的方法列表中查找。如果在该类的方法列表中找到了，则将 IMP 返回，并将它加入cache中缓存起来。根据最近使用原则，这个方法再次调用的可能性很大，缓存起来可以节省下次调用再次查找的开销。</p></li>
+<li><p>如果在该类的方法列表中没找到对应的IMP，在通过该类结构中的super_class指针在其父类结构的方法列表中去查找，直到在某个父类的方法列表中找到对应的IMP，返回它，并加入cache中。</p></li>
+<li><p>如果在自身以及所有父类的方法列表中都没有找到对应的 IMP，则进入下文中要讲的消息转发流程。</p></li>
+</ol>
+
+
+<h3>消息转发</h3>
+
+<p>通常，给一个对象发送它不能处理的消息会得到出错提示，然而，Objective-C运行时系统在抛出错误之前，会给消息接收对象发送一条特别的消息forwardInvocation来通知该对象，该消息的唯一参数是个NSInvocation类型的对象——该对象封装了原始的消息和消息的参数。</p>
+
+<p>我们可以实现forwardInvocation:方法来对不能处理的消息做一些默认的处理，也可以将消息转发给其他对象来处理，而不抛出错误。</p>
+
+<p>NSObject 的forwardInvocation:方法默认的调用doesNotRecognizeSelector:方法</p>
+
+<pre><code>0   CoreFoundation                      0x01a1c5e4 __exceptionPreprocess + 180  
+1   libobjc.A.dylib                     0x015728b6 objc_exception_throw + 44  
+2   CoreFoundation                      0x01ab9903 -[NSObject(NSObject) doesNotRecognizeSelector:] + 275  
+</code></pre>
+
+<p>重写forwardInvocation：</p>
+
+<pre><code>-(void) helloWorld
+{  
+     NSLog(@"Hello world!");
+}  
+- (void) forwardInvocation:(NSInvocation *)anInvocation  
+{  
+    if([self respondsToSelector:@selector(helloWorld)])  
+     {  
+          [self helloWorld];  
+     }  
+    else  
+    {  
+        [super forwardInvocation:anInvocation];  
+    }  
+}  
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector  
+{  
+    if ([self respondsToSelector:aSelector]) {  
+        return [super methodSignatureForSelector:aSelector];  
+    }  
+    else {  
+        return [NSMethodSignature signatureWithObjCTypes:"v@:"];  
+    }  
+}  
+</code></pre>
+
+<p>执行结果：</p>
+
+<pre><code>2013-11-23 15:23:50.464 VCTransitionDemo[1272:70b] Hello world! 
+</code></pre>
+
+<p style="color:red">注意：我们重写forwardInvocation方法的时候，还必须同时重写methodSignatureForSelector方法，该方法返回表示一个方法的字符串，具体如何使用请看Type Encodings。</p>
+
+
+<h2>小结</h2>
+
+<p>到这里，应该能够回答最初的那个问题了。</p>
+
+<p>OC扩展了标准的ANSI C编程语言，将Smalltalk式的消息传递机制加入到ANSI C中。它的方法调用与C/C++还是有很大差别的。</p>
+
+<p>接下来，会再深入OC的方法调用，写一些关于Method Swizzling的内容。</p>
+
+<p>参考资料：</p>
+
+<p><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtHowMessagingWorks.html#//apple_ref/doc/uid/TP40008048-CH104-SW1">Objective-C Runtime Reference</a></p>
+
+<p><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html#//apple_ref/doc/uid/TP40008048-CH100-SW1">Type Encodings</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[使用octopress搭建自己的博客]]></title>
