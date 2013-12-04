@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[王仙客的博客]]></title>
+  <link href="http://Hydra2050.github.io/atom.xml" rel="self"/>
+  <link href="http://Hydra2050.github.io/"/>
+  <updated>2013-12-04T21:14:00+08:00</updated>
+  <id>http://Hydra2050.github.io/</id>
+  <author>
+    <name><![CDATA[王仙客]]></name>
+    <email><![CDATA[wh2050@sina.cn]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+</feed>
