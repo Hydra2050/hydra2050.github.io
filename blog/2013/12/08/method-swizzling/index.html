@@ -1,0 +1,219 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Object-c中的黑魔法——Method Swizzling - 王仙客的博客</title>
+	<meta name="author" content="王仙客">
+
+	
+	<meta name="description" content="Object-c中的黑魔法——Method Swizzling 上一篇讲了Object-c的函数调用机制，对理解Method Swizzling有很大帮助。这一次来看一看Object-c中的黑魔法——Method Swizzling。 Method Swizzling介绍 什么是Method &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="王仙客的博客" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://Hydra2050.github.io/blog/2013/12/08/method-swizzling/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("wh2050@sina.cn") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+	<p>王仙客的博客</p>
+	<p>明白一些道理</p>
+	<p>遇到一些有趣的事</p>
+	<li><a href="/">博客</a></li>
+	<li><a href="/blog/archives">所有文章</a></li>
+	<li><a href="/blog/About">关于我</a></li>
+</ul>
+
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:wh2050@sina.cn" title="Email">Email</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Object-c中的黑魔法——Method Swizzling</h1>
+	<div class="entry-content" itemprop="articleBody"><p>上一篇讲了<a href="http://hydra2050.github.io/blog/2013/12/04/object-cde-han-shu-diao-yong-ji-zhi/">Object-c的函数调用机制</a>，对理解Method Swizzling有很大帮助。这一次来看一看Object-c中的黑魔法——Method Swizzling。</p>
+
+<h2>Method Swizzling介绍</h2>
+
+<p>什么是Method Swizzling？简单来讲，就是修改SEL与IMP之间的映射关系，达到修改最终执行方法的目的。Method Swizzling，听起来就有黑魔法的意味。</p>
+
+<h2>如何实现Method Swizzling</h2>
+
+<h3>1.创建一个category</h3>
+
+<pre><code>#import &lt;Foundation/Foundation.h&gt;  
+@interface UIView (MyAdditions)   
+@end  
+</code></pre>
+
+<h3>2.创建一个swizzling函数</h3>
+
+<pre><code>@implementation UIView (MyAdditions)
+
+- (void)my_setFrame:(CGRect)frame {
+    // custom function
+    [self my_setFrame:frame];
+}
+@end
+</code></pre>
+
+<p>等等，这不是循环调用吗？别忘了，我们后面会施展黑魔法，改变IMP,调用的不再是自己，不会有循环调用的问题。</p>
+
+<h3>3.交换IMP</h3>
+
+<p><p style="color:red">注意别忘记引入：#import &lt;objc/runtime.h></p>
+
+<pre><code>Method oriMethod =  class_getInstanceMethod([UIView class], @selector(setFrame:));  
+Method myMethod = class_getInstanceMethod([UIView class], @selector(my_setFrame:));  
+method_exchangeImplementations(oriMethod, myMethod); 
+</code></pre>
+
+<p>这样调用 [UIView setFrame:] 时，实际调用的是自定义的方法 [UIView my_setFrame:]。</p>
+
+<h2>Method Swizzling的利与弊</h2>
+
+<p>这里有非常好的答案：</p>
+
+<p><a href="http://stackoverflow.com/questions/5339276/what-are-the-dangers-of-method-swizzling-in-objective-c">http://stackoverflow.com/questions/5339276/what-are-the-dangers-of-method-swizzling-in-objective-c</a></p>
+
+<p>其中给出了一个解决命名冲突的定义方式：</p>
+
+<pre><code>@implementation NSView (MyViewAdditions)
+static void MySetFrame(id self, SEL _cmd, NSRect frame);
+static void (*SetFrameIMP)(id self, SEL _cmd, NSRect frame);
+
+static void MySetFrame(id self, SEL _cmd, NSRect frame) {
+   // do custom work
+   SetFrameIMP(self, _cmd, frame);
+}
+
++ (void)load {
+   [self swizzle:@selector(setFrame:) with:(IMP)MySetFrame store:(IMP *)&amp;SetFrameIMP];
+}
+@end
+
+typedef IMP *IMPPointer;
+BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMPPointer store) {
+    IMP imp = NULL;
+    Method method = class_getInstanceMethod(class, original);
+    if (method) {
+        const char *type = method_getTypeEncoding(method);
+        imp = class_replaceMethod(class, original, replacement, type);
+        if (!imp) {
+            imp = method_getImplementation(method);
+        }
+    }
+    if (imp &amp;&amp; store) { *store = imp; }
+    return (imp != NULL);
+}
+
+@implementation NSObject (FRRuntimeAdditions)
++ (BOOL)swizzle:(SEL)original with:(IMP)replacement store:(IMPPointer)store {
+    return class_swizzleMethodAndStore(self, original, replacement, store);
+}
+@end
+</code></pre>
+
+<h2>总结</h2>
+
+<p>对于我个人而言，并不是非常喜欢这种黑魔法。感觉还是慎用为妙，如果使用，尽量仅在load中swizzling。另外，网上有人说使用了Method Swizzling无法通过appstore的审核，还没有验证过。
+虽然不建议发布使用，但是其他地方还是有很多用武之地的，比如调试、代码分析等，可以自由想像。</p>
+
+<p>这里有一个<a href="https://github.com/Hydra2050/MethodSwizzlingDemo">MethodSwizzlingDemo</a>，通过Method Swizzling，描绘每一个View的border。效果图：</p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2013
+
+    王仙客
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+		</div>
+	</div>
+</body>
+</html>
