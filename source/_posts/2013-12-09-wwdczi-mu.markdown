@@ -1,0 +1,15 @@
+---
+layout: post
+title: "WWDC字幕"
+date: 2013-12-09 23:24:34 +0800
+comments: true
+categories: 
+---
+
+##[ASCIIwwdc](http://asciiwwdc.com/)
+
+
+Searchable full-text transcripts of WWDC sessions
+
+
+[source code on GitHub](https://github.com/mattt/asciiwwdc.com)
