@@ -1,0 +1,72 @@
+---
+layout: post
+title: "为IOS应用添加字体"
+date: 2013-12-14 16:42:10 +0800
+comments: true
+categories: 
+---
+
+##引子
+
+ios6中默认提供了大概200种字体，有时为了让应用中的文字更好看，希望能有其他的字体可以选择。今天主要来介绍一下如何为IOS应用添加字体。
+
+##方法一、将字体包打包到工程
+
+步骤如下：
+
+###1.下载字体包
+
+在网上搜索字体包，可以找到很多资源，我下载了一个名字叫 DIN-Medium.otf 的字体包。（有一些特殊的字体可能涉及到版权的问题，所以在使用之前要确认清楚。）
+
+###2.将字体包添加到工程
+
+将字体包添加到工程
+
+![添加字体包](./images/fontexample.png)
+
+<p style="color:red">注：如果不选 Show Raw Keys/Values，需要添加的Key值为 Fonts provided by application </p>
+
+###3.修改plist文件
+
+在工程的plist文件中添加key值为UIAppFonts：
+
+![添加键值](./images/201312141752.png)
+
+这样就可以使用我们新加的字体了。
+
+![使用新增字体](./images/201312141754.png)
+
+效果图：
+
+![效果图](./images/201312141757.png)
+
+
+##方法二、动态下载字体库
+
+在IOS6之后，苹果支持动态字体库下载。这样的好处可以不必增加程序包大小，不过下载的字体只能从官方支持的列表中选择：
+
+[iOS 6: Font list](http://support.apple.com/kb/HT5484)
+
+[iOS 7: Font list](http://support.apple.com/kb/HT5878)
+
+[苹果提供的Demo](https://developer.apple.com/library/ios/samplecode/DownloadFont/Introduction/Intro.html#//apple_ref/doc/uid/DTS40013404)
+
+具体实现方法可以看一看Demo。
+
+在Readme中有一句很奇怪的话：
+
+	Fonts downloaded from applications in this manner are not installed permanently. 
+	The system may decide to remove them under certain usage scenarios.
+	
+按照Readme中的说法，系统可能会删除我们下载的字体，所以在每次程序启动前都需要检查一遍，使用的时候要确定字体已经可以使用。
+
+什么场景下会删除？Readme中并没有详细说。
+
+Demo效果图：
+
+![Demo效果图](./images/201312141811.png)
+
+
+
+
+
