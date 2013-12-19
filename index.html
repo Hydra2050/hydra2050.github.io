@@ -48,9 +48,11 @@
 </div>
 
 <nav id="main-nav"><ul class="main">
-	<p>王仙客的博客</p>
-	<p>明白一些道理</p>
-	<p>遇到一些有趣的事</p>
+	<p style="color:white;font-size:24px">王仙客的博客</p>
+	<br>
+	<p style="color:white;font-size:18px">明白一些道理</p>
+	<p style="color:white;font-size:18px">遇到一些有趣的事</p>
+	<br>
 	<li><a href="/">博客</a></li>
 	<li><a href="/blog/archives">所有文章</a></li>
 	<li><a href="/blog/About">关于我</a></li>
@@ -116,7 +118,7 @@
 
 <p>今年的WWDC大会上，苹果推出了IOS7,UI上有了很大变化，向扁平化发展；在新的SDK中，新的特性、新的功能无疑给开发者带来了更大的惊喜。其中最感兴趣的主要有三点,今天的主角TextKit就是其中之一。</p>
 
-<p><img src="./images/20131215-1.png" alt="TextKit" /></p>
+<p><img src="/images/20131215-1.png" alt="TextKit" /></p>
 
 <h2>What is Text Kit?</h2>
 
@@ -129,11 +131,11 @@
 
 <p>下图是IOS6中的类结构图：</p>
 
-<p><img src="./images/20131215-3.png" alt="Structure in IOS6" /></p>
+<p><img src="/images/20131215-3.png" alt="Structure in IOS6" /></p>
 
 <p>下图是IOS7中的类结构图：</p>
 
-<p><img src="./images/20131215-2.png" alt="Structure in IOS7" /></p>
+<p><img src="/images/20131215-2.png" alt="Structure in IOS7" /></p>
 
 <p>可以看出，iOS7之前，几乎所有的文本和UIWebview都是WebKit来处理的，由它来布局和渲染。在IOS7中，UIWebview还是由WebKit作为排版和渲染引擎，但是文本都由TextKit来处理，TextKit又是基于CoreText之上，这是一个很大的改动。</p>
 
@@ -141,7 +143,7 @@
 
 <p>TextKit的设计符合模型-视图-控制器（MVC）架构：</p>
 
-<p><img src="./images/20131217-1.png" alt="TextKit结构设计" /></p>
+<p><img src="/images/20131217-1.png" alt="TextKit结构设计" /></p>
 
 <p><em>NSTextStorage</em>：MVC中的模型，用于存储需要显示的文本内容以及他们的属性。它继承自NSMutableAttributedString。当内容变化时，会通知NSLayoutManager；</p>
 
@@ -170,7 +172,7 @@
 
 <p>什么是Glyph？</p>
 
-<p><img src="./images/20131217-2.png" alt="Glyph" /></p>
+<p><img src="/images/20131217-2.png" alt="Glyph" /></p>
 
 <ol>
 <li>字符的图形表示（A Graphical Representation of Characters）。</li>
@@ -183,19 +185,19 @@
 
 <p>1.字距调整（Kerning）</p>
 
-<p><img src="./images/20131217-3.png" alt="Kerning" /></p>
+<p><img src="/images/20131217-3.png" alt="Kerning" /></p>
 
 <p>2.连写</p>
 
-<p><img src="./images/20131217-4.png" alt="Ligature" /></p>
+<p><img src="/images/20131217-4.png" alt="Ligature" /></p>
 
 <p>3.断字</p>
 
-<p><img src="./images/20131217-5.png" alt="Break" /></p>
+<p><img src="/images/20131217-5.png" alt="Break" /></p>
 
 <p>4.隐藏文字</p>
 
-<p><img src="./images/20131217-6.png" alt="Truncation" /></p>
+<p><img src="/images/20131217-6.png" alt="Truncation" /></p>
 
 <p>5.更加完美的排版</p>
 
@@ -215,7 +217,7 @@
 
 <p>通过回调函数，对URL的点击进行处理。</p>
 
-<p><img src="./images/20131217-7.png" alt="BaseInteraction" /></p>
+<p><img src="/images/20131217-7.png" alt="BaseInteraction" /></p>
 
 <h4>Demo2:ExclusionPaths</h4>
 
@@ -244,7 +246,7 @@
 }
 </code></pre>
 
-<p><img src="./images/20131217-8.png" alt="ExclusionPaths" /></p>
+<p><img src="/images/20131217-8.png" alt="ExclusionPaths" /></p>
 
 <h4>Demo3:TextColoring</h4>
 
@@ -265,7 +267,7 @@ self.textStorage.tokens = @{ @"Alice" : @{ NSForegroundColorAttributeName : [UIC
                              TKDDefaultTokenName : @{ NSForegroundColorAttributeName : [UIColor blackColor],NSFontAttributeName:[UIFont fontWithName:@"Helvetica" size:18.] } };
 </code></pre>
 
-<p><img src="./images/20131217-9.png" alt="TextColoring" /></p>
+<p><img src="/images/20131217-9.png" alt="TextColoring" /></p>
 
 <h2>总结</h2>
 
@@ -336,7 +338,7 @@ self.textStorage.tokens = @{ @"Alice" : @{ NSForegroundColorAttributeName : [UIC
 
 <p>将字体包添加到工程</p>
 
-<p><img src="./images/fontexample.png" alt="添加字体包" /></p>
+<p><img src="/images/fontexample.png" alt="添加字体包" /></p>
 
 <p style="color:red">注：如果不选 Show Raw Keys/Values，需要添加的Key值为 Fonts provided by application </p>
 
@@ -345,15 +347,15 @@ self.textStorage.tokens = @{ @"Alice" : @{ NSForegroundColorAttributeName : [UIC
 
 <p>在工程的plist文件中添加key值为UIAppFonts：</p>
 
-<p><img src="./images/201312141752.png" alt="添加键值" /></p>
+<p><img src="/images/201312141752.png" alt="添加键值" /></p>
 
 <p>这样就可以使用我们新加的字体了。</p>
 
-<p><img src="./images/201312141754.png" alt="使用新增字体" /></p>
+<p><img src="/images/201312141754.png" alt="使用新增字体" /></p>
 
 <p>效果图：</p>
 
-<p><img src="./images/201312141757.png" alt="效果图" /></p>
+<p><img src="/images/201312141757.png" alt="效果图" /></p>
 
 <h2>方法二、动态下载字体库</h2>
 
@@ -379,7 +381,31 @@ The system may decide to remove them under certain usage scenarios.
 
 <p>Demo效果图：</p>
 
-<p><img src="./images/201312141811.png" alt="Demo效果图" /></p>
+<p><img src="/images/201312141811.png" alt="Demo效果图" /></p>
+
+<h2>总结</h2>
+
+<h3>将字体包打包到工程的方法</h3>
+
+<p>适用情况：字体包比较小</p>
+
+<p>存在的问题：对字体包大小有限制；版权的问题</p>
+
+<h3>动态下载字体库的方法</h3>
+
+<p>适用场景：字体包比较大，无法打包到工程（一个完整的字体包要10M多）；不用担心版权的问题。</p>
+
+<p>字体会下载一个系统的路径/private/var/mobile/Library/Assets/com_apple_MobileAsset_Font/，一次下载，所有的App都能使用（在被系统删除之前）。</p>
+
+<p>存在的问题：</p>
+
+<ol>
+<li>需要预先下载10几M的字体包，对用户来说是一个负担</li>
+<li>每次应用重新启动，即使已经下载，都需要“预热”一次。需要先到上面所说的下载路径进行匹配，检查是否已经下载；如果已经下载，就会将字体缓存到另外一个cache目录下，才能使用，这个过程需要3s左右的时间。（我试过手动删除下载的字体包，但不去改里面的XML文件，结果匹配出错返回错误结果，但是不再会重新下载）</li>
+<li>可选择的字体有限制，只能从苹果提高的列表中选择</li>
+<li>只支持IOS6以上（按照目前的统计来看，这个慢慢不是问题了）</li>
+</ol>
+
 
 		
 		
@@ -543,7 +569,7 @@ Script: ${SRCROOT}/Pods/PodsResources.sh</li>
 	<div class="entry-content" itemprop="articleBody">
 		<p>2013杭州西部越野是一次环杭州城山脊越野跑：从西湖区转塘风水洞出发，穿越周浦、龙坞、西湖三大山脊，最终到达终点浙大玉泉校区。这条线路也被称为“风浙线”，全程约42公里。</p>
 
-<p><img src="./images/hzxbyys.jpg" alt="2013杭州西部越野路线图" /></p>
+<p><img src="/images/hzxbyys.jpg" alt="2013杭州西部越野路线图" /></p>
 
 		
 		
@@ -608,7 +634,7 @@ Script: ${SRCROOT}/Pods/PodsResources.sh</li>
 <p>这是该到我们的利器大显身手了——<a href="http://revealapp.com/">Reveal</a>。
 我写了一个demo，最初有6个cell，功能是点击cell，就让cell的个数减一。当我删除五行后，在Reveal中可以看到：</p>
 
-<p><img src="./images/tvst.png" alt="Reveal截图" /></p>
+<p><img src="/images/tvst.png" alt="Reveal截图" /></p>
 
 <p>是的，那个cell还在！还在tableview上，只不过被隐藏掉了。
 打印tableview上的cell：</p>
@@ -1153,7 +1179,7 @@ struct objc_protocol_list *protocols                     OBJC2_UNAVAILABLE;
 <pre><code>objc_msgSend(receiver, selector, arg1, arg2, ...)
 </code></pre>
 
-<p><img src="./images/messaging.jpg" alt="Selector" /></p>
+<p><img src="/images/messaging.jpg" alt="Selector" /></p>
 
 <p>当一个消息传递给一个对象的时候，objc_msgSend根据对象的isa指针，到类结构体methodLists链表找指定selector，如果没有，向父类寻找，知道找到NSObject类位置。这样就实现了动态方法调用。</p>
 

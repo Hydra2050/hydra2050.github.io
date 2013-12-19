@@ -48,9 +48,11 @@
 </div>
 
 <nav id="main-nav"><ul class="main">
-	<p>王仙客的博客</p>
-	<p>明白一些道理</p>
-	<p>遇到一些有趣的事</p>
+	<p style="color:white;font-size:24px">王仙客的博客</p>
+	<br>
+	<p style="color:white;font-size:18px">明白一些道理</p>
+	<p style="color:white;font-size:18px">遇到一些有趣的事</p>
+	<br>
 	<li><a href="/">博客</a></li>
 	<li><a href="/blog/archives">所有文章</a></li>
 	<li><a href="/blog/About">关于我</a></li>
@@ -104,7 +106,7 @@
 
 <p>将字体包添加到工程</p>
 
-<p><img src="./images/fontexample.png" alt="添加字体包" /></p>
+<p><img src="/images/fontexample.png" alt="添加字体包" /></p>
 
 <p style="color:red">注：如果不选 Show Raw Keys/Values，需要添加的Key值为 Fonts provided by application </p>
 
@@ -113,15 +115,15 @@
 
 <p>在工程的plist文件中添加key值为UIAppFonts：</p>
 
-<p><img src="./images/201312141752.png" alt="添加键值" /></p>
+<p><img src="/images/201312141752.png" alt="添加键值" /></p>
 
 <p>这样就可以使用我们新加的字体了。</p>
 
-<p><img src="./images/201312141754.png" alt="使用新增字体" /></p>
+<p><img src="/images/201312141754.png" alt="使用新增字体" /></p>
 
 <p>效果图：</p>
 
-<p><img src="./images/201312141757.png" alt="效果图" /></p>
+<p><img src="/images/201312141757.png" alt="效果图" /></p>
 
 <h2>方法二、动态下载字体库</h2>
 
@@ -147,7 +149,31 @@ The system may decide to remove them under certain usage scenarios.
 
 <p>Demo效果图：</p>
 
-<p><img src="./images/201312141811.png" alt="Demo效果图" /></p>
+<p><img src="/images/201312141811.png" alt="Demo效果图" /></p>
+
+<h2>总结</h2>
+
+<h3>将字体包打包到工程的方法</h3>
+
+<p>适用情况：字体包比较小</p>
+
+<p>存在的问题：对字体包大小有限制；版权的问题</p>
+
+<h3>动态下载字体库的方法</h3>
+
+<p>适用场景：字体包比较大，无法打包到工程（一个完整的字体包要10M多）；不用担心版权的问题。</p>
+
+<p>字体会下载一个系统的路径/private/var/mobile/Library/Assets/com_apple_MobileAsset_Font/，一次下载，所有的App都能使用（在被系统删除之前）。</p>
+
+<p>存在的问题：</p>
+
+<ol>
+<li>需要预先下载10几M的字体包，对用户来说是一个负担</li>
+<li>每次应用重新启动，即使已经下载，都需要“预热”一次。需要先到上面所说的下载路径进行匹配，检查是否已经下载；如果已经下载，就会将字体缓存到另外一个cache目录下，才能使用，这个过程需要3s左右的时间。（我试过手动删除下载的字体包，但不去改里面的XML文件，结果匹配出错返回错误结果，但是不再会重新下载）</li>
+<li>可选择的字体有限制，只能从苹果提高的列表中选择</li>
+<li>只支持IOS6以上（按照目前的统计来看，这个慢慢不是问题了）</li>
+</ol>
+
 </div>
 
 </article>

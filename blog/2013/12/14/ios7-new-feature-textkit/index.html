@@ -48,9 +48,11 @@
 </div>
 
 <nav id="main-nav"><ul class="main">
-	<p>王仙客的博客</p>
-	<p>明白一些道理</p>
-	<p>遇到一些有趣的事</p>
+	<p style="color:white;font-size:24px">王仙客的博客</p>
+	<br>
+	<p style="color:white;font-size:18px">明白一些道理</p>
+	<p style="color:white;font-size:18px">遇到一些有趣的事</p>
+	<br>
 	<li><a href="/">博客</a></li>
 	<li><a href="/blog/archives">所有文章</a></li>
 	<li><a href="/blog/About">关于我</a></li>
@@ -92,7 +94,7 @@
 
 <p>今年的WWDC大会上，苹果推出了IOS7,UI上有了很大变化，向扁平化发展；在新的SDK中，新的特性、新的功能无疑给开发者带来了更大的惊喜。其中最感兴趣的主要有三点,今天的主角TextKit就是其中之一。</p>
 
-<p><img src="./images/20131215-1.png" alt="TextKit" /></p>
+<p><img src="/images/20131215-1.png" alt="TextKit" /></p>
 
 <h2>What is Text Kit?</h2>
 
@@ -105,11 +107,11 @@
 
 <p>下图是IOS6中的类结构图：</p>
 
-<p><img src="./images/20131215-3.png" alt="Structure in IOS6" /></p>
+<p><img src="/images/20131215-3.png" alt="Structure in IOS6" /></p>
 
 <p>下图是IOS7中的类结构图：</p>
 
-<p><img src="./images/20131215-2.png" alt="Structure in IOS7" /></p>
+<p><img src="/images/20131215-2.png" alt="Structure in IOS7" /></p>
 
 <p>可以看出，iOS7之前，几乎所有的文本和UIWebview都是WebKit来处理的，由它来布局和渲染。在IOS7中，UIWebview还是由WebKit作为排版和渲染引擎，但是文本都由TextKit来处理，TextKit又是基于CoreText之上，这是一个很大的改动。</p>
 
@@ -117,7 +119,7 @@
 
 <p>TextKit的设计符合模型-视图-控制器（MVC）架构：</p>
 
-<p><img src="./images/20131217-1.png" alt="TextKit结构设计" /></p>
+<p><img src="/images/20131217-1.png" alt="TextKit结构设计" /></p>
 
 <p><em>NSTextStorage</em>：MVC中的模型，用于存储需要显示的文本内容以及他们的属性。它继承自NSMutableAttributedString。当内容变化时，会通知NSLayoutManager；</p>
 
@@ -146,7 +148,7 @@
 
 <p>什么是Glyph？</p>
 
-<p><img src="./images/20131217-2.png" alt="Glyph" /></p>
+<p><img src="/images/20131217-2.png" alt="Glyph" /></p>
 
 <ol>
 <li>字符的图形表示（A Graphical Representation of Characters）。</li>
@@ -159,19 +161,19 @@
 
 <p>1.字距调整（Kerning）</p>
 
-<p><img src="./images/20131217-3.png" alt="Kerning" /></p>
+<p><img src="/images/20131217-3.png" alt="Kerning" /></p>
 
 <p>2.连写</p>
 
-<p><img src="./images/20131217-4.png" alt="Ligature" /></p>
+<p><img src="/images/20131217-4.png" alt="Ligature" /></p>
 
 <p>3.断字</p>
 
-<p><img src="./images/20131217-5.png" alt="Break" /></p>
+<p><img src="/images/20131217-5.png" alt="Break" /></p>
 
 <p>4.隐藏文字</p>
 
-<p><img src="./images/20131217-6.png" alt="Truncation" /></p>
+<p><img src="/images/20131217-6.png" alt="Truncation" /></p>
 
 <p>5.更加完美的排版</p>
 
@@ -191,7 +193,7 @@
 
 <p>通过回调函数，对URL的点击进行处理。</p>
 
-<p><img src="./images/20131217-7.png" alt="BaseInteraction" /></p>
+<p><img src="/images/20131217-7.png" alt="BaseInteraction" /></p>
 
 <h4>Demo2:ExclusionPaths</h4>
 
@@ -220,7 +222,7 @@
 }
 </code></pre>
 
-<p><img src="./images/20131217-8.png" alt="ExclusionPaths" /></p>
+<p><img src="/images/20131217-8.png" alt="ExclusionPaths" /></p>
 
 <h4>Demo3:TextColoring</h4>
 
@@ -241,7 +243,7 @@ self.textStorage.tokens = @{ @"Alice" : @{ NSForegroundColorAttributeName : [UIC
                              TKDDefaultTokenName : @{ NSForegroundColorAttributeName : [UIColor blackColor],NSFontAttributeName:[UIFont fontWithName:@"Helvetica" size:18.] } };
 </code></pre>
 
-<p><img src="./images/20131217-9.png" alt="TextColoring" /></p>
+<p><img src="/images/20131217-9.png" alt="TextColoring" /></p>
 
 <h2>总结</h2>
 

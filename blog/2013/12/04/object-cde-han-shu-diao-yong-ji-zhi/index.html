@@ -48,9 +48,11 @@
 </div>
 
 <nav id="main-nav"><ul class="main">
-	<p>王仙客的博客</p>
-	<p>明白一些道理</p>
-	<p>遇到一些有趣的事</p>
+	<p style="color:white;font-size:24px">王仙客的博客</p>
+	<br>
+	<p style="color:white;font-size:18px">明白一些道理</p>
+	<p style="color:white;font-size:18px">遇到一些有趣的事</p>
+	<br>
 	<li><a href="/">博客</a></li>
 	<li><a href="/blog/archives">所有文章</a></li>
 	<li><a href="/blog/About">关于我</a></li>
@@ -175,7 +177,7 @@ struct objc_protocol_list *protocols                     OBJC2_UNAVAILABLE;
 <pre><code>objc_msgSend(receiver, selector, arg1, arg2, ...)
 </code></pre>
 
-<p><img src="./images/messaging.jpg" alt="Selector" /></p>
+<p><img src="/images/messaging.jpg" alt="Selector" /></p>
 
 <p>当一个消息传递给一个对象的时候，objc_msgSend根据对象的isa指针，到类结构体methodLists链表找指定selector，如果没有，向父类寻找，知道找到NSObject类位置。这样就实现了动态方法调用。</p>
 
