@@ -6,7 +6,7 @@ comments: true
 categories: 
 ---
 
-![octopress&github](./images/github-page-octopress-title.jpg)
+![octopress&github](/images/github-page-octopress-title.jpg)
 
 感谢[破船之家](http://beyondvincent.com/)，分享了一篇关于使用octopress在Github上搭建博客文章，看了之后也尝试搭建了一个属于自己的博客。由于对于Ruby和git不是很了解，整个过程花费了不少时间。这篇文章主要记录MAC下搭建的过程。
 

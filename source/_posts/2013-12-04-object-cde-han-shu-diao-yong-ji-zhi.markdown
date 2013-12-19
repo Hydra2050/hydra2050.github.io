@@ -87,7 +87,7 @@ OC的方法调用与C++不同： Ｃ++中的方法调用可能是动态的，也
 
 	objc_msgSend(receiver, selector, arg1, arg2, ...)
 	
-![Selector](./images/messaging.jpg)
+![Selector](/images/messaging.jpg)
 	
 当一个消息传递给一个对象的时候，objc_msgSend根据对象的isa指针，到类结构体methodLists链表找指定selector，如果没有，向父类寻找，知道找到NSObject类位置。这样就实现了动态方法调用。
 

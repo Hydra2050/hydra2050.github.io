@@ -10,7 +10,7 @@ categories:
 
 今年的WWDC大会上，苹果推出了IOS7,UI上有了很大变化，向扁平化发展；在新的SDK中，新的特性、新的功能无疑给开发者带来了更大的惊喜。其中最感兴趣的主要有三点,今天的主角TextKit就是其中之一。
 
-![TextKit](./images/20131215-1.png)
+![TextKit](/images/20131215-1.png)
 
 
 ##What is Text Kit?
@@ -21,11 +21,11 @@ categories:
 
 下图是IOS6中的类结构图：
 
-![Structure in IOS6](./images/20131215-3.png)
+![Structure in IOS6](/images/20131215-3.png)
 
 下图是IOS7中的类结构图：
 
-![Structure in IOS7](./images/20131215-2.png)
+![Structure in IOS7](/images/20131215-2.png)
 
 可以看出，iOS7之前，几乎所有的文本和UIWebview都是WebKit来处理的，由它来布局和渲染。在IOS7中，UIWebview还是由WebKit作为排版和渲染引擎，但是文本都由TextKit来处理，TextKit又是基于CoreText之上，这是一个很大的改动。
 
@@ -33,7 +33,7 @@ categories:
 
 TextKit的设计符合模型-视图-控制器（MVC）架构：
 
-![TextKit结构设计](./images/20131217-1.png)
+![TextKit结构设计](/images/20131217-1.png)
 
 *NSTextStorage*：MVC中的模型，用于存储需要显示的文本内容以及他们的属性。它继承自NSMutableAttributedString。当内容变化时，会通知NSLayoutManager；
 
@@ -58,7 +58,7 @@ TextKit的设计符合模型-视图-控制器（MVC）架构：
 	
 什么是Glyph？
 
-![Glyph](./images/20131217-2.png)
+![Glyph](/images/20131217-2.png)
 
 1. 字符的图形表示（A Graphical Representation of Characters）。
 2. Character + font -> glyph
@@ -68,19 +68,19 @@ TextKit的设计符合模型-视图-控制器（MVC）架构：
 
 1.字距调整（Kerning）
 
-![Kerning](./images/20131217-3.png)
+![Kerning](/images/20131217-3.png)
 
 2.连写
 
-![Ligature](./images/20131217-4.png)
+![Ligature](/images/20131217-4.png)
 
 3.断字
 
-![Break](./images/20131217-5.png)
+![Break](/images/20131217-5.png)
 
 4.隐藏文字
 
-![Truncation](./images/20131217-6.png)
+![Truncation](/images/20131217-6.png)
 
 5.更加完美的排版
 
@@ -101,7 +101,7 @@ TextKit的设计符合模型-视图-控制器（MVC）架构：
 	
 通过回调函数，对URL的点击进行处理。
 
-![BaseInteraction](./images/20131217-7.png)
+![BaseInteraction](/images/20131217-7.png)
 
 ####Demo2:ExclusionPaths
 
@@ -129,7 +129,7 @@ TextKit的设计符合模型-视图-控制器（MVC）架构：
 	    self.textView.textContainer.exclusionPaths = @[[self translatedBezierPath]];
 	}
 
-![ExclusionPaths](./images/20131217-8.png)
+![ExclusionPaths](/images/20131217-8.png)
 
 ####Demo3:TextColoring
 
@@ -149,7 +149,7 @@ TextKit的设计符合模型-视图-控制器（MVC）架构：
                                  @"once" : @{ NSForegroundColorAttributeName : [UIColor greenColor] },
                                  TKDDefaultTokenName : @{ NSForegroundColorAttributeName : [UIColor blackColor],NSFontAttributeName:[UIFont fontWithName:@"Helvetica" size:18.] } };
                                  
-![TextColoring](./images/20131217-9.png)
+![TextColoring](/images/20131217-9.png)
                                  
 ##总结
 

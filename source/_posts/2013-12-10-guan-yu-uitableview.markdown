@@ -38,7 +38,7 @@ categories:
 这是该到我们的利器大显身手了——[Reveal](http://revealapp.com/)。
 我写了一个demo，最初有6个cell，功能是点击cell，就让cell的个数减一。当我删除五行后，在Reveal中可以看到：
 
-![Reveal截图](./images/tvst.png)
+![Reveal截图](/images/tvst.png)
 
 是的，那个cell还在！还在tableview上，只不过被隐藏掉了。
 打印tableview上的cell：
