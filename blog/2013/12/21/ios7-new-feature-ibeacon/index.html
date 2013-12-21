@@ -1,0 +1,232 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>IOS7 New Feature: iBeacon - 王仙客的博客</title>
+	<meta name="author" content="王仙客">
+
+	
+	<meta name="description" content="IOS7 New Feature: iBeacon 前言 iBeacon作为IOS7的一项新特性，在今年的WWDC大会上正式正式发布。虽然官方对它的描述并不多，WWDC的视频中也没有一个是讲解iBeacon的，但是在WWDC2013的Keynote上还是看到了它的身影。 &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="王仙客的博客" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://Hydra2050.github.io/blog/2013/12/21/ios7-new-feature-ibeacon/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("wh2050@sina.cn") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+	<p style="color:white;font-size:24px">王仙客的博客</p>
+	<br>
+	<p style="color:white;font-size:18px">明白一些道理</p>
+	<p style="color:white;font-size:18px">遇到一些有趣的事</p>
+	<br>
+	<li><a href="/">博客</a></li>
+	<li><a href="/blog/archives">所有文章</a></li>
+	<li><a href="/blog/About">关于我</a></li>
+</ul>
+
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:wh2050@sina.cn" title="Email">Email</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">IOS7 New Feature: iBeacon</h1>
+	<div class="entry-content" itemprop="articleBody"><h2>前言</h2>
+
+<p>iBeacon作为IOS7的一项新特性，在今年的WWDC大会上正式正式发布。虽然官方对它的描述并不多，WWDC的视频中也没有一个是讲解iBeacon的，但是在WWDC2013的Keynote上还是看到了它的身影。</p>
+
+<p><img src="/images/201312211904.jpeg" alt="WWDC2013 Keynote" /></p>
+
+<p>iBeacon也是我今年WWDC上最喜欢的新特性之一，因为我一直认为更便捷、去中心化的沟通才是未来。在IOS7推出Beta版的时候，我也曾经实践过新推出的Nearby Networking With Multipeer Connectivity。但是相比之下，iBeacon要优秀很多。</p>
+
+<p>目前有不少硬件厂商在生产基于iBeacon的基站，Estimote很早就推出了Estimote Beacons，利用苹果的iBeacon技术，实现Distance、Proximity和Notification三种功能。如果想体验一下，可以在Appstore搜索下载应用Estimote。同时Estimote Beacons提供了一套API，可以方便地进行编程。</p>
+
+<p><a href="https://github.com/Estimote/iOS-SDK">Estimote Beacons的API地址</a></p>
+
+<p><img src="/images/201312211906.jpeg" alt="Estimote Beacons" /></p>
+
+<h2>What is iBeacon?</h2>
+
+<p>iBeacon通过使用低功耗蓝牙技术（Bluetooth Low Energy，也就是通常所说的Bluetooth 4.0或者Bluetooth Smart），可以创建一个信号区域，当设备进入该区域时，相应的应用程序便会提示用户是否需要接入这个信号网络。通过能够放置在任何物体中的小型无线传感器和低功耗蓝牙技术，用户便能使用iPhone来传输数据。</p>
+
+<p><img src="/images/201312211907.jpeg" alt="iBeacon" /></p>
+
+<h2>什么是低功耗蓝牙技术？</h2>
+
+<p>低功耗蓝牙技术的最大特点便在于低功耗，从而能使设备拥有更长的续航时间。不过低功耗蓝牙技术仅支持较低的文件传输速率，因此可以用于可穿戴式智能设备之间的信息传送，但却不能完成像传输音频这样的任务。</p>
+
+<h2>一个简单的Demo</h2>
+
+<p><a href="https://github.com/Hydra2050/BeaconDemo">Demo下载地址</a></p>
+
+<h3>Start a BeaconBroadcast</h3>
+
+<p>1、 创建一个BeaconRegion，作为Beacon基站的广播的Region对象。其中UUID为Beacon基站的唯一标识。</p>
+
+<pre><code>NSUUID* myUUID = [[NSUUID alloc] initWithUUIDString:@"E621E1F8-C36C-495A-93FC-0C247A3E6E5D"];
+self.targetBeaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:myUUID identifier:@"My Beacon Demo 20131221"];
+</code></pre>
+
+<p>2、 创建一个CBPeripheralManager对象</p>
+
+<pre><code> self.peripheraManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil options:nil];
+</code></pre>
+
+<p>3、 开始广播</p>
+
+<pre><code>NSDictionary* peripheraData = [self.boardcastBeaconRegion peripheralDataWithMeasuredPower:nil];
+[self.peripheraManager startAdvertising:peripheraData];
+</code></pre>
+
+<p>开始广播后，可以处理一下回调函数，如：</p>
+
+<pre><code>- (void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral
+- (void)peripheralManagerDidStartAdvertising:(CBPeripheralManager *)peripheral error:(NSError *)error
+</code></pre>
+
+<h3>Start a BeaconMonitor</h3>
+
+<p>1、 创建一个BeaconRegion，作为搜索的Region对象。其中UUID为Beacon基站的唯一标识。</p>
+
+<pre><code>NSUUID* myUUID = [[NSUUID alloc] initWithUUIDString:@"E621E1F8-C36C-495A-93FC-0C247A3E6E5D"];
+self.targetBeaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:myUUID identifier:@"My Beacon Demo 20131221"];
+</code></pre>
+
+<p>2、 创建一个CLLocationManager对象</p>
+
+<pre><code>self.locationManager = [[CLLocationManager alloc] init];
+self.locationManager.delegate = self;
+</code></pre>
+
+<p>3、 开始搜索Beacon基站</p>
+
+<pre><code>[self.locationManager startRangingBeaconsInRegion:self.targetBeaconRegion];
+</code></pre>
+
+<p>接下来可以处理一下回调函数，如：</p>
+
+<pre><code>- (void)locationManager:(CLLocationManager *)manager
+    didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region
+- (void)locationManager:(CLLocationManager *)manager
+ didUpdateLocations:(NSArray *)locations
+- (void)locationManager:(CLLocationManager *)manager
+     didEnterRegion:(CLRegion *)region
+- (void)locationManager:(CLLocationManager *)manager
+      didExitRegion:(CLRegion *)region
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
+</code></pre>
+
+<p>效果图：</p>
+
+<p><img src="/images/201312211958.PNG" alt="CLProximityImmediate" /></p>
+
+<p><img src="/images/201312211959.PNG" alt="CLProximityNear" /></p>
+
+<p><img src="/images/201312212001.PNG" alt="CLProximityFar" /></p>
+
+<p><img src="/images/201312212002.PNG" alt="CLProximityUnknown" /></p>
+
+<p><img src="/images/201312212003.PNG" alt="didExitRegion" /></p>
+
+<h2>总结</h2>
+
+<p>通过Demo，可以对iBeacon有一个简单的了解。iBeacon可以方便实现室内导航、商品消息推送、支付等功能。网上很多文章认为iBeacon会成为NFC杀手。到底iBeacon能发展到什么地步，让我们拭目以待吧。</p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2013
+
+    王仙客
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+		</div>
+	</div>
+</body>
+</html>
