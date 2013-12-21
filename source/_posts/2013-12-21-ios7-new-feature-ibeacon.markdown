@@ -100,3 +100,4 @@ iBeacon通过使用低功耗蓝牙技术（Bluetooth Low Energy，也就是通�
 
 通过Demo，可以对iBeacon有一个简单的了解。iBeacon可以方便实现室内导航、商品消息推送、支付等功能。网上很多文章认为iBeacon会成为NFC杀手。到底iBeacon能发展到什么地步，让我们拭目以待吧。
 
+[iOS: Understanding iBeacon](http://support.apple.com/kb/HT6048)
