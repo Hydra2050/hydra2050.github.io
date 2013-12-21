@@ -4,7 +4,7 @@
   <title><![CDATA[王仙客的博客]]></title>
   <link href="http://Hydra2050.github.io/atom.xml" rel="self"/>
   <link href="http://Hydra2050.github.io/"/>
-  <updated>2013-12-21T20:18:01+08:00</updated>
+  <updated>2013-12-21T20:21:14+08:00</updated>
   <id>http://Hydra2050.github.io/</id>
   <author>
     <name><![CDATA[王仙客]]></name>
@@ -118,6 +118,8 @@ self.locationManager.delegate = self;
 <h2>总结</h2>
 
 <p>通过Demo，可以对iBeacon有一个简单的了解。iBeacon可以方便实现室内导航、商品消息推送、支付等功能。网上很多文章认为iBeacon会成为NFC杀手。到底iBeacon能发展到什么地步，让我们拭目以待吧。</p>
+
+<p><a href="http://support.apple.com/kb/HT6048">iOS: Understanding iBeacon</a></p>
 ]]></content>
   </entry>
   
