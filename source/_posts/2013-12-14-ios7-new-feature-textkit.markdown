@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "ios7 new feature: TextKit"
+title: "IOS7 new feature: TextKit"
 date: 2013-12-14 20:41:36 +0800
 comments: true
 categories: 
@@ -55,6 +55,8 @@ TextKit的设计符合模型-视图-控制器（MVC）架构：
 什么是TextLayout？
 
 	TextLayout ＝ Glyph ＋ Location
+	Glyph = Font + String
+	
 	
 什么是Glyph？
 
@@ -150,6 +152,15 @@ TextKit的设计符合模型-视图-控制器（MVC）架构：
                                  TKDDefaultTokenName : @{ NSForegroundColorAttributeName : [UIColor blackColor],NSFontAttributeName:[UIFont fontWithName:@"Helvetica" size:18.] } };
                                  
 ![TextColoring](/images/20131217-9.png)
+
+###Demo4:FontType
+
+UIFontDescriptor的简单使用。
+
+	UIFontDescriptor* fontDescriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleBody];
+    UIFontDescriptor* boldFontDescriptor = [fontDescriptor fontDescriptorWithSymbolicTraits:UIFontDescriptorTraitBold];
+	UIFont* boldFont = [UIFont fontWithDescriptor:boldFontDescriptor size:0.0];
+
                                  
 ##总结
 
