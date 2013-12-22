@@ -9,7 +9,7 @@
 	<meta name="author" content="王仙客">
 
 	
-	<meta name="description" content="Dec 4th, 2013 Object-c的函数调用机制 起因 有一次，被问到，下面这段代码执行，会得到什么结果： @interface ClassA : NSObject -(void) foo; @end @implementation ClassA -(void) foo { NSLog &hellip;">
+	<meta name="description" content="Dec 8th, 2013 Object-c中的黑魔法——Method Swizzling 上一篇讲了Object-c的函数调用机制，对理解Method Swizzling有很大帮助。这一次来看一看Object-c中的黑魔法——Method Swizzling。 Method &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -90,6 +90,125 @@
 			<div class="mid-col-container">
 				<div id="content" class="inner">
 <div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-08T09:46:50+08:00" data-updated="true" itemprop="datePublished">Dec 8<span>th</span>, 2013</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/12/08/method-swizzling/" itemprop="url">Object-c中的黑魔法——Method Swizzling</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>上一篇讲了<a href="http://hydra2050.github.io/blog/2013/12/04/object-cde-han-shu-diao-yong-ji-zhi/">Object-c的函数调用机制</a>，对理解Method Swizzling有很大帮助。这一次来看一看Object-c中的黑魔法——Method Swizzling。</p>
+
+<h2>Method Swizzling介绍</h2>
+
+<p>什么是Method Swizzling？简单来讲，就是修改SEL与IMP之间的映射关系，达到修改最终执行方法的目的。Method Swizzling，听起来就有黑魔法的意味。</p>
+
+<h2>如何实现Method Swizzling</h2>
+
+<h3>1.创建一个category</h3>
+
+<pre><code>#import &lt;Foundation/Foundation.h&gt;  
+@interface UIView (MyAdditions)   
+@end  
+</code></pre>
+
+<h3>2.创建一个swizzling函数</h3>
+
+<pre><code>@implementation UIView (MyAdditions)
+
+- (void)my_setFrame:(CGRect)frame {
+    // custom function
+    [self my_setFrame:frame];
+}
+@end
+</code></pre>
+
+<p>等等，这不是循环调用吗？别忘了，我们后面会施展黑魔法，改变IMP,调用的不再是自己，不会有循环调用的问题。</p>
+
+<h3>3.交换IMP</h3>
+
+<p><p style="color:red">注意别忘记引入：#import &lt;objc/runtime.h></p>
+
+<pre><code>Method oriMethod =  class_getInstanceMethod([UIView class], @selector(setFrame:));  
+Method myMethod = class_getInstanceMethod([UIView class], @selector(my_setFrame:));  
+method_exchangeImplementations(oriMethod, myMethod); 
+</code></pre>
+
+<p>这样调用 [UIView setFrame:] 时，实际调用的是自定义的方法 [UIView my_setFrame:]。</p>
+
+<h2>Method Swizzling的利与弊</h2>
+
+<p>这里有非常好的答案：</p>
+
+<p><a href="http://stackoverflow.com/questions/5339276/what-are-the-dangers-of-method-swizzling-in-objective-c">http://stackoverflow.com/questions/5339276/what-are-the-dangers-of-method-swizzling-in-objective-c</a></p>
+
+<p>其中给出了一个解决命名冲突的定义方式：</p>
+
+<pre><code>@implementation NSView (MyViewAdditions)
+static void MySetFrame(id self, SEL _cmd, NSRect frame);
+static void (*SetFrameIMP)(id self, SEL _cmd, NSRect frame);
+
+static void MySetFrame(id self, SEL _cmd, NSRect frame) {
+   // do custom work
+   SetFrameIMP(self, _cmd, frame);
+}
+
++ (void)load {
+   [self swizzle:@selector(setFrame:) with:(IMP)MySetFrame store:(IMP *)&amp;SetFrameIMP];
+}
+@end
+
+typedef IMP *IMPPointer;
+BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMPPointer store) {
+    IMP imp = NULL;
+    Method method = class_getInstanceMethod(class, original);
+    if (method) {
+        const char *type = method_getTypeEncoding(method);
+        imp = class_replaceMethod(class, original, replacement, type);
+        if (!imp) {
+            imp = method_getImplementation(method);
+        }
+    }
+    if (imp &amp;&amp; store) { *store = imp; }
+    return (imp != NULL);
+}
+
+@implementation NSObject (FRRuntimeAdditions)
++ (BOOL)swizzle:(SEL)original with:(IMP)replacement store:(IMPPointer)store {
+    return class_swizzleMethodAndStore(self, original, replacement, store);
+}
+@end
+</code></pre>
+
+<h2>总结</h2>
+
+<p>对于我个人而言，并不是非常喜欢这种黑魔法。感觉还是慎用为妙，如果使用，尽量仅在load中swizzling。另外，网上有人说使用了Method Swizzling无法通过appstore的审核，还没有验证过。
+虽然不建议发布使用，但是其他地方还是有很多用武之地的，比如调试、代码分析等，可以自由想像。</p>
+
+<p>这里有一个<a href="https://github.com/Hydra2050/MethodSwizzlingDemo">MethodSwizzlingDemo</a>，通过Method Swizzling，描绘每一个View的border。效果图：</p>
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
@@ -225,6 +344,10 @@ for ( i = 0 ; i &lt; 1000 ; i++ )
 <li><p>如果在自身以及所有父类的方法列表中都没有找到对应的 IMP，则进入下文中要讲的消息转发流程。</p></li>
 </ol>
 
+
+<p><em>这里可以做一个延伸：如何提高调用Object－C方法的速度？</em></p>
+
+<p>利用“IMP Caching”的方法，在框架初始化时获取类名、方法名和方法运行时的函数指针IMP。在执行这个函数的时候，使用Caching的指针执行，一般速度要提高2倍左右。</p>
 
 <h3>消息转发</h3>
 

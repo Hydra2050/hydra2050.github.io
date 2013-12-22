@@ -4,7 +4,7 @@
   <title><![CDATA[王仙客的博客]]></title>
   <link href="http://Hydra2050.github.io/atom.xml" rel="self"/>
   <link href="http://Hydra2050.github.io/"/>
-  <updated>2013-12-21T20:21:14+08:00</updated>
+  <updated>2013-12-22T18:59:03+08:00</updated>
   <id>http://Hydra2050.github.io/</id>
   <author>
     <name><![CDATA[王仙客]]></name>
@@ -12,6 +12,283 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Object-C高级编程学习笔记(一)]]></title>
+    <link href="http://Hydra2050.github.io/blog/2013/12/22/object-cgao-ji-bian-cheng/"/>
+    <updated>2013-12-22T14:28:55+08:00</updated>
+    <id>http://Hydra2050.github.io/blog/2013/12/22/object-cgao-ji-bian-cheng</id>
+    <content type="html"><![CDATA[<p>书名：《Object-C高级编程 IOS与OS X多线程和内存管理》</p>
+
+<h2>ARC</h2>
+
+<p>在Object-C中采用Automatic Reference Counting(ARC)机制，让编译器来进行内存管理。</p>
+
+<ol>
+<li>使用Xcode4.2或以上版本</li>
+<li>使用LLVM编译器3.0或以上版本</li>
+<li>编译器选项中设置ARC为有效</li>
+</ol>
+
+
+<h3>所有权修饰符</h3>
+
+<ul>
+<li>__strong修饰符</li>
+<li>__weak修饰符</li>
+<li>__unsafe_unretained修饰符</li>
+<li>__autoreleasing修饰符</li>
+</ul>
+
+
+<h4>1. __strong修饰符</h4>
+
+<p>__strong修饰符为id类型和对象类型默认的所有权修饰符,可以省略。</p>
+
+<pre><code>id __strong obj = [[NSObject alloc] init];
+</code></pre>
+
+<h4>2. __weak修饰符</h4>
+
+<p>如果只用__strong修饰符，自动引用计数式内容管理必然会发生“循环引用”的问题。</p>
+
+<p>__weak提供弱引用，弱引用不能持有对象实例，可以解决“循环引用”的问题。</p>
+
+<p>下面这段代码：</p>
+
+<pre><code>id __weak obj = [[NSObject alloc] init];
+NSLog(@"%@",obj);
+</code></pre>
+
+<p>会输出 nil 。因为__weak修饰的obj持用弱引用，在赋值过后，并没有对象强引用它，生成的对象会立即释放。这样obj自动赋值为nil。</p>
+
+<p>再来看看下面这段代码的输出：</p>
+
+<pre><code>id __weak obj0 = nil;
+{
+    id __strong obj1 = [[NSObject alloc] init];
+    obj0 = obj1;
+    NSLog(@"%@",obj0);
+}
+NSLog(@"%@",obj0);
+</code></pre>
+
+<p>结果：</p>
+
+<pre><code>&lt;NSObject: 0x109420000&gt;
+nil
+</code></pre>
+
+<p>注：<strong>weak修饰符只能用于IOS5以上以及OS X Lion以上版本的应用程序。在它们一下的程序可使用</strong>unsafe_unretained修饰符来代替。</p>
+
+<h4>3. __unsafe_unretained修饰符</h4>
+
+<p><strong>unsafe_unretained修饰符，是不安全的所有权修饰符。有</strong>unsafe_unretained修饰符的变量不属于编译器的内存管理对象。</p>
+
+<pre><code>id __unsafe_unretained obj = [[NSObject alloc] init];
+NSLog(@"%@",obj);
+</code></pre>
+
+<p>这里和__weak一样，会输出<code>nil</code>。难道这两个修饰符相同吗？再来看第二个例子：</p>
+
+<pre><code>id __unsafe_unretained obj0 = nil;
+{
+    id __strong obj1 = [[NSObject alloc] init];
+    obj0 = obj1;
+    NSLog(@"%@",obj0);
+}
+NSLog(@"%@",obj0);
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code>&lt;NSObject: 0x10972ced0&gt;
+&lt;NSObject: 0x10972ced0&gt;
+</code></pre>
+
+<p>可以看到结果已经和__weak不同。</p>
+
+<p>这里在第二次打印的时候，obj0已经成为一个野指针。</p>
+
+<p><strong>weak与</strong>unsafe_unretained的区别可以简单地说：</p>
+
+<p>当弱引用的对象被释放，<strong>weak修饰的对象会自动赋值为nil；而</strong>unsafe_unretained修饰的对象不会。</p>
+
+<h4>4. __autoreleasing修饰符</h4>
+
+<p>在ARC有效的时候，不能使用NSAutoreleasePool。为了实现想非ARC工程的NSAutoreleasePool该怎么办？使用__autoreleasing修饰符。</p>
+
+<p>一下两段代码效果相同：</p>
+
+<pre><code>/* NO ARC */
+NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+id obj = [[NSObject alloc] init];
+[obj autorelease];
+[pool drain];
+
+/*  ARC  */
+@autoreleasepool {
+    id __autoreleasing obj = [[NSObject alloc] init];
+}
+</code></pre>
+
+<p>但是，显式地附加<strong>autoreleasing修饰符同显式地附加</strong>strong一样罕见。一般不必显示地添加__autoreleasing修饰符。</p>
+
+<p style="color:red"> 另外，无论ARC是否有效，调试用的私有方法_objc_autoreleasePoolPrint()都可以使用。利用这个函数可以有效地帮助我们调试注册到autoreleasepool上的对象。 </p>
+
+
+<h3>ARC的规则</h3>
+
+<p>1. 不能使用retain/release/retainCount/autorelease</p>
+
+<p>2. 不能使用NSAllocateObject/NSDeallocateObject</p>
+
+<p>3. 遵守内存管理的方法命名规则</p>
+
+<p>4. 不要显示调用dealloc</p>
+
+<p>5. 使用@autoreleasepool快代替NSAutoreleasePool</p>
+
+<p>6. 不能使用NSZone</p>
+
+<p>7. 对象型变量不能作为C语言结构体的成员</p>
+
+<p>要把对象型变量加入到结构体成员，可强制转换为void* 或是添加<code>__unsafe_unretained</code>修饰符。</p>
+
+<h4>显示转换id 和 void*</h4>
+
+<p>下面这段代码，在ARC下会编译错误：</p>
+
+<pre><code>id obj = [[NSObject alloc] init];
+void* p = obj;
+</code></pre>
+
+<p>需要使用“__bridge转换”：</p>
+
+<p>1、 __bridge</p>
+
+<pre><code>/* ARC */
+id obj1 = [[NSObject alloc] init];
+void* p = (__bridge void*)obj1;
+</code></pre>
+
+<p>相当于：</p>
+
+<pre><code>/* NO ARC */
+id obj = [[NSObject alloc] init];
+void* p = obj;
+</code></pre>
+
+<p>但是使用<strong>bridge转换，其安全性与赋值</strong>unsafe_unretained修饰符相似，甚至更低。</p>
+
+<p>2、 __bridge_retained</p>
+
+<pre><code>/* ARC */
+id obj1 = [[NSObject alloc] init];
+void* p = (__bridge_retained void*)obj1;
+</code></pre>
+
+<p>相当于：</p>
+
+<pre><code>/* NO ARC */
+id obj1 = [[NSObject alloc] init];
+void* p = obj1;
+[(id)p retain];
+</code></pre>
+
+<p>下面的代码：</p>
+
+<pre><code>void* p = 0;
+{
+    id obj1 = [[NSObject alloc] init];
+    void* p = (__bridge_retained void*)obj1;
+}
+NSLog(@"%@",p);
+</code></pre>
+
+<p>由于使用__bridge_retained，p在对后持有该对象，所以会打印出该对象。</p>
+
+<p>3、 __bridge_transfer</p>
+
+<pre><code>/* ARC */
+id obj1 = [[NSObject alloc] init];
+void* p = (__bridge_transfer void*)obj1;
+</code></pre>
+
+<p>相当于：</p>
+
+<pre><code>id obj1 = [[NSObject alloc] init];
+void* p = obj1;
+[(id)p retain];
+[obj1 release];
+</code></pre>
+
+<p>当然可是实现双向的转换。这些转换多数使用在Objec-C对象和Core Foundation对象之间的互相转换。</p>
+
+<p>以下两个函数为系统提供的方法，实现Toll-Free Bridging：</p>
+
+<pre><code>NS_INLINE id CFBridgingRelease(CFTypeRef CF_CONSUMED X) {
+return (__bridge_transfer id)X;
+}
+NS_INLINE CF_RETURNS_RETAINED CFTypeRef CFBridgingRetain(id X) {
+return (__bridge_retained CFTypeRef)X;
+}
+</code></pre>
+
+<p><a href="https://developer.apple.com/library/ios/documentation/General/Conceptual/CocoaEncyclopedia/Toll-FreeBridgin/Toll-FreeBridgin.html">Toll-Free Bridging</a></p>
+
+<h3>属性</h3>
+
+<p>ARC中，属性声明的属性与所有权修饰符的关系</p>
+
+<table>
+<thead>
+<tr>
+<th align="center">   属性声明   </th>
+<th align="center"> 所有权修饰符           </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">assign           </td>
+<td align="center"> __unsafe_unretained  </td>
+</tr>
+<tr>
+<td align="center">copy             </td>
+<td align="center"> __strong(复制对象)    </td>
+</tr>
+<tr>
+<td align="center">retain           </td>
+<td align="center"> __strong             </td>
+</tr>
+<tr>
+<td align="center">strong           </td>
+<td align="center"> __strong             </td>
+</tr>
+<tr>
+<td align="center">unsafe_unretained</td>
+<td align="center"> __unsafe_unretained </td>
+</tr>
+<tr>
+<td align="center">weak             </td>
+<td align="center"> __weak               </td>
+</tr>
+</tbody>
+</table>
+
+
+<p style="color:red">有一种情况不能使用__weak修饰符：</p>
+
+
+<p></p>
+
+<pre><code>- (BOOL)allowsWeakReference UNAVAILABLE_ATTRIBUTE;
+- (BOOL)retainWeakReference UNAVAILABLE_ATTRIBUTE;
+</code></pre>
+
+<p>如果NSobject实例上面的两个方法返回NO，绝对不能使用__weak修饰符。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[IOS7 New Feature: iBeacon]]></title>
@@ -1029,6 +1306,10 @@ for ( i = 0 ; i &lt; 1000 ; i++ )
 <li><p>如果在自身以及所有父类的方法列表中都没有找到对应的 IMP，则进入下文中要讲的消息转发流程。</p></li>
 </ol>
 
+
+<p><em>这里可以做一个延伸：如何提高调用Object－C方法的速度？</em></p>
+
+<p>利用“IMP Caching”的方法，在框架初始化时获取类名、方法名和方法运行时的函数指针IMP。在执行这个函数的时候，使用Caching的指针执行，一般速度要提高2倍左右。</p>
 
 <h3>消息转发</h3>
 
