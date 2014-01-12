@@ -4,7 +4,7 @@
   <title><![CDATA[王仙客的博客]]></title>
   <link href="http://Hydra2050.github.io/atom.xml" rel="self"/>
   <link href="http://Hydra2050.github.io/"/>
-  <updated>2013-12-22T18:59:03+08:00</updated>
+  <updated>2014-01-12T16:35:37+08:00</updated>
   <id>http://Hydra2050.github.io/</id>
   <author>
     <name><![CDATA[王仙客]]></name>
@@ -12,6 +12,218 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[HTTP的缓存机制]]></title>
+    <link href="http://Hydra2050.github.io/blog/2014/01/12/http-cache/"/>
+    <updated>2014-01-12T13:56:24+08:00</updated>
+    <id>http://Hydra2050.github.io/blog/2014/01/12/http-cache</id>
+    <content type="html"><![CDATA[<h2>前言</h2>
+
+<p>HTTP的缓存机制，主要体现在HTTP协议头里面的几个字段——Expires、Cache-control、Last-Modified/If-Modified-Since、Etag/If-None-Match等。在移动开发中，了解HTTP的缓存对开发者来说已经必不可少。</p>
+
+<p><img src="http://Hydra2050.github.io/images/2014011216.png" alt="HTTP HEAD" /></p>
+
+<h2>Expires</h2>
+
+<p>HTTP头中的Expires字段，告诉浏览器在Expires显示的时间前，浏览器可以从缓存中读取，而不需要再次去请求。</p>
+
+<h2>Cache-control</h2>
+
+<p>Cache-control与Expires一样，都是告诉浏览器有效期。不过它不只是设置过期时间，还可以设置很多选项：</p>
+
+<p>如图：max-age＝600，表示600s内不需要重新请求。</p>
+
+<h2>Last-Modified</h2>
+
+<p><code>Last-Modified</code>：资源的最后修改时间。</p>
+
+<p>如果本地缓存已经过期，即超过了<code>max-age</code>的缓存时间，缓存的HTTP头中存在Last-Modified，则向服务器发送带有If-Modified-Since字段的请求，后面带上<code>Last-Modified</code>所记录的最后修改时间。</p>
+
+<p>服务器收到带有<code>If-Modified-Since</code>的HTTP请求，会将请求的资源修改时间与<code>If-Modified-Since</code>时间对比：如果这段时间没有被修改过，则返回304，告诉浏览器可以继续使用本地缓存；如果资源已经修改过了，则响应请求的资源数据，返回200 OK.</p>
+
+<h2>Etag</h2>
+
+<p><code>Etag</code>：服务器应答数据的时候，生成的当前资源的唯一标识。</p>
+
+<p>如果本地缓存已经过期，即超过了<code>max-age</code>的缓存时间，缓存的HTTP头中存在<code>Etag</code>，则向服务器发送带有<code>If-None-Match</code>字段的请求，后面带上<code>Etag</code>所记录的当前资源的唯一标识。</p>
+
+<p>服务器收到带有<code>If-None-Match</code>的HTTP请求，会将请求的资源唯一标识与<code>If-None-Match</code>的标签的标识对比：如果这段时间没有被修改过，则返回304，告诉浏览器可以继续使用本地缓存；如果资源已经修改过了，则响应请求的资源数据，返回200 OK。</p>
+
+<h2>Etag与Last-Modified的区别？</h2>
+
+<p>HTTP1.1中Etag的出现主要是为了解决几个Last-Modified比较难解决的问题：</p>
+
+<ul>
+<li>Last-Modified标注的最后修改只能精确到秒级，如果某些文件在1秒钟以内，被修改多次的话，它将不能准确标注文件的修改时间</li>
+<li>如果某些文件会被定期生成，当有时内容并没有任何变化，但Last-Modified却改变了，导致文件没法使用缓存</li>
+<li>有可能存在服务器没有准确获取文件修改时间，或者与代理服务器时间不一致等情形</li>
+</ul>
+
+
+<p><code>Etag</code>是服务器生成的对应资源的唯一标识符，能够更加准确的控制缓存。<code>Last-Modified</code>与<code>ETag</code>是可以一起使用的，服务器会优先验证<code>ETag</code>，一致的情况下，才会继续比对<code>Last-Modified</code>。</p>
+
+<h2>跳转、刷新、强制刷新</h2>
+
+<p>浏览器缓存行为还有用户的行为有关:</p>
+
+<table>
+<thead>
+<tr>
+<th>用户操作      </th>
+<th align="center"> Expires/Cache-control </th>
+<th align="center"> Last-Moified/Etag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>地址栏回车     </td>
+<td align="center"> 有效                  </td>
+<td align="center"> 有效</td>
+</tr>
+<tr>
+<td>页面链接跳转   </td>
+<td align="center"> 有效                  </td>
+<td align="center"> 有效  </td>
+</tr>
+<tr>
+<td>新开窗口      </td>
+<td align="center"> 有效                  </td>
+<td align="center"> 有效</td>
+</tr>
+<tr>
+<td>前进、后退     </td>
+<td align="center"> 有效                  </td>
+<td align="center"> 有效 </td>
+</tr>
+<tr>
+<td>F5刷新        </td>
+<td align="center"> 无效                  </td>
+<td align="center"> 有效</td>
+</tr>
+<tr>
+<td>Ctrl＋F5刷新  </td>
+<td align="center"> 无效                  </td>
+<td align="center"> 无效 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>总结</h2>
+
+<p>当本地存在缓存的时候，一次请求的流程：</p>
+
+<p><img src="http://Hydra2050.github.io/images/HTTPCache.png" alt="HTTP Cache" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Object-C高级编程学习笔记(三)]]></title>
+    <link href="http://Hydra2050.github.io/blog/2013/12/29/object-cgao-ji-bian-cheng-xue-xi-san/"/>
+    <updated>2013-12-29T18:56:57+08:00</updated>
+    <id>http://Hydra2050.github.io/blog/2013/12/29/object-cgao-ji-bian-cheng-xue-xi-san</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Object-C高级编程学习笔记(二)]]></title>
+    <link href="http://Hydra2050.github.io/blog/2013/12/22/object-cgao-ji-bian-cheng-xue-xi-2/"/>
+    <updated>2013-12-22T20:48:19+08:00</updated>
+    <id>http://Hydra2050.github.io/blog/2013/12/22/object-cgao-ji-bian-cheng-xue-xi-2</id>
+    <content type="html"><![CDATA[<h1>Blocks</h1>
+
+<h2>What is blocks</h2>
+
+<h3>Block语法</h3>
+
+<p>Blocks是C语言的扩充功能：带有自动变量（局部变量）的匿名函数。</p>
+
+<p><code>^</code> <code>返回值类型</code> <code>参数列表</code> <code>表达式</code></p>
+
+<pre><code>^int (int count) {return count + 1;}
+</code></pre>
+
+<p>Block语法可以省略几个项目。首先是返回值类型：</p>
+
+<pre><code>^(int count) {return count + 1;}
+</code></pre>
+
+<p>其次，如果不使用参数，参数列表可以省略：</p>
+
+<pre><code>^{ print(“Block\n”);}
+</code></pre>
+
+<p>使用Block语法讲Block赋值为Block类型变量：</p>
+
+<pre><code>int(^blk) (int) = ^(int count) {return count + 1;}
+int(^blk1) (int) = blk;
+</code></pre>
+
+<p>使用typedef定义：</p>
+
+<pre><code>typedef int (^blk_t) (int);
+blk_t blk = ^(int count) {return count + 1;}
+int nResult = blk(10);
+</code></pre>
+
+<p>Block类型变量可以像C语言中其他类型变量一样使用。</p>
+
+<h3>截获自动变量值</h3>
+
+<p>Blocks中，Block表达式截获所使用的自动变量的值。因为Block表达式保存了自动变量的值，所以在执行Block语法后，即使改写Block中使用的自动变量的值也不会影响Block执行时自动变量的值。</p>
+
+<pre><code>int a = 10;
+int b = 10;
+int (^blk) (void) = ^(return a + b;);
+b = 2;
+blk();
+</code></pre>
+
+<p>执行结果为：<code>20</code></p>
+
+<h3>__block说明符</h3>
+
+<p>若想在Block语法的表达式中将值赋给Block语法外的自动变量，需要在自动变量附加<strong>block说明符，该变量成为</strong>block变量。</p>
+
+<pre><code>__block int val = 0;
+void(^blk) (void) = ^{val = 1;};
+blk();
+printf("%d",val);
+</code></pre>
+
+<p>执行结果为： <code>1</code></p>
+
+<p>赋值给截获的自动变量会产生编译错误：</p>
+
+<pre><code>id array = [[NSMutableArray alloc] init];
+void (^blk) {array = [[NSMutableArray alloc] init]};
+</code></pre>
+
+<p>会出现编译错误。</p>
+
+<p>另外，在使用C语言数组时，必须小心使用起指针。</p>
+
+<pre><code>const char text[] = "Hello";
+void (^blk) (void) = ^{
+    printf("%c\n",text[2]);
+};
+</code></pre>
+
+<p>在现在的Block中，截获自动变量的方法并没有实现对C语言数组的截获，因此会编译出错。可以使用指针解决：</p>
+
+<pre><code>const char *text = "Hello";
+void (^blk) (void) = ^{
+    printf("%c\n",text[2]);
+};  
+</code></pre>
+
+<h2>Blocks的实现</h2>
+
+<p>// TODO:需要一些时间理解</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Object-C高级编程学习笔记(一)]]></title>

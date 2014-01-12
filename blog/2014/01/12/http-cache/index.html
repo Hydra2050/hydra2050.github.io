@@ -1,0 +1,229 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>HTTP的缓存机制 - 王仙客的博客</title>
+	<meta name="author" content="王仙客">
+
+	
+	<meta name="description" content="HTTP的缓存机制 前言 HTTP的缓存机制，主要体现在HTTP协议头里面的几个字段——Expires、Cache-control、Last-Modified/If-Modified-Since、Etag/If-None-Match等。在移动开发中，了解HTTP的缓存对开发者来说已经必不可少。 &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="王仙客的博客" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://Hydra2050.github.io/blog/2014/01/12/http-cache/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("wh2050@sina.cn") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+	<p style="color:white;font-size:24px">王仙客的博客</p>
+	<br>
+	<p style="color:white;font-size:18px">明白一些道理</p>
+	<p style="color:white;font-size:18px">遇到一些有趣的事</p>
+	<br>
+	<li><a href="/">博客</a></li>
+	<li><a href="/blog/archives">所有文章</a></li>
+	<li><a href="/blog/2013/12/04/about/">关于我</a></li>
+</ul>
+
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:wh2050@sina.cn" title="Email">Email</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">HTTP的缓存机制</h1>
+	<div class="entry-content" itemprop="articleBody"><h2>前言</h2>
+
+<p>HTTP的缓存机制，主要体现在HTTP协议头里面的几个字段——Expires、Cache-control、Last-Modified/If-Modified-Since、Etag/If-None-Match等。在移动开发中，了解HTTP的缓存对开发者来说已经必不可少。</p>
+
+<p><img src="/images/2014011216.png" alt="HTTP HEAD" /></p>
+
+<h2>Expires</h2>
+
+<p>HTTP头中的Expires字段，告诉浏览器在Expires显示的时间前，浏览器可以从缓存中读取，而不需要再次去请求。</p>
+
+<h2>Cache-control</h2>
+
+<p>Cache-control与Expires一样，都是告诉浏览器有效期。不过它不只是设置过期时间，还可以设置很多选项：</p>
+
+<p>如图：max-age＝600，表示600s内不需要重新请求。</p>
+
+<h2>Last-Modified</h2>
+
+<p><code>Last-Modified</code>：资源的最后修改时间。</p>
+
+<p>如果本地缓存已经过期，即超过了<code>max-age</code>的缓存时间，缓存的HTTP头中存在Last-Modified，则向服务器发送带有If-Modified-Since字段的请求，后面带上<code>Last-Modified</code>所记录的最后修改时间。</p>
+
+<p>服务器收到带有<code>If-Modified-Since</code>的HTTP请求，会将请求的资源修改时间与<code>If-Modified-Since</code>时间对比：如果这段时间没有被修改过，则返回304，告诉浏览器可以继续使用本地缓存；如果资源已经修改过了，则响应请求的资源数据，返回200 OK.</p>
+
+<h2>Etag</h2>
+
+<p><code>Etag</code>：服务器应答数据的时候，生成的当前资源的唯一标识。</p>
+
+<p>如果本地缓存已经过期，即超过了<code>max-age</code>的缓存时间，缓存的HTTP头中存在<code>Etag</code>，则向服务器发送带有<code>If-None-Match</code>字段的请求，后面带上<code>Etag</code>所记录的当前资源的唯一标识。</p>
+
+<p>服务器收到带有<code>If-None-Match</code>的HTTP请求，会将请求的资源唯一标识与<code>If-None-Match</code>的标签的标识对比：如果这段时间没有被修改过，则返回304，告诉浏览器可以继续使用本地缓存；如果资源已经修改过了，则响应请求的资源数据，返回200 OK。</p>
+
+<h2>Etag与Last-Modified的区别？</h2>
+
+<p>HTTP1.1中Etag的出现主要是为了解决几个Last-Modified比较难解决的问题：</p>
+
+<ul>
+<li>Last-Modified标注的最后修改只能精确到秒级，如果某些文件在1秒钟以内，被修改多次的话，它将不能准确标注文件的修改时间</li>
+<li>如果某些文件会被定期生成，当有时内容并没有任何变化，但Last-Modified却改变了，导致文件没法使用缓存</li>
+<li>有可能存在服务器没有准确获取文件修改时间，或者与代理服务器时间不一致等情形</li>
+</ul>
+
+
+<p><code>Etag</code>是服务器生成的对应资源的唯一标识符，能够更加准确的控制缓存。<code>Last-Modified</code>与<code>ETag</code>是可以一起使用的，服务器会优先验证<code>ETag</code>，一致的情况下，才会继续比对<code>Last-Modified</code>。</p>
+
+<h2>跳转、刷新、强制刷新</h2>
+
+<p>浏览器缓存行为还有用户的行为有关:</p>
+
+<table>
+<thead>
+<tr>
+<th>用户操作      </th>
+<th align="center"> Expires/Cache-control </th>
+<th align="center"> Last-Moified/Etag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>地址栏回车     </td>
+<td align="center"> 有效                  </td>
+<td align="center"> 有效</td>
+</tr>
+<tr>
+<td>页面链接跳转   </td>
+<td align="center"> 有效                  </td>
+<td align="center"> 有效  </td>
+</tr>
+<tr>
+<td>新开窗口      </td>
+<td align="center"> 有效                  </td>
+<td align="center"> 有效</td>
+</tr>
+<tr>
+<td>前进、后退     </td>
+<td align="center"> 有效                  </td>
+<td align="center"> 有效 </td>
+</tr>
+<tr>
+<td>F5刷新        </td>
+<td align="center"> 无效                  </td>
+<td align="center"> 有效</td>
+</tr>
+<tr>
+<td>Ctrl＋F5刷新  </td>
+<td align="center"> 无效                  </td>
+<td align="center"> 无效 </td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>总结</h2>
+
+<p>当本地存在缓存的时候，一次请求的流程：</p>
+
+<p><img src="/images/HTTPCache.png" alt="HTTP Cache" /></p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    王仙客
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+		</div>
+	</div>
+</body>
+</html>
