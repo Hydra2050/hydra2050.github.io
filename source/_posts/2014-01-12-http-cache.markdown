@@ -20,7 +20,13 @@ HTTP头中的Expires字段，告诉浏览器在Expires显示的时间前，浏�
 
 Cache-control与Expires一样，都是告诉浏览器有效期。不过它不只是设置过期时间，还可以设置很多选项：
 
-如图：max-age＝600，表示600s内不需要重新请求。
+* no-cache指示请求或响应消息不能缓存
+* no-store用于防止重要的信息被无意的发布。在请求消息中发送将使得请求和响应消息都不使用缓存。
+* max-age指示客户机可以接收生存期不大于指定时间（以秒为单位）的响应。
+* min-fresh指示客户机可以接收响应时间小于当前时间加上指定时间的响应。
+* max-stale指示客户机可以接收超出超时期间的响应消息。如果指定max-stale消息的值，那么客户机可以接收超出超时期指定值之内的响应消息。
+
+如上图：max-age＝600，表示600s内不需要重新请求。
 
 ##Last-Modified
 
@@ -66,3 +72,5 @@ Ctrl＋F5刷新  | 无效                  | 无效
 当本地存在缓存的时候，一次请求的流程：
 
 ![HTTP Cache](/images/HTTPCache.png)
+
+参考：[Cache-Control section of RFC 2616](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9)
