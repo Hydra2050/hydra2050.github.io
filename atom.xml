@@ -4,7 +4,7 @@
   <title><![CDATA[王仙客的博客]]></title>
   <link href="http://Hydra2050.github.io/atom.xml" rel="self"/>
   <link href="http://Hydra2050.github.io/"/>
-  <updated>2014-01-12T16:35:37+08:00</updated>
+  <updated>2014-01-21T22:37:42+08:00</updated>
   <id>http://Hydra2050.github.io/</id>
   <author>
     <name><![CDATA[王仙客]]></name>
@@ -12,6 +12,140 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[如何使用NSLog打印CGPoint、CGSize、CGRect]]></title>
+    <link href="http://Hydra2050.github.io/blog/2014/01/18/use-nslog-to-print-cgpoint-cgrect/"/>
+    <updated>2014-01-18T22:02:46+08:00</updated>
+    <id>http://Hydra2050.github.io/blog/2014/01/18/use-nslog-to-print-cgpoint-cgrect</id>
+    <content type="html"><![CDATA[<p>平时调试程序的时候，经常会使用NSLog打印出来。当有CGPoint、CGSize、CGRect对象要打印时，一般要写成下面的方式：</p>
+
+<pre><code>CGPoint point = CGPointMake(0, 20);
+NSLog(@"Point: x=%f, y=%f", point.x, point.y);
+
+CGSize size = CGSizeMake(200, 100);
+NSLog(@"Size: w=%f, h=%f", size.width, size.height);
+
+CGRect rect = CGRectMake(0, 0, 200, 100);
+NSLog(@"Rect: x=%f, y=%f, w=%f, h=%f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+</code></pre>
+
+<p>今天看到一篇文章：<a href="http://iosdevelopertips.com/debugging/how-to-use-nslog-to-debug-cgrect-and-cgpoint.html">How to Use NSLog to Debug CGRect and CGPoint</a>，才了解到有一些其他方便的方法。</p>
+
+<pre><code>CGPoint point = CGPointMake(0, 20);
+NSLog(@"Point: %@", NSStringFromCGPoint(point));
+
+CGSize size = CGSizeMake(200, 100);
+NSLog(@"Size: %@", NSStringFromCGSize(size));
+
+CGRect rect = CGRectMake(0, 0, 200, 100);
+NSLog(@"Rect: %@", NSStringFromCGRect(rect));
+</code></pre>
+
+<p>打印结果：</p>
+
+<pre><code>Point: {0, 20}
+Size: {200, 100}
+Rect: \{\{0, 0\}, \{200, 100\}\}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOS开发中一些常用的宏定义]]></title>
+    <link href="http://Hydra2050.github.io/blog/2014/01/18/ioskai-fa-zhong-%5B%3F%5D-xie-chang-yong-de-hong-ding-yi/"/>
+    <updated>2014-01-18T21:55:51+08:00</updated>
+    <id>http://Hydra2050.github.io/blog/2014/01/18/ioskai-fa-zhong-[?]-xie-chang-yong-de-hong-ding-yi</id>
+    <content type="html"><![CDATA[<p>Debug输出：</p>
+
+<pre><code>#ifdef DEBUG
+    #define debug(format, ...) CFShow([NSString stringWithFormat:format, ## __VA_ARGS__]);
+    #define debugAlert(format, ...)  {UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"%s\n line: %d ", __PRETTY_FUNCTION__, __LINE__] message:[NSString stringWithFormat:format, ##__VA_ARGS__]  delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil]; [alert show]; [alert release];}
+#else
+    #define debug(format, ...) 
+    #define debugAlert(format, ...)
+#endif
+</code></pre>
+
+<p>检测是否支持ARC：</p>
+
+<pre><code>#if __has_feature(objc_arc)
+    // ARC
+#else
+    // No ARC
+#endif
+</code></pre>
+
+<p><a href="http://iosdevelopertips.com/debugging/remove-debug-code-for-release-build.html">http://iosdevelopertips.com/debugging/remove-debug-code-for-release-build.html</a></p>
+
+<p><a href="http://iosdevelopertips.com/debugging/display-debug-information-in-uialertview.html">http://iosdevelopertips.com/debugging/display-debug-information-in-uialertview.html</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Adding Properties to a Category Using Associated Objects]]></title>
+    <link href="http://Hydra2050.github.io/blog/2014/01/16/adding-properties-to-a-category-using-associated-objects/"/>
+    <updated>2014-01-16T22:39:50+08:00</updated>
+    <id>http://Hydra2050.github.io/blog/2014/01/16/adding-properties-to-a-category-using-associated-objects</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Object-C中的那些黑魔法]]></title>
+    <link href="http://Hydra2050.github.io/blog/2014/01/12/object-czhong-de-na-xie-hei-mo-fa/"/>
+    <updated>2014-01-12T22:41:13+08:00</updated>
+    <id>http://Hydra2050.github.io/blog/2014/01/12/object-czhong-de-na-xie-hei-mo-fa</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ReactiveCocoa简介]]></title>
+    <link href="http://Hydra2050.github.io/blog/2014/01/12/reactivecocoajian-jie/"/>
+    <updated>2014-01-12T22:40:40+08:00</updated>
+    <id>http://Hydra2050.github.io/blog/2014/01/12/reactivecocoajian-jie</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[2013年读过的好书]]></title>
+    <link href="http://Hydra2050.github.io/blog/2014/01/12/2013nian-du-guo-de-hao-shu/"/>
+    <updated>2014-01-12T16:45:59+08:00</updated>
+    <id>http://Hydra2050.github.io/blog/2014/01/12/2013nian-du-guo-de-hao-shu</id>
+    <content type="html"><![CDATA[<h2>技术类书籍</h2>
+
+<p>首先时技术类书籍：</p>
+
+<ul>
+<li>《从小工到专家——程序员修炼之道》：</li>
+<li>《Head First 设计模式》：</li>
+<li>《iOS 高级编程》：</li>
+<li>《Python》：</li>
+<li>《STL源码剖析》：</li>
+</ul>
+
+
+<h2>非技术类书籍</h2>
+
+<p>非技术类：</p>
+
+<ul>
+<li>《一个人的村庄》：</li>
+<li>《1984》：</li>
+<li>《少有人走的路：》：</li>
+<li>《自由在高处》：</li>
+<li>《九种孤独》：</li>
+<li>《天才在左，疯子在右》：</li>
+<li>《猎命师传奇：卷二十》：</li>
+<li>《上帝掷骰子吗》：</li>
+<li>《沉默的大多数》：</li>
+<li>《变身》、《新参者》：</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[HTTP的缓存机制]]></title>
@@ -32,7 +166,16 @@
 
 <p>Cache-control与Expires一样，都是告诉浏览器有效期。不过它不只是设置过期时间，还可以设置很多选项：</p>
 
-<p>如图：max-age＝600，表示600s内不需要重新请求。</p>
+<ul>
+<li>no-cache指示请求或响应消息不能缓存</li>
+<li>no-store用于防止重要的信息被无意的发布。在请求消息中发送将使得请求和响应消息都不使用缓存。</li>
+<li>max-age指示客户机可以接收生存期不大于指定时间（以秒为单位）的响应。</li>
+<li>min-fresh指示客户机可以接收响应时间小于当前时间加上指定时间的响应。</li>
+<li>max-stale指示客户机可以接收超出超时期间的响应消息。如果指定max-stale消息的值，那么客户机可以接收超出超时期指定值之内的响应消息。</li>
+</ul>
+
+
+<p>如上图：max-age＝600，表示600s内不需要重新请求。</p>
 
 <h2>Last-Modified</h2>
 
@@ -115,6 +258,8 @@
 <p>当本地存在缓存的时候，一次请求的流程：</p>
 
 <p><img src="http://Hydra2050.github.io/images/HTTPCache.png" alt="HTTP Cache" /></p>
+
+<p>参考：<a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">Cache-Control section of RFC 2616</a></p>
 ]]></content>
   </entry>
   
@@ -1399,398 +1544,6 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 虽然不建议发布使用，但是其他地方还是有很多用武之地的，比如调试、代码分析等，可以自由想像。</p>
 
 <p>这里有一个<a href="https://github.com/Hydra2050/MethodSwizzlingDemo">MethodSwizzlingDemo</a>，通过Method Swizzling，描绘每一个View的border。效果图：</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Object-c的函数调用机制]]></title>
-    <link href="http://Hydra2050.github.io/blog/2013/12/04/object-cde-han-shu-diao-yong-ji-zhi/"/>
-    <updated>2013-12-04T22:01:26+08:00</updated>
-    <id>http://Hydra2050.github.io/blog/2013/12/04/object-cde-han-shu-diao-yong-ji-zhi</id>
-    <content type="html"><![CDATA[<h2>起因</h2>
-
-<p>有一次，被问到，下面这段代码执行，会得到什么结果：</p>
-
-<pre><code>@interface ClassA : NSObject  
--(void) foo;  
-@end  
-@implementation ClassA  
--(void) foo  
-{  
-    NSLog(@"fork Class A's function");  
-}  
-@end  
-
-@interface ClassB : NSObject  
--(void) foo;  
-@end  
-@implementation ClassB  
--(void) foo  
-{  
-    NSLog(@"fork Class B's function");  
-}  
-@end  
-
-ClassA* a = [[ClassA alloc] init];  
-[a foo];  
-ClassB* b = (ClassB*)a;  
-[b foo];
-</code></pre>
-
-<p>说来惭愧，这么久竟然不清楚object-c的函数调用机制，于是网上查阅了一些资料，整理出一篇文章。</p>
-
-<h2>Object-C的函数调用的机制</h2>
-
-<p>OC的方法调用与C++不同： Ｃ++中的方法调用可能是动态的，也可能是静态的；而ObjC中的函数调用都为动态的，通过消息传递的方式调用。</p>
-
-<p>首先通过command＋shift＋o，查找NSObject类，可以看到类的定义：</p>
-
-<pre><code>@interface NSObject &lt;NSObject&gt; {  
-Class isa  OBJC_ISA_AVAILABILITY;  
-}  
-
-typedef struct objc_selector *SEL;  
-
-typedef id (*IMP)(id, SEL, ...);  
-</code></pre>
-
-<p>在object-c中，每个对象都有一个isa成员，指向自己的类结构体，这也是object-c自省的特性实现。
-为了理解消息调用机制，需要理解以上三个定义：Class   SEL   IMP</p>
-
-<h3>Class  SEL IMP</h3>
-
-<p>先来看一看Class的定义：</p>
-
-<pre><code>struct objc_class {  
-Class isa  OBJC_ISA_AVAILABILITY;  
-
-#if !__OBJC2__  
-Class super_class                                        OBJC2_UNAVAILABLE;  
-const charchar *name                                         OBJC2_UNAVAILABLE;  
-long version                                             OBJC2_UNAVAILABLE;  
-long info                                                OBJC2_UNAVAILABLE;  
-long instance_size                                       OBJC2_UNAVAILABLE;  
-struct objc_ivar_list *ivars                             OBJC2_UNAVAILABLE;  
-struct objc_method_list **methodLists                    OBJC2_UNAVAILABLE;  
-struct objc_cache *cache                                 OBJC2_UNAVAILABLE;  
-struct objc_protocol_list *protocols                     OBJC2_UNAVAILABLE;  
-#endif  
-
-} OBJC2_UNAVAILABLE; 
-</code></pre>
-
-<p>其中我们比较关心的是参数列表ivars，方法列表methodLists，协议列表protocols。当一个类有调用方法时：</p>
-
-<pre><code>[receiver message]
-</code></pre>
-
-<p>会调用消息函数，objc_msgSend：</p>
-
-<pre><code>objc_msgSend(receiver, selector)
-</code></pre>
-
-<p>如果有参数要传递的话：</p>
-
-<pre><code>objc_msgSend(receiver, selector, arg1, arg2, ...)
-</code></pre>
-
-<p><img src="http://Hydra2050.github.io/images/messaging.jpg" alt="Selector" /></p>
-
-<p>当一个消息传递给一个对象的时候，objc_msgSend根据对象的isa指针，到类结构体methodLists链表找指定selector，如果没有，向父类寻找，知道找到NSObject类位置。这样就实现了动态方法调用。</p>
-
-<p>那么IMP又是什么呢？
-简单来说，就是一个函数指针，指向SEL的方法的地址。NSObject 类中的methodForSelector：方法就是这样一个获取指向方法实现IMP 的指针。
-下面的例子展示了怎么使用指针来调用setFilled:的方法实现：</p>
-
-<pre><code>void (*setter)(id, SEL, BOOL);  
-int i;  
-setter = (void (*)(id, SEL, BOOL))[target methodForSelector:@selector(setFilled:)];  
-for ( i = 0 ; i &lt; 1000 ; i++ )  
-    setter(targetList[i], @selector(setFilled:), YES); 
-</code></pre>
-
-<p>查找IMP 时：</p>
-
-<ol>
-<li><p>首先去该类的方法 cache 中查找，如果找到了就返回它；</p></li>
-<li><p>如果没有找到，就去该类的方法列表中查找。如果在该类的方法列表中找到了，则将 IMP 返回，并将它加入cache中缓存起来。根据最近使用原则，这个方法再次调用的可能性很大，缓存起来可以节省下次调用再次查找的开销。</p></li>
-<li><p>如果在该类的方法列表中没找到对应的IMP，在通过该类结构中的super_class指针在其父类结构的方法列表中去查找，直到在某个父类的方法列表中找到对应的IMP，返回它，并加入cache中。</p></li>
-<li><p>如果在自身以及所有父类的方法列表中都没有找到对应的 IMP，则进入下文中要讲的消息转发流程。</p></li>
-</ol>
-
-
-<p><em>这里可以做一个延伸：如何提高调用Object－C方法的速度？</em></p>
-
-<p>利用“IMP Caching”的方法，在框架初始化时获取类名、方法名和方法运行时的函数指针IMP。在执行这个函数的时候，使用Caching的指针执行，一般速度要提高2倍左右。</p>
-
-<h3>消息转发</h3>
-
-<p>通常，给一个对象发送它不能处理的消息会得到出错提示，然而，Objective-C运行时系统在抛出错误之前，会给消息接收对象发送一条特别的消息forwardInvocation来通知该对象，该消息的唯一参数是个NSInvocation类型的对象——该对象封装了原始的消息和消息的参数。</p>
-
-<p>我们可以实现forwardInvocation:方法来对不能处理的消息做一些默认的处理，也可以将消息转发给其他对象来处理，而不抛出错误。</p>
-
-<p>NSObject 的forwardInvocation:方法默认的调用doesNotRecognizeSelector:方法</p>
-
-<pre><code>0   CoreFoundation                      0x01a1c5e4 __exceptionPreprocess + 180  
-1   libobjc.A.dylib                     0x015728b6 objc_exception_throw + 44  
-2   CoreFoundation                      0x01ab9903 -[NSObject(NSObject) doesNotRecognizeSelector:] + 275  
-</code></pre>
-
-<p>重写forwardInvocation：</p>
-
-<pre><code>-(void) helloWorld
-{  
-     NSLog(@"Hello world!");
-}  
-- (void) forwardInvocation:(NSInvocation *)anInvocation  
-{  
-    if([self respondsToSelector:@selector(helloWorld)])  
-     {  
-          [self helloWorld];  
-     }  
-    else  
-    {  
-        [super forwardInvocation:anInvocation];  
-    }  
-}  
-- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector  
-{  
-    if ([self respondsToSelector:aSelector]) {  
-        return [super methodSignatureForSelector:aSelector];  
-    }  
-    else {  
-        return [NSMethodSignature signatureWithObjCTypes:"v@:"];  
-    }  
-}  
-</code></pre>
-
-<p>执行结果：</p>
-
-<pre><code>2013-11-23 15:23:50.464 VCTransitionDemo[1272:70b] Hello world! 
-</code></pre>
-
-<p style="color:red">注意：我们重写forwardInvocation方法的时候，还必须同时重写methodSignatureForSelector方法，该方法返回表示一个方法的字符串，具体如何使用请看Type Encodings。</p>
-
-
-<h2>小结</h2>
-
-<p>到这里，应该能够回答最初的那个问题了。</p>
-
-<p>OC扩展了标准的ANSI C编程语言，将Smalltalk式的消息传递机制加入到ANSI C中。它的方法调用与C/C++还是有很大差别的。</p>
-
-<p>接下来，会再深入OC的方法调用，写一些关于Method Swizzling的内容。</p>
-
-<p>参考资料：</p>
-
-<p><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtHowMessagingWorks.html#//apple_ref/doc/uid/TP40008048-CH104-SW1">Objective-C Runtime Reference</a></p>
-
-<p><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html#//apple_ref/doc/uid/TP40008048-CH100-SW1">Type Encodings</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[使用octopress搭建自己的博客]]></title>
-    <link href="http://Hydra2050.github.io/blog/2013/12/04/shi-yong-octopressda-jian-zi-ji-de-bo-ke/"/>
-    <updated>2013-12-04T21:48:26+08:00</updated>
-    <id>http://Hydra2050.github.io/blog/2013/12/04/shi-yong-octopressda-jian-zi-ji-de-bo-ke</id>
-    <content type="html"><![CDATA[<p><img src="http://Hydra2050.github.io/images/github-page-octopress-title.jpg" alt="octopress&amp;github" /></p>
-
-<p>感谢<a href="http://beyondvincent.com/">破船之家</a>，分享了一篇关于使用octopress在Github上搭建博客文章，看了之后也尝试搭建了一个属于自己的博客。由于对于Ruby和git不是很了解，整个过程花费了不少时间。这篇文章主要记录MAC下搭建的过程。</p>
-
-<h2>1. 安装Git</h2>
-
-<p>首先在<a href="https://github.com/">Github</a>上创建一个账号，下载<a href="http://git-scm.com/downloads">最新版本的Git</a>，并安装。</p>
-
-<p>参见：<a href="https://help.github.com/articles/set-up-git">Set up Git</a></p>
-
-<h2>2. 使用RVM安装Ruby1.9.3</h2>
-
-<p>使用ruby &mdash;version查看当前Ruby版本。</p>
-
-<pre><code>$ ruby --version
-ruby 2.0.0p247 (2013-06-27 revision 41674)
-</code></pre>
-
-<p>这里有一点要注意，必须是Ruby1.9.3版本才行。我的mac自带的Ruby2.0.0版本，安装octopress总是提示出错，原因我还不清楚。</p>
-
-<p>使用RVM(Ruby Version Manager)来管理Ruby安装。首先安装RVM:</p>
-
-<pre><code>curl -L https://get.rvm.io | bash -s stable --ruby
-</code></pre>
-
-<p>然后使用RVM安装Ruby1.9.3版本：</p>
-
-<pre><code>rvm install 1.9.3
-rvm use 1.9.3
-rvm rubygems latest
-</code></pre>
-
-<p>然后再次查看Ruby版本：</p>
-
-<pre><code>ruby --version
-ruby 1.9.3p484 (2013-11-22 revision 43786)
-</code></pre>
-
-<p>参见：<a href="http://octopress.org/docs/setup/rvm/">Installing Ruby With RVM</a></p>
-
-<h2>3. 安装octopress</h2>
-
-<pre><code>git clone git://github.com/imathis/octopress.git octopress
-cd octopress
-</code></pre>
-
-<p>然后安装依赖，如果没有使用rbenv，第二句可以忽略：</p>
-
-<pre><code>gem install bundler
-rbenv rehash    # If you use rbenv, rehash to be able to run the bundle command
-bundle install
-</code></pre>
-
-<p>然后安装默认的主题：</p>
-
-<pre><code>rake install
-</code></pre>
-
-<p>参见：<a href="http://octopress.org/docs/setup/">Octopress Setup</a></p>
-
-<h2>4. 配置octopress</h2>
-
-<p>octopress已经尽量简化需要配置的内容，下面列出了可能需要配置的文件：</p>
-
-<pre><code>_config.yml       # Main config (Jekyll's settings)
-Rakefile          # Configs for deployment
-config.rb         # Compass config
-config.ru         # Rack config
-</code></pre>
-
-<p>主要在_config.yml中有需要配置的内容。Rakefile中的配置几乎都与部署有关，如果不是用rsync的话，不需要修改它。我实际上就没有对它做修改。</p>
-
-<p>_config.yml中url一定要修改，title、subtitle、author和支持的第三方服务可以选择修改。</p>
-
-<pre><code>url:                # For rewriting urls for RSS, etc
-title:              # Used in the header and title tags
-subtitle:           # A description used in the header
-author:             # Your name, for RSS, Copyright, Metadata
-simple_search:      # Search engine for simple site search
-description:        # A default meta description for your site
-date_format:        # Format dates using Ruby's date strftime syntax
-subscribe_rss:      # Url for your blog's feed, defauts to /atom.xml
-subscribe_email:    # Url to subscribe by email (service required)
-category_feeds:     # Enable per category RSS feeds (defaults to false in 2.1)
-email:              # Email address for the RSS feed if you want it.
-</code></pre>
-
-<p>建议把twitter相关的信息删除，否则回加载很慢；/source/_includes/custom/head.html 把google的自定义字体去掉。</p>
-
-<p style="color:red">注意，分号后面必须有一个空格分隔，否则会出错。</p>
-
-
-<p>参见：<a href="http://octopress.org/docs/configuring/">Configuring Octopress</a></p>
-
-<h2>5. 将博客部署到Github上</h2>
-
-<p>在Github上创建一个仓库，命名为：username.github.io或organization.github.io (username为你的用户名)</p>
-
-<p>然后终端输入：</p>
-
-<pre><code>$ rake setup_github_pages
-</code></pre>
-
-<p>会让你输入仓库路径，安装提示输入即可。</p>
-
-<p>然后：</p>
-
-<pre><code>rake generate
-rake deploy
-</code></pre>
-
-<p>这样就会生成你的博客，拷贝在_deploy/目录下。</p>
-
-<p>这里要注意的是，如果rake deploy执行提示出错</p>
-
-<pre><code>! [rejected]        master -&gt; master (non-fast-forward)
-</code></pre>
-
-<p>由于master分支在_deploy/目录内，所以：</p>
-
-<pre><code>cd octopress/_deploy
-git pull origin master
-cd ..
-rake deploy
-</code></pre>
-
-<p>将博客的source提交到gitub上：</p>
-
-<pre><code>git add .
-git commit -m 'your message'
-git push origin source
-</code></pre>
-
-<p>参见：<a href="http://octopress.org/docs/deploying/github/">Deploying to Github Pages</a></p>
-
-<h2>6. 开始写博客</h2>
-
-<pre><code>rake new_post["title"]
-</code></pre>
-
-<p>创建一个名称为title的博客，可以在source/_posts下找到按照Jekyll的命名规范新生成的文件，打开可以看到：</p>
-
-<pre><code>---
-layout: post
-title: "title"
-date: 2011-07-03 5:59
-comments: true
-external-url:
-categories:
----
-</code></pre>
-
-<p>生成并预览：</p>
-
-<pre><code>rake generate   # Generates posts and pages into the public directory
-rake watch      # Watches source/ and sass/ for changes and regenerates
-rake preview    # Watches, and mounts a webserver at http://localhost:4000
-</code></pre>
-
-<p>可以本地打开<a href="http://localhost:4000">http://localhost:4000</a> ，预览生成的博客。</p>
-
-<p>最终，部署到Github上：</p>
-
-<pre><code>$ git add .
-$ git commit -am "Some comment here." 
-$ git push origin source
-$ rake deploy
-</code></pre>
-
-<p>参见：<a href="http://octopress.org/docs/blogging/">Blogging Basics</a></p>
-
-<h2>7. 小结</h2>
-
-<p>至此，使用octopress搭建的博客就已经完成了，之后可以选择新的主题,做一些个性化的配置。另外推荐一本学习git的好书：<a href="http://www.ruanfei.com/doc/progit/">Pro Git</a>。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[About Me]]></title>
-    <link href="http://Hydra2050.github.io/blog/2013/12/04/about/"/>
-    <updated>2013-12-04T21:42:25+08:00</updated>
-    <id>http://Hydra2050.github.io/blog/2013/12/04/about</id>
-    <content type="html"><![CDATA[<h4><em>无证程序猿一枚，目前从事IOS开发，工作于杭州</em></h4>
-
-<h4><em>爱爬山，立志爬遍祖国各大名山</em></h4>
-
-<h4><em>爱科幻，梦想成为一名科幻作家，仍未死心</em></h4>
-
-<h4><em>爱读一些杂七杂八的书，读到入神处，常常不能自拔</em></h4>
-
-<br />
-
-
-<h4><em>“我活在世上，无非想要明白些道理，遇到一些有趣的事”</em></h4>
-
-<h5><em>这句话不是我说的，但是我很喜欢</em></h5>
-
-<p><img src="http://Hydra2050.github.io/images/ddf3ea6965122a33710203068e62edab.png" alt="我的二维码" /></p>
 ]]></content>
   </entry>
   

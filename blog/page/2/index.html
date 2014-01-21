@@ -9,7 +9,7 @@
 	<meta name="author" content="王仙客">
 
 	
-	<meta name="description" content="Dec 10th, 2013 适配IOS7 最近在做一些与ios7适配相关的工作，打算持续更新一些ios7适配的一些内容。 // TODO Dec 9th, 2013 WWDC字幕 ASCIIwwdc Searchable full-text transcripts of WWDC &hellip;">
+	<meta name="description" content="Dec 21st, 2013 IOS7 New Feature: iBeacon 前言 iBeacon作为IOS7的一项新特性，在今年的WWDC大会上正式正式发布。虽然官方对它的描述并不多，WWDC的视频中也没有一个是讲解iBeacon的， &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -90,6 +90,730 @@
 			<div class="mid-col-container">
 				<div id="content" class="inner">
 <div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-21T18:32:32+08:00" data-updated="true" itemprop="datePublished">Dec 21<span>st</span>, 2013</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/12/21/ios7-new-feature-ibeacon/" itemprop="url">IOS7 New Feature: iBeacon</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2>前言</h2>
+
+<p>iBeacon作为IOS7的一项新特性，在今年的WWDC大会上正式正式发布。虽然官方对它的描述并不多，WWDC的视频中也没有一个是讲解iBeacon的，但是在WWDC2013的Keynote上还是看到了它的身影。</p>
+
+<p><img src="/images/201312211904.jpeg" alt="WWDC2013 Keynote" /></p>
+
+<p>iBeacon也是我今年WWDC上最喜欢的新特性之一，因为我一直认为更便捷、去中心化的沟通才是未来。在IOS7推出Beta版的时候，我也曾经实践过新推出的Nearby Networking With Multipeer Connectivity。但是相比之下，iBeacon要优秀很多。</p>
+
+<p>目前有不少硬件厂商在生产基于iBeacon的基站，Estimote很早就推出了Estimote Beacons，利用苹果的iBeacon技术，实现Distance、Proximity和Notification三种功能。如果想体验一下，可以在Appstore搜索下载应用Estimote。同时Estimote Beacons提供了一套API，可以方便地进行编程。</p>
+
+<p><a href="https://github.com/Estimote/iOS-SDK">Estimote Beacons的API地址</a></p>
+
+<p><img src="/images/201312211906.jpeg" alt="Estimote Beacons" /></p>
+
+<h2>What is iBeacon?</h2>
+
+<p>iBeacon通过使用低功耗蓝牙技术（Bluetooth Low Energy，也就是通常所说的Bluetooth 4.0或者Bluetooth Smart），可以创建一个信号区域，当设备进入该区域时，相应的应用程序便会提示用户是否需要接入这个信号网络。通过能够放置在任何物体中的小型无线传感器和低功耗蓝牙技术，用户便能使用iPhone来传输数据。</p>
+
+<p><img src="/images/201312211907.jpeg" alt="iBeacon" /></p>
+
+<h2>什么是低功耗蓝牙技术？</h2>
+
+<p>低功耗蓝牙技术的最大特点便在于低功耗，从而能使设备拥有更长的续航时间。不过低功耗蓝牙技术仅支持较低的文件传输速率，因此可以用于可穿戴式智能设备之间的信息传送，但却不能完成像传输音频这样的任务。</p>
+
+<h2>一个简单的Demo</h2>
+
+<p><a href="https://github.com/Hydra2050/BeaconDemo">Demo下载地址</a></p>
+
+<h3>Start a BeaconBroadcast</h3>
+
+<p>1、 创建一个BeaconRegion，作为Beacon基站的广播的Region对象。其中UUID为Beacon基站的唯一标识。</p>
+
+<pre><code>NSUUID* myUUID = [[NSUUID alloc] initWithUUIDString:@"E621E1F8-C36C-495A-93FC-0C247A3E6E5D"];
+self.targetBeaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:myUUID identifier:@"My Beacon Demo 20131221"];
+</code></pre>
+
+<p>2、 创建一个CBPeripheralManager对象</p>
+
+<pre><code> self.peripheraManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil options:nil];
+</code></pre>
+
+<p>3、 开始广播</p>
+
+<pre><code>NSDictionary* peripheraData = [self.boardcastBeaconRegion peripheralDataWithMeasuredPower:nil];
+[self.peripheraManager startAdvertising:peripheraData];
+</code></pre>
+
+<p>开始广播后，可以处理一下回调函数，如：</p>
+
+<pre><code>- (void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral
+- (void)peripheralManagerDidStartAdvertising:(CBPeripheralManager *)peripheral error:(NSError *)error
+</code></pre>
+
+<h3>Start a BeaconMonitor</h3>
+
+<p>1、 创建一个BeaconRegion，作为搜索的Region对象。其中UUID为Beacon基站的唯一标识。</p>
+
+<pre><code>NSUUID* myUUID = [[NSUUID alloc] initWithUUIDString:@"E621E1F8-C36C-495A-93FC-0C247A3E6E5D"];
+self.targetBeaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:myUUID identifier:@"My Beacon Demo 20131221"];
+</code></pre>
+
+<p>2、 创建一个CLLocationManager对象</p>
+
+<pre><code>self.locationManager = [[CLLocationManager alloc] init];
+self.locationManager.delegate = self;
+</code></pre>
+
+<p>3、 开始搜索Beacon基站</p>
+
+<pre><code>[self.locationManager startRangingBeaconsInRegion:self.targetBeaconRegion];
+</code></pre>
+
+<p>接下来可以处理一下回调函数，如：</p>
+
+<pre><code>- (void)locationManager:(CLLocationManager *)manager
+    didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region
+- (void)locationManager:(CLLocationManager *)manager
+ didUpdateLocations:(NSArray *)locations
+- (void)locationManager:(CLLocationManager *)manager
+     didEnterRegion:(CLRegion *)region
+- (void)locationManager:(CLLocationManager *)manager
+      didExitRegion:(CLRegion *)region
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
+</code></pre>
+
+<p>效果图：</p>
+
+<p><img src="/images/201312211958.PNG" alt="CLProximityImmediate" /></p>
+
+<p><img src="/images/201312211959.PNG" alt="CLProximityNear" /></p>
+
+<p><img src="/images/201312212001.PNG" alt="CLProximityFar" /></p>
+
+<p><img src="/images/201312212002.PNG" alt="CLProximityUnknown" /></p>
+
+<p><img src="/images/201312212003.PNG" alt="didExitRegion" /></p>
+
+<h2>总结</h2>
+
+<p>通过Demo，可以对iBeacon有一个简单的了解。iBeacon可以方便实现室内导航、商品消息推送、支付等功能。网上很多文章认为iBeacon会成为NFC杀手。到底iBeacon能发展到什么地步，让我们拭目以待吧。</p>
+
+<p><a href="http://support.apple.com/kb/HT6048">iOS: Understanding iBeacon</a></p>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-14T20:41:36+08:00" data-updated="true" itemprop="datePublished">Dec 14<span>th</span>, 2013</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/12/14/ios7-new-feature-textkit/" itemprop="url">IOS7 New Feature: TextKit</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2>引子</h2>
+
+<p>今年的WWDC大会上，苹果推出了IOS7,UI上有了很大变化，向扁平化发展；在新的SDK中，新的特性、新的功能无疑给开发者带来了更大的惊喜。其中最感兴趣的主要有三点,今天的主角TextKit就是其中之一。</p>
+
+<p><img src="/images/20131215-1.png" alt="TextKit" /></p>
+
+<h2>What is Text Kit?</h2>
+
+<ol>
+<li>快速现代化的文本布局和渲染引擎</li>
+<li>基于core text，拥有core text的所有功能和灵活性，而不需要使用不易用的API（CF type）</li>
+<li>完美地集成在UIKit中</li>
+</ol>
+
+
+<p>下图是IOS6中的类结构图：</p>
+
+<p><img src="/images/20131215-3.png" alt="Structure in IOS6" /></p>
+
+<p>下图是IOS7中的类结构图：</p>
+
+<p><img src="/images/20131215-2.png" alt="Structure in IOS7" /></p>
+
+<p>可以看出，iOS7之前，几乎所有的文本和UIWebview都是WebKit来处理的，由它来布局和渲染。在IOS7中，UIWebview还是由WebKit作为排版和渲染引擎，但是文本都由TextKit来处理，TextKit又是基于CoreText之上，这是一个很大的改动。</p>
+
+<h2>TextKit结构设计</h2>
+
+<p>TextKit的设计符合模型-视图-控制器（MVC）架构：</p>
+
+<p><img src="/images/20131217-1.png" alt="TextKit结构设计" /></p>
+
+<p><em>NSTextStorage</em>：MVC中的模型，用于存储需要显示的文本内容以及他们的属性。它继承自NSMutableAttributedString。当内容变化时，会通知NSLayoutManager；</p>
+
+<p><em>NSTextContainer</em>：MVC中的视图。每个文本视图都有一个文本容器，用来定义了一个文本可以绘制的区域，即NSTextContainer。</p>
+
+<p><em>UITextView</em>：实际中的文本视图组件，每一文本视图都有一个文本容器，即NSTextContainer。</p>
+
+<p><em>NSLayoutManager</em>：MVC中的控制器，用来管理文本的显示：</p>
+
+<ol>
+<li>这个管理器监听NSTextStorage中文本或属性改变的通知，一旦接收到通知就触发布局进程;</li>
+<li>从NSTextStorage提供的文本开始，它将所有的字符翻译为字形（Glyph);</li>
+<li>一旦字形全部生成，这个管理器向它的文本容器（们）查询文本可用以绘制的区域;</li>
+<li>然后这些区域被行逐步填充，而行又被字形逐步填充。一旦一行填充完毕，下一行开始填充;</li>
+<li>对于每一行，布局管理器必须考虑断行行为（放不下的单词必须移到下一行）、连字符、内联的图像附件等等;</li>
+<li>当布局完成，文本的当前显示状态被设为无效，然后文本管理器将前面几步排版好的文本设给文本视图。</li>
+</ol>
+
+
+<h2>Text Layout</h2>
+
+<p>什么是TextLayout？</p>
+
+<pre><code>TextLayout ＝ Glyph ＋ Location
+Glyph = Font + String
+</code></pre>
+
+<p>什么是Glyph？</p>
+
+<p><img src="/images/20131217-2.png" alt="Glyph" /></p>
+
+<ol>
+<li>字符的图形表示（A Graphical Representation of Characters）。</li>
+<li>Character + font &ndash;> glyph</li>
+<li>图形系统的Glyph IDs: CGGlyph</li>
+</ol>
+
+
+<p>有了TextLayout可以实现的功能：</p>
+
+<p>1.字距调整（Kerning）</p>
+
+<p><img src="/images/20131217-3.png" alt="Kerning" /></p>
+
+<p>2.连写</p>
+
+<p><img src="/images/20131217-4.png" alt="Ligature" /></p>
+
+<p>3.断字</p>
+
+<p><img src="/images/20131217-5.png" alt="Break" /></p>
+
+<p>4.隐藏文字</p>
+
+<p><img src="/images/20131217-6.png" alt="Truncation" /></p>
+
+<p>5.更加完美的排版</p>
+
+<h2>DEMO演示</h2>
+
+<p>下载地址：<a href="https://github.com/Hydra2050/TextKitDemo">Demo地址</a></p>
+
+<h4>Demo1:BaseInteraction</h4>
+
+<p>对文本内容进行基本的检测，包括地址、电话、URl等。</p>
+
+<pre><code>-(BOOL) textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange
+{
+    //...
+}
+</code></pre>
+
+<p>通过回调函数，对URL的点击进行处理。</p>
+
+<p><img src="/images/20131217-7.png" alt="BaseInteraction" /></p>
+
+<h4>Demo2:ExclusionPaths</h4>
+
+<p>为TextView中的文字设置ExclusionPaths，即设置一个不可填充文本的区域。</p>
+
+<pre><code>- (UIBezierPath *)translatedBezierPath
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&amp;onceToken, ^{
+        //从预先设置好的plist中读取
+        _originalButterflyPath = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"butterflyPath" ofType:@"plist"]];
+    });
+
+    CGRect butterflyImageRect = [self.textView convertRect:self.imageView.frame fromView:self.view];
+    UIBezierPath *newButterflyPath = [self.originalButterflyPath copy];
+    [newButterflyPath applyTransform:CGAffineTransformMakeTranslation(butterflyImageRect.origin.x, butterflyImageRect.origin.y)];
+
+    return newButterflyPath;
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+
+    self.textView.textContainer.exclusionPaths = @[[self translatedBezierPath]];
+}
+</code></pre>
+
+<p><img src="/images/20131217-8.png" alt="ExclusionPaths" /></p>
+
+<h4>Demo3:TextColoring</h4>
+
+<p>实现对文本特殊字段的高亮处理，对URL类型字符串添加边框等。</p>
+
+<pre><code>self.textStorage = [[TextColoringTextStorage alloc] init];
+OutliningLayoutManager* layoutManager = [[OutliningLayoutManager alloc] init];
+NSTextContainer* textContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(self.view.frame.size.width, CGFLOAT_MAX)];
+[layoutManager addTextContainer:textContainer];
+[self.textStorage addLayoutManager:layoutManager];
+
+UITextView* textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) textContainer:textContainer];
+[self.view addSubview:textView];
+
+//设置需要处理的文本片段
+self.textStorage.tokens = @{ @"Alice" : @{ NSForegroundColorAttributeName : [UIColor redColor] },
+                             @"once" : @{ NSForegroundColorAttributeName : [UIColor greenColor] },
+                             TKDDefaultTokenName : @{ NSForegroundColorAttributeName : [UIColor blackColor],NSFontAttributeName:[UIFont fontWithName:@"Helvetica" size:18.] } };
+</code></pre>
+
+<p><img src="/images/20131217-9.png" alt="TextColoring" /></p>
+
+<h3>Demo4:FontType</h3>
+
+<p>UIFontDescriptor的简单使用。</p>
+
+<pre><code>UIFontDescriptor* fontDescriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleBody];
+UIFontDescriptor* boldFontDescriptor = [fontDescriptor fontDescriptorWithSymbolicTraits:UIFontDescriptorTraitBold];
+UIFont* boldFont = [UIFont fontWithDescriptor:boldFontDescriptor size:0.0];
+</code></pre>
+
+<h2>总结</h2>
+
+<p>通过几个例子，TextKit已经初步展示了它强大的处理能力，但这只是冰山一角。在WWDC的视频中关于自动布局、更加精细的排版方面例子，Demo中并没有实现。</p>
+
+<p>参考资料：</p>
+
+<p>WWDC2013视频：
+<a href="https://developer.apple.com/wwdc/videos/">https://developer.apple.com/wwdc/videos/</a></p>
+
+<p>Session 210: Introducing Text Kit</p>
+
+<p>Session 223: Using Fonts with Text Kit</p>
+
+<p>Session 220: Advanced Text Layouts and Effects with Text Kit</p>
+
+<p>WWDC 2013 sample code:
+<a href="https://developer.apple.com/downloads/index.action?name=WWDC%202013">https://developer.apple.com/downloads/index.action?name=WWDC%202013</a></p>
+
+<p>objc.io原文地址：
+<a href="http://www.objc.io/issue-5/getting-to-know-textkit.html">http://www.objc.io/issue-5/getting-to-know-textkit.html</a></p>
+
+<p>译文地址：
+<a href="http://blog.jobbole.com/5196">http://blog.jobbole.com/5196</a></p>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-14T16:42:10+08:00" data-updated="true" itemprop="datePublished">Dec 14<span>th</span>, 2013</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/12/14/ios-font/" itemprop="url">为IOS应用添加字体</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2>引子</h2>
+
+<p>ios6中默认提供了大概200种字体，有时为了让应用中的文字更好看，希望能有其他的字体可以选择。今天主要来介绍一下如何为IOS应用添加字体。</p>
+
+<h2>方法一、将字体包打包到工程</h2>
+
+<p>步骤如下：</p>
+
+<h3>1.下载字体包</h3>
+
+<p>在网上搜索字体包，可以找到很多资源，我下载了一个名字叫 DIN-Medium.otf 的字体包。（有一些特殊的字体可能涉及到版权的问题，所以在使用之前要确认清楚。）</p>
+
+<h3>2.将字体包添加到工程</h3>
+
+<p>将字体包添加到工程</p>
+
+<p><img src="/images/fontexample.png" alt="添加字体包" /></p>
+
+<p style="color:red">注：如果不选 Show Raw Keys/Values，需要添加的Key值为 Fonts provided by application </p>
+
+
+<h3>3.修改plist文件</h3>
+
+<p>在工程的plist文件中添加key值为UIAppFonts：</p>
+
+<p><img src="/images/201312141752.png" alt="添加键值" /></p>
+
+<p>这样就可以使用我们新加的字体了。</p>
+
+<p><img src="/images/201312141754.png" alt="使用新增字体" /></p>
+
+<p>效果图：</p>
+
+<p><img src="/images/201312141757.png" alt="效果图" /></p>
+
+<h2>方法二、动态下载字体库</h2>
+
+<p>在IOS6之后，苹果支持动态字体库下载。这样的好处可以不必增加程序包大小，不过下载的字体只能从官方支持的列表中选择：</p>
+
+<p><a href="http://support.apple.com/kb/HT5484">iOS 6: Font list</a></p>
+
+<p><a href="http://support.apple.com/kb/HT5878">iOS 7: Font list</a></p>
+
+<p><a href="https://developer.apple.com/library/ios/samplecode/DownloadFont/Introduction/Intro.html#//apple_ref/doc/uid/DTS40013404">苹果提供的Demo</a></p>
+
+<p>具体实现方法可以看一看Demo。</p>
+
+<p>在Readme中有一句很奇怪的话：</p>
+
+<pre><code>Fonts downloaded from applications in this manner are not installed permanently. 
+The system may decide to remove them under certain usage scenarios.
+</code></pre>
+
+<p>按照Readme中的说法，系统可能会删除我们下载的字体，所以在每次程序启动前都需要检查一遍，使用的时候要确定字体已经可以使用。</p>
+
+<p>什么场景下会删除？Readme中并没有详细说。</p>
+
+<p>Demo效果图：</p>
+
+<p><img src="/images/201312141811.png" alt="Demo效果图" /></p>
+
+<h2>总结</h2>
+
+<h3>将字体包打包到工程的方法</h3>
+
+<p>适用情况：字体包比较小</p>
+
+<p>存在的问题：对字体包大小有限制；版权的问题</p>
+
+<h3>动态下载字体库的方法</h3>
+
+<p>适用场景：字体包比较大，无法打包到工程（一个完整的字体包要10M多）；不用担心版权的问题。</p>
+
+<p>字体会下载一个系统的路径/private/var/mobile/Library/Assets/com_apple_MobileAsset_Font/，一次下载，所有的App都能使用（在被系统删除之前）。</p>
+
+<p>存在的问题：</p>
+
+<ol>
+<li>需要预先下载10几M的字体包，对用户来说是一个负担</li>
+<li>每次应用重新启动，即使已经下载，都需要“预热”一次。需要先到上面所说的下载路径进行匹配，检查是否已经下载；如果已经下载，就会将字体缓存到另外一个cache目录下，才能使用，这个过程需要3s左右的时间。（我试过手动删除下载的字体包，但不去改里面的XML文件，结果匹配出错返回错误结果，但是不再会重新下载）</li>
+<li>可选择的字体有限制，只能从苹果提高的列表中选择</li>
+<li>只支持IOS6以上（按照目前的统计来看，这个慢慢不是问题了）</li>
+</ol>
+
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-11T21:31:32+08:00" data-updated="true" itemprop="datePublished">Dec 11<span>th</span>, 2013</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/12/11/cocoapods/" itemprop="url">CocoaPods：Objective-C的依赖管理工具</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2>引子</h2>
+
+<p>在IOS开发中，工程中会用到很多第三方的开源库，像ASIHttpRequest、AFNetworking、JSONKit等等。要添加一个第三方库的：</p>
+
+<ol>
+<li>先查找并下载到本地，然后添加到工程</li>
+<li>添加第三方开源库所依赖的framework</li>
+<li>一些第三方开源库需要修改OtherLinerFlag的参数</li>
+</ol>
+
+
+<p>一旦开始一个新的项目，这些工作又要重新做一遍。另外还需要自己管理第三方库更新的问题。</p>
+
+<p>有没有一个能够帮助我们自动完成这一系列工作的方法呢？没错，就是今天的主角——CocoaPods。</p>
+
+<h2>CocoaPods介绍</h2>
+
+<p>CocoaPods为你的Xcode工程管理库的依赖。你的工程的第三方库依赖由一个单独的叫做Podfile的文本文件管理。CocoaPods可以获取第三方库源代码、解决库的依赖，然后将你的工程与它放在一个新创建的workspace中。最终的目标是通过创建一个更集中的生态系统，以提高第三方的开源库可发现性和参与性。</p>
+
+<p>官网地址：<a href="http://cocoapods.org/">http://cocoapods.org/</a></p>
+
+<p>GitHub地址：<a href="https://github.com/cocoapods/cocoapods">https://github.com/cocoapods/cocoapods</a></p>
+
+<h2>安装CocoaPods</h2>
+
+<p>CocoaPods使用Ruby创建，需要预先安装ruby。Mac下自默认安装好了ruby，可以通过命令查看：</p>
+
+<pre><code>ruby --version
+</code></pre>
+
+<p>使用ruby的gem命令安装：</p>
+
+<pre><code>sudo gem install cocoapods
+pod setup
+</code></pre>
+
+<h2>更新CocoaPods</h2>
+
+<p>更新已安装的CocoaPods，只需要输入：</p>
+
+<pre><code>sudo gem update cocoapods
+</code></pre>
+
+<p>参见：<a href="http://guides.cocoapods.org/using/getting-started.html">CocoaPods Getting Started</a></p>
+
+<h2>使用CocoaPods查找第三方库</h2>
+
+<p>CocoaPods可以很方便地查找第三方库：</p>
+
+<pre><code>pod search ReactiveCocoa
+</code></pre>
+
+<h2>将CocoaPods添加到Xcode工程</h2>
+
+<p>创建一个<a href="http://guides.cocoapods.org/using/the-podfile.html">Podfile</a>文件，添加你所需要的第三方库文件：</p>
+
+<pre><code>platform :ios, '6.0'
+pod 'AFNetworking', '~&gt; 2.0'  
+pod 'ObjectiveSugar', '~&gt; 0.5'
+</code></pre>
+
+<p>保存并放在工程的根目录，然后：</p>
+
+<pre><code>pod install
+</code></pre>
+
+<p>这样就会生成一个MyApp.xcworkspace，以后经通过使用这个打开工程，而不是原来的MyApp.xcodeproj.</p>
+
+<p>如果需要更新工程使用的第三方库，只需要编辑Podfile文件，然后再次执行pod install 即可。</p>
+
+<h2>集成到一个已存在的workspace中</h2>
+
+<p>如果想将CocoaPods集成到一个已经存在的workspace中，只需要在Podfile中增加一句：</p>
+
+<pre><code>workspace 'MyWorkspace'
+</code></pre>
+
+<h2>这一系列命令后到底做了什么</h2>
+
+<p>使用pod install命令，实际做了：</p>
+
+<ol>
+<li>创建或者更新workspace</li>
+<li>将你的工程添加到这个workspace中</li>
+<li>如果需要将CocoaPods静态库工程添加到workspace中</li>
+<li>添加libPods.a</li>
+<li>将CocoaPods的Xocde configurations file添加到你的工程</li>
+<li>将你的工程的target configurations改变为急于CocoaPods的</li>
+<li>添加一个编译参数来拷贝pods中的资源文件到你的app bundle。i.e. a ‘Script build phase’ after all other build phases with the following:
+Shell: /bin/sh
+Script: ${SRCROOT}/Pods/PodsResources.sh</li>
+</ol>
+
+
+<p>参见：<a href="http://guides.cocoapods.org/using/using-cocoapods.html#what-is-happening-behind-the-scenes?">Using CocoaPods</a></p>
+
+<h2>总结</h2>
+
+<p>使用CocoaPods管理第三方库，能够帮助完成很多之前繁琐的工作，提高工作效率。第三方库的更新更是省心了不少，不再需要再一个一个查看，哪个第三方库更新了没有。</p>
+
+<p>另外有一款APP，<a href="http://davander.com/podlife.html">Podlife</a>，让我们了解Pods上第三方库更新的情况，很不错。</p>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-11T00:02:55+08:00" data-updated="true" itemprop="datePublished">Dec 11<span>th</span>, 2013</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/12/11/hang-zhou-xi-bu-yue-ye/" itemprop="url">2013杭州西部越野</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>2013杭州西部越野是一次环杭州城山脊越野跑：从西湖区转塘风水洞出发，穿越周浦、龙坞、西湖三大山脊，最终到达终点浙大玉泉校区。这条线路也被称为“风浙线”，全程约42公里。</p>
+
+<p><img src="/images/hzxbyys.jpg" alt="2013杭州西部越野路线图" /></p>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-10T23:03:49+08:00" data-updated="true" itemprop="datePublished">Dec 10<span>th</span>, 2013</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/12/10/guan-yu-uitableview/" itemprop="url">关于UITableView的一个有趣的问题</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2>起因</h2>
+
+<p>今天碰到了一个很有趣的问题，大概现象是这个样子的：在一个可以动态增加、删除tablviewcell的页面，每个cell上有一个输入框，当离开页面的时候，记录cell个数、输入框内容，下次进入自动填充显示。</p>
+
+<p>发现之前在ios6上运行完全没有问题，但是在ios7上，一旦删除过一条后，退出页面，再进来，第一个行的输入框记录的内容会变成删除的那个cell的输入框内容。</p>
+
+<p style="color:red" > 另外一个值得注意的地方是，cell个数很少，没有超过tableview的高度。</p>
+
+
+<p>难道又是ios7兼容的问题，原来一直都没有问题啊？</p>
+
+<p>好吧，开始查看代码，单步调试，看看到底是哪一步逻辑出错。</p>
+
+<h2>哪里出了问题</h2>
+
+<p>在退出页面，保持内容的时候，大概有这样一段代码逻辑：</p>
+
+<pre><code>for(UIView* v in self.tableView.subviews)
+{
+    if([v isKindOfClass:[UITableViewCell class]])
+    {
+        UITextField* textField = cell.myTextField;
+        // 取出textField.text 根据cell的 indexPath值 保存到data model
+    }
+}
+</code></pre>
+
+<p>单步调试的时候，发现tableview上竟然存在一个为nil的cell。不错，就是我们删除的那个cell。程序内并没有非空检测，结果取它的的indexPath.row ，得到的值为零。这样就将它的textField内容保存了下来。</p>
+
+<h2>删掉的cell为什么还在</h2>
+
+<p>这是该到我们的利器大显身手了——<a href="http://revealapp.com/">Reveal</a>。
+我写了一个demo，最初有6个cell，功能是点击cell，就让cell的个数减一。当我删除五行后，在Reveal中可以看到：</p>
+
+<p><img src="/images/tvst.png" alt="Reveal截图" /></p>
+
+<p>是的，那个cell还在！还在tableview上，只不过被隐藏掉了。
+打印tableview上的cell：</p>
+
+<pre><code>&lt;UITableViewCell: 0x755be20; frame = (0 220; 320 44); text = '5'; hidden = YES; autoresize = W; layer = &lt;CALayer: 0x755bf50&gt;&gt;
+&lt;UITableViewCell: 0x755b680; frame = (0 176; 320 44); text = '4'; hidden = YES; autoresize = W; layer = &lt;CALayer: 0x755b480&gt;&gt;
+&lt;UITableViewCell: 0x755aee0; frame = (0 132; 320 44); text = '3'; hidden = YES; autoresize = W; layer = &lt;CALayer: 0x755ae10&gt;&gt;
+&lt;UITableViewCell: 0x755a870; frame = (0 88; 320 44); text = '2'; hidden = YES; autoresize = W; layer = &lt;CALayer: 0x755a730&gt;&gt;
+&lt;UITableViewCell: 0x7559f60; frame = (0 44; 320 44); text = '1'; hidden = YES; autoresize = W; layer = &lt;CALayer: 0x755a090&gt;&gt;
+&lt;UITableViewCell: 0x7556f70; frame = (0 0; 320 44); text = '0'; hidden = YES; autoresize = W; layer = &lt;CALayer: 0x75570f0&gt;&gt;
+</code></pre>
+
+<p>可以看到，还是存在6个cell对象。</p>
+
+<h2>好吧，那为什么当初在ios6上没有问题呢</h2>
+
+<p>ios6上运行没有问题，不代表代码逻辑没有问题，只不过问题被巧妙的掩藏过去了。</p>
+
+<p>问题的关键在于查找到的顺序：在ios7中，被删除的cell会最后被遍历，会覆盖row为0的内容；而在ios6中，被删除的cell最先被遍历，虽然会先写入错误的内容，但是后面会被真正的第0行内容覆盖，所以才看起来没有问题。</p>
+
+<p>终于，又解决了一个有趣的bug。</p>
+
+<h2>总结</h2>
+
+<p>这种遍历的方式本来就有问题，应该根据indexPath，遍历查找cell。另外程序缺少异常情况的处理，cell为空时，没有做异常处理。对UITableView的机制缺乏了解，通过这个bug又有了新的认识。</p>
+
+<p>Reveal乃居家旅行必备神器。</p>
+
+<p>也许很多时候，我们埋下了陷阱，由于某种巧合，表面上安然无事。但是终究有一天会暴漏出来。要不断提高代码质量。</p>
+
+<p>（ps：如果没有埋下这个错误，也许就没有了今天解决问题的乐趣，就不会又进一步的了解。就像那句话说的：无知让我感到痛苦，无知为我带来快乐。）</p>
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
@@ -487,469 +1211,13 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 
 </article>
 
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-04T22:01:26+08:00" data-updated="true" itemprop="datePublished">Dec 4<span>th</span>, 2013</time></div>
-		<div class="tags">
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/2013/12/04/object-cde-han-shu-diao-yong-ji-zhi/" itemprop="url">Object-c的函数调用机制</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<h2>起因</h2>
-
-<p>有一次，被问到，下面这段代码执行，会得到什么结果：</p>
-
-<pre><code>@interface ClassA : NSObject  
--(void) foo;  
-@end  
-@implementation ClassA  
--(void) foo  
-{  
-    NSLog(@"fork Class A's function");  
-}  
-@end  
-
-@interface ClassB : NSObject  
--(void) foo;  
-@end  
-@implementation ClassB  
--(void) foo  
-{  
-    NSLog(@"fork Class B's function");  
-}  
-@end  
-
-ClassA* a = [[ClassA alloc] init];  
-[a foo];  
-ClassB* b = (ClassB*)a;  
-[b foo];
-</code></pre>
-
-<p>说来惭愧，这么久竟然不清楚object-c的函数调用机制，于是网上查阅了一些资料，整理出一篇文章。</p>
-
-<h2>Object-C的函数调用的机制</h2>
-
-<p>OC的方法调用与C++不同： Ｃ++中的方法调用可能是动态的，也可能是静态的；而ObjC中的函数调用都为动态的，通过消息传递的方式调用。</p>
-
-<p>首先通过command＋shift＋o，查找NSObject类，可以看到类的定义：</p>
-
-<pre><code>@interface NSObject &lt;NSObject&gt; {  
-Class isa  OBJC_ISA_AVAILABILITY;  
-}  
-
-typedef struct objc_selector *SEL;  
-
-typedef id (*IMP)(id, SEL, ...);  
-</code></pre>
-
-<p>在object-c中，每个对象都有一个isa成员，指向自己的类结构体，这也是object-c自省的特性实现。
-为了理解消息调用机制，需要理解以上三个定义：Class   SEL   IMP</p>
-
-<h3>Class  SEL IMP</h3>
-
-<p>先来看一看Class的定义：</p>
-
-<pre><code>struct objc_class {  
-Class isa  OBJC_ISA_AVAILABILITY;  
-
-#if !__OBJC2__  
-Class super_class                                        OBJC2_UNAVAILABLE;  
-const charchar *name                                         OBJC2_UNAVAILABLE;  
-long version                                             OBJC2_UNAVAILABLE;  
-long info                                                OBJC2_UNAVAILABLE;  
-long instance_size                                       OBJC2_UNAVAILABLE;  
-struct objc_ivar_list *ivars                             OBJC2_UNAVAILABLE;  
-struct objc_method_list **methodLists                    OBJC2_UNAVAILABLE;  
-struct objc_cache *cache                                 OBJC2_UNAVAILABLE;  
-struct objc_protocol_list *protocols                     OBJC2_UNAVAILABLE;  
-#endif  
-
-} OBJC2_UNAVAILABLE; 
-</code></pre>
-
-<p>其中我们比较关心的是参数列表ivars，方法列表methodLists，协议列表protocols。当一个类有调用方法时：</p>
-
-<pre><code>[receiver message]
-</code></pre>
-
-<p>会调用消息函数，objc_msgSend：</p>
-
-<pre><code>objc_msgSend(receiver, selector)
-</code></pre>
-
-<p>如果有参数要传递的话：</p>
-
-<pre><code>objc_msgSend(receiver, selector, arg1, arg2, ...)
-</code></pre>
-
-<p><img src="/images/messaging.jpg" alt="Selector" /></p>
-
-<p>当一个消息传递给一个对象的时候，objc_msgSend根据对象的isa指针，到类结构体methodLists链表找指定selector，如果没有，向父类寻找，知道找到NSObject类位置。这样就实现了动态方法调用。</p>
-
-<p>那么IMP又是什么呢？
-简单来说，就是一个函数指针，指向SEL的方法的地址。NSObject 类中的methodForSelector：方法就是这样一个获取指向方法实现IMP 的指针。
-下面的例子展示了怎么使用指针来调用setFilled:的方法实现：</p>
-
-<pre><code>void (*setter)(id, SEL, BOOL);  
-int i;  
-setter = (void (*)(id, SEL, BOOL))[target methodForSelector:@selector(setFilled:)];  
-for ( i = 0 ; i &lt; 1000 ; i++ )  
-    setter(targetList[i], @selector(setFilled:), YES); 
-</code></pre>
-
-<p>查找IMP 时：</p>
-
-<ol>
-<li><p>首先去该类的方法 cache 中查找，如果找到了就返回它；</p></li>
-<li><p>如果没有找到，就去该类的方法列表中查找。如果在该类的方法列表中找到了，则将 IMP 返回，并将它加入cache中缓存起来。根据最近使用原则，这个方法再次调用的可能性很大，缓存起来可以节省下次调用再次查找的开销。</p></li>
-<li><p>如果在该类的方法列表中没找到对应的IMP，在通过该类结构中的super_class指针在其父类结构的方法列表中去查找，直到在某个父类的方法列表中找到对应的IMP，返回它，并加入cache中。</p></li>
-<li><p>如果在自身以及所有父类的方法列表中都没有找到对应的 IMP，则进入下文中要讲的消息转发流程。</p></li>
-</ol>
-
-
-<p><em>这里可以做一个延伸：如何提高调用Object－C方法的速度？</em></p>
-
-<p>利用“IMP Caching”的方法，在框架初始化时获取类名、方法名和方法运行时的函数指针IMP。在执行这个函数的时候，使用Caching的指针执行，一般速度要提高2倍左右。</p>
-
-<h3>消息转发</h3>
-
-<p>通常，给一个对象发送它不能处理的消息会得到出错提示，然而，Objective-C运行时系统在抛出错误之前，会给消息接收对象发送一条特别的消息forwardInvocation来通知该对象，该消息的唯一参数是个NSInvocation类型的对象——该对象封装了原始的消息和消息的参数。</p>
-
-<p>我们可以实现forwardInvocation:方法来对不能处理的消息做一些默认的处理，也可以将消息转发给其他对象来处理，而不抛出错误。</p>
-
-<p>NSObject 的forwardInvocation:方法默认的调用doesNotRecognizeSelector:方法</p>
-
-<pre><code>0   CoreFoundation                      0x01a1c5e4 __exceptionPreprocess + 180  
-1   libobjc.A.dylib                     0x015728b6 objc_exception_throw + 44  
-2   CoreFoundation                      0x01ab9903 -[NSObject(NSObject) doesNotRecognizeSelector:] + 275  
-</code></pre>
-
-<p>重写forwardInvocation：</p>
-
-<pre><code>-(void) helloWorld
-{  
-     NSLog(@"Hello world!");
-}  
-- (void) forwardInvocation:(NSInvocation *)anInvocation  
-{  
-    if([self respondsToSelector:@selector(helloWorld)])  
-     {  
-          [self helloWorld];  
-     }  
-    else  
-    {  
-        [super forwardInvocation:anInvocation];  
-    }  
-}  
-- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector  
-{  
-    if ([self respondsToSelector:aSelector]) {  
-        return [super methodSignatureForSelector:aSelector];  
-    }  
-    else {  
-        return [NSMethodSignature signatureWithObjCTypes:"v@:"];  
-    }  
-}  
-</code></pre>
-
-<p>执行结果：</p>
-
-<pre><code>2013-11-23 15:23:50.464 VCTransitionDemo[1272:70b] Hello world! 
-</code></pre>
-
-<p style="color:red">注意：我们重写forwardInvocation方法的时候，还必须同时重写methodSignatureForSelector方法，该方法返回表示一个方法的字符串，具体如何使用请看Type Encodings。</p>
-
-
-<h2>小结</h2>
-
-<p>到这里，应该能够回答最初的那个问题了。</p>
-
-<p>OC扩展了标准的ANSI C编程语言，将Smalltalk式的消息传递机制加入到ANSI C中。它的方法调用与C/C++还是有很大差别的。</p>
-
-<p>接下来，会再深入OC的方法调用，写一些关于Method Swizzling的内容。</p>
-
-<p>参考资料：</p>
-
-<p><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtHowMessagingWorks.html#//apple_ref/doc/uid/TP40008048-CH104-SW1">Objective-C Runtime Reference</a></p>
-
-<p><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html#//apple_ref/doc/uid/TP40008048-CH100-SW1">Type Encodings</a></p>
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-04T21:48:26+08:00" data-updated="true" itemprop="datePublished">Dec 4<span>th</span>, 2013</time></div>
-		<div class="tags">
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/2013/12/04/shi-yong-octopressda-jian-zi-ji-de-bo-ke/" itemprop="url">使用octopress搭建自己的博客</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<p><img src="/images/github-page-octopress-title.jpg" alt="octopress&amp;github" /></p>
-
-<p>感谢<a href="http://beyondvincent.com/">破船之家</a>，分享了一篇关于使用octopress在Github上搭建博客文章，看了之后也尝试搭建了一个属于自己的博客。由于对于Ruby和git不是很了解，整个过程花费了不少时间。这篇文章主要记录MAC下搭建的过程。</p>
-
-<h2>1. 安装Git</h2>
-
-<p>首先在<a href="https://github.com/">Github</a>上创建一个账号，下载<a href="http://git-scm.com/downloads">最新版本的Git</a>，并安装。</p>
-
-<p>参见：<a href="https://help.github.com/articles/set-up-git">Set up Git</a></p>
-
-<h2>2. 使用RVM安装Ruby1.9.3</h2>
-
-<p>使用ruby &mdash;version查看当前Ruby版本。</p>
-
-<pre><code>$ ruby --version
-ruby 2.0.0p247 (2013-06-27 revision 41674)
-</code></pre>
-
-<p>这里有一点要注意，必须是Ruby1.9.3版本才行。我的mac自带的Ruby2.0.0版本，安装octopress总是提示出错，原因我还不清楚。</p>
-
-<p>使用RVM(Ruby Version Manager)来管理Ruby安装。首先安装RVM:</p>
-
-<pre><code>curl -L https://get.rvm.io | bash -s stable --ruby
-</code></pre>
-
-<p>然后使用RVM安装Ruby1.9.3版本：</p>
-
-<pre><code>rvm install 1.9.3
-rvm use 1.9.3
-rvm rubygems latest
-</code></pre>
-
-<p>然后再次查看Ruby版本：</p>
-
-<pre><code>ruby --version
-ruby 1.9.3p484 (2013-11-22 revision 43786)
-</code></pre>
-
-<p>参见：<a href="http://octopress.org/docs/setup/rvm/">Installing Ruby With RVM</a></p>
-
-<h2>3. 安装octopress</h2>
-
-<pre><code>git clone git://github.com/imathis/octopress.git octopress
-cd octopress
-</code></pre>
-
-<p>然后安装依赖，如果没有使用rbenv，第二句可以忽略：</p>
-
-<pre><code>gem install bundler
-rbenv rehash    # If you use rbenv, rehash to be able to run the bundle command
-bundle install
-</code></pre>
-
-<p>然后安装默认的主题：</p>
-
-<pre><code>rake install
-</code></pre>
-
-<p>参见：<a href="http://octopress.org/docs/setup/">Octopress Setup</a></p>
-
-<h2>4. 配置octopress</h2>
-
-<p>octopress已经尽量简化需要配置的内容，下面列出了可能需要配置的文件：</p>
-
-<pre><code>_config.yml       # Main config (Jekyll's settings)
-Rakefile          # Configs for deployment
-config.rb         # Compass config
-config.ru         # Rack config
-</code></pre>
-
-<p>主要在_config.yml中有需要配置的内容。Rakefile中的配置几乎都与部署有关，如果不是用rsync的话，不需要修改它。我实际上就没有对它做修改。</p>
-
-<p>_config.yml中url一定要修改，title、subtitle、author和支持的第三方服务可以选择修改。</p>
-
-<pre><code>url:                # For rewriting urls for RSS, etc
-title:              # Used in the header and title tags
-subtitle:           # A description used in the header
-author:             # Your name, for RSS, Copyright, Metadata
-simple_search:      # Search engine for simple site search
-description:        # A default meta description for your site
-date_format:        # Format dates using Ruby's date strftime syntax
-subscribe_rss:      # Url for your blog's feed, defauts to /atom.xml
-subscribe_email:    # Url to subscribe by email (service required)
-category_feeds:     # Enable per category RSS feeds (defaults to false in 2.1)
-email:              # Email address for the RSS feed if you want it.
-</code></pre>
-
-<p>建议把twitter相关的信息删除，否则回加载很慢；/source/_includes/custom/head.html 把google的自定义字体去掉。</p>
-
-<p style="color:red">注意，分号后面必须有一个空格分隔，否则会出错。</p>
-
-
-<p>参见：<a href="http://octopress.org/docs/configuring/">Configuring Octopress</a></p>
-
-<h2>5. 将博客部署到Github上</h2>
-
-<p>在Github上创建一个仓库，命名为：username.github.io或organization.github.io (username为你的用户名)</p>
-
-<p>然后终端输入：</p>
-
-<pre><code>$ rake setup_github_pages
-</code></pre>
-
-<p>会让你输入仓库路径，安装提示输入即可。</p>
-
-<p>然后：</p>
-
-<pre><code>rake generate
-rake deploy
-</code></pre>
-
-<p>这样就会生成你的博客，拷贝在_deploy/目录下。</p>
-
-<p>这里要注意的是，如果rake deploy执行提示出错</p>
-
-<pre><code>! [rejected]        master -&gt; master (non-fast-forward)
-</code></pre>
-
-<p>由于master分支在_deploy/目录内，所以：</p>
-
-<pre><code>cd octopress/_deploy
-git pull origin master
-cd ..
-rake deploy
-</code></pre>
-
-<p>将博客的source提交到gitub上：</p>
-
-<pre><code>git add .
-git commit -m 'your message'
-git push origin source
-</code></pre>
-
-<p>参见：<a href="http://octopress.org/docs/deploying/github/">Deploying to Github Pages</a></p>
-
-<h2>6. 开始写博客</h2>
-
-<pre><code>rake new_post["title"]
-</code></pre>
-
-<p>创建一个名称为title的博客，可以在source/_posts下找到按照Jekyll的命名规范新生成的文件，打开可以看到：</p>
-
-<pre><code>---
-layout: post
-title: "title"
-date: 2011-07-03 5:59
-comments: true
-external-url:
-categories:
----
-</code></pre>
-
-<p>生成并预览：</p>
-
-<pre><code>rake generate   # Generates posts and pages into the public directory
-rake watch      # Watches source/ and sass/ for changes and regenerates
-rake preview    # Watches, and mounts a webserver at http://localhost:4000
-</code></pre>
-
-<p>可以本地打开<a href="http://localhost:4000">http://localhost:4000</a> ，预览生成的博客。</p>
-
-<p>最终，部署到Github上：</p>
-
-<pre><code>$ git add .
-$ git commit -am "Some comment here." 
-$ git push origin source
-$ rake deploy
-</code></pre>
-
-<p>参见：<a href="http://octopress.org/docs/blogging/">Blogging Basics</a></p>
-
-<h2>7. 小结</h2>
-
-<p>至此，使用octopress搭建的博客就已经完成了，之后可以选择新的主题,做一些个性化的配置。另外推荐一本学习git的好书：<a href="http://www.ruanfei.com/doc/progit/">Pro Git</a>。</p>
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-04T21:42:25+08:00" data-updated="true" itemprop="datePublished">Dec 4<span>th</span>, 2013</time></div>
-		<div class="tags">
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/2013/12/04/about/" itemprop="url">About Me</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<h4><em>无证程序猿一枚，目前从事IOS开发，工作于杭州</em></h4>
-
-<h4><em>爱爬山，立志爬遍祖国各大名山</em></h4>
-
-<h4><em>爱科幻，梦想成为一名科幻作家，仍未死心</em></h4>
-
-<h4><em>爱读一些杂七杂八的书，读到入神处，常常不能自拔</em></h4>
-
-<br />
-
-
-<h4><em>“我活在世上，无非想要明白些道理，遇到一些有趣的事”</em></h4>
-
-<h5><em>这句话不是我说的，但是我很喜欢</em></h5>
-
-<p><img src="/images/ddf3ea6965122a33710203068e62edab.png" alt="我的二维码" /></p>
-
-		
-		
-	</div>
-
-</article>
-
 </div>
 <nav id="pagenavi">
     
         <a href="/" class="prev">Prev</a>
     
+    
+        <a href="/blog/page/3/" class="next">Next</a>
     
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav></div>
