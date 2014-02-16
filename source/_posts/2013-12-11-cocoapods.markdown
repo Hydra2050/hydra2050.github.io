@@ -8,7 +8,7 @@ categories:
 
 ##引子
 
-在IOS开发中，工程中会用到很多第三方的开源库，像ASIHttpRequest、AFNetworking、JSONKit等等。要添加一个第三方库的：
+在iOS开发中，工程中会用到很多第三方的开源库，像ASIHttpRequest、AFNetworking、JSONKit等等。要添加一个第三方库的：
 
 1. 先查找并下载到本地，然后添加到工程
 2. 添加第三方开源库所依赖的framework
@@ -36,6 +36,19 @@ CocoaPods使用Ruby创建，需要预先安装ruby。Mac下自默认安装好了
 
 	sudo gem install cocoapods
 	pod setup
+	
+##修改gem源
+
+默认的gem源为`https://rubygems.org/`,国内的网络有可能被墙。如果无法访问这个网址，可以使用淘宝的RubyGems 镜像。修改方法：
+
+	$ gem sources --remove https://rubygems.org/
+	$ gem sources -a http://ruby.taobao.org/
+
+查看gem源：
+	
+	gem source -l
+	
+修改成功后，可以按照上面的步骤安装。
 	
 ##更新CocoaPods
 
@@ -90,6 +103,60 @@ Shell: /bin/sh
 Script: ${SRCROOT}/Pods/PodsResources.sh
 
 参见：[Using CocoaPods](http://guides.cocoapods.org/using/using-cocoapods.html#what-is-happening-behind-the-scenes?)
+
+##定义私有库
+
+在开发的过程中，可以定义将通用的部分定义成私有的库，便于快速开发。
+
+###Podspec
+
+.podspec文件是一个库的描述文件。.podspec文件可以标识该第三方库所需要的源码文件、依赖库、编译选项，以及其他第三方库需要的配置。
+
+在安装pods的时候，会从[https://github.com/CocoaPods/CocoaPods](https://github.com/CocoaPods/CocoaPods)下载，里面包含了所有第三方库的.podspec文件。可以通过查看当前用户根目录下的.cocoapods/repos/master/  路径。
+
+以AFNetworking为例：
+
+	Pod::Spec.new do |s|
+  	s.name     = 'AFNetworking'
+  	s.version  = '2.0.2'
+  	s.license  = 'MIT'
+  	s.summary  = 'A delightful iOS and OS X networking framework.'
+  	s.homepage = 'https://github.com/AFNetworking/AFNetworking'
+  	s.authors  = { 'Mattt Thompson' => 'm@mattt.me' }
+  	s.source   = { :git => 'https://github.com/AFNetworking/AFNetworking.git', :tag => "2.0.2", :submodules => true }
+  	s.requires_arc = true
+
+ 	...
+ 	...
+ 	
+	end
+
+
+###创建pods私有库描述文件
+
+创建命令：
+	
+	$ pod spec create REPO_NAME
+	
+会生成一个.podsepc文件。根据注释可以方便理解各个配置项的意义。
+
+###创建本地podsepc
+
+在.cocoapods/repos/master/  路径下，创建文件，名称为新创建的私有库名称，在目录下创建不同版本路径，然后将对应的.podsepc文件拷贝到对应目录下。
+
+然后使用pods搜索：
+
+	$ pod search REPO_NAME
+	
+看看是否能够搜索到新创建的库。
+
+###删除pods私有Repo
+
+输入命令：
+
+	pod repo remove [name]
+
+
 
 ##总结
 
