@@ -344,37 +344,6 @@ static const void *ImageTagKey = &amp;ImageTagKey;
   
 
 
-<time datetime="2014-01-12T22:41:13+08:00" data-updated="true" itemprop="datePublished">Jan 12<span>th</span>, 2014</time></div>
-		<div class="tags">
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/2014/01/12/object-czhong-de-na-xie-hei-mo-fa/" itemprop="url">Object-C中的那些黑魔法</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
 <time datetime="2014-01-12T22:40:40+08:00" data-updated="true" itemprop="datePublished">Jan 12<span>th</span>, 2014</time></div>
 		<div class="tags">
 
@@ -1032,6 +1001,138 @@ return (__bridge_retained CFTypeRef)X;
 </code></pre>
 
 <p>如果NSobject实例上面的两个方法返回NO，绝对不能使用__weak修饰符。</p>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-21T18:32:32+08:00" data-updated="true" itemprop="datePublished">Dec 21<span>st</span>, 2013</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/12/21/ios7-new-feature-ibeacon/" itemprop="url">IOS7 New Feature: iBeacon</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2>前言</h2>
+
+<p>iBeacon作为IOS7的一项新特性，在今年的WWDC大会上正式正式发布。虽然官方对它的描述并不多，WWDC的视频中也没有一个是讲解iBeacon的，但是在WWDC2013的Keynote上还是看到了它的身影。</p>
+
+<p><img src="/images/201312211904.jpeg" alt="WWDC2013 Keynote" /></p>
+
+<p>iBeacon也是我今年WWDC上最喜欢的新特性之一，因为我一直认为更便捷、去中心化的沟通才是未来。在IOS7推出Beta版的时候，我也曾经实践过新推出的Nearby Networking With Multipeer Connectivity。但是相比之下，iBeacon要优秀很多。</p>
+
+<p>目前有不少硬件厂商在生产基于iBeacon的基站，Estimote很早就推出了Estimote Beacons，利用苹果的iBeacon技术，实现Distance、Proximity和Notification三种功能。如果想体验一下，可以在Appstore搜索下载应用Estimote。同时Estimote Beacons提供了一套API，可以方便地进行编程。</p>
+
+<p><a href="https://github.com/Estimote/iOS-SDK">Estimote Beacons的API地址</a></p>
+
+<p><img src="/images/201312211906.jpeg" alt="Estimote Beacons" /></p>
+
+<h2>What is iBeacon?</h2>
+
+<p>iBeacon通过使用低功耗蓝牙技术（Bluetooth Low Energy，也就是通常所说的Bluetooth 4.0或者Bluetooth Smart），可以创建一个信号区域，当设备进入该区域时，相应的应用程序便会提示用户是否需要接入这个信号网络。通过能够放置在任何物体中的小型无线传感器和低功耗蓝牙技术，用户便能使用iPhone来传输数据。</p>
+
+<p><img src="/images/201312211907.jpeg" alt="iBeacon" /></p>
+
+<h2>什么是低功耗蓝牙技术？</h2>
+
+<p>低功耗蓝牙技术的最大特点便在于低功耗，从而能使设备拥有更长的续航时间。不过低功耗蓝牙技术仅支持较低的文件传输速率，因此可以用于可穿戴式智能设备之间的信息传送，但却不能完成像传输音频这样的任务。</p>
+
+<h2>一个简单的Demo</h2>
+
+<p><a href="https://github.com/Hydra2050/BeaconDemo">Demo下载地址</a></p>
+
+<h3>Start a BeaconBroadcast</h3>
+
+<p>1、 创建一个BeaconRegion，作为Beacon基站的广播的Region对象。其中UUID为Beacon基站的唯一标识。</p>
+
+<pre><code>NSUUID* myUUID = [[NSUUID alloc] initWithUUIDString:@"E621E1F8-C36C-495A-93FC-0C247A3E6E5D"];
+self.targetBeaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:myUUID identifier:@"My Beacon Demo 20131221"];
+</code></pre>
+
+<p>2、 创建一个CBPeripheralManager对象</p>
+
+<pre><code> self.peripheraManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil options:nil];
+</code></pre>
+
+<p>3、 开始广播</p>
+
+<pre><code>NSDictionary* peripheraData = [self.boardcastBeaconRegion peripheralDataWithMeasuredPower:nil];
+[self.peripheraManager startAdvertising:peripheraData];
+</code></pre>
+
+<p>开始广播后，可以处理一下回调函数，如：</p>
+
+<pre><code>- (void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral
+- (void)peripheralManagerDidStartAdvertising:(CBPeripheralManager *)peripheral error:(NSError *)error
+</code></pre>
+
+<h3>Start a BeaconMonitor</h3>
+
+<p>1、 创建一个BeaconRegion，作为搜索的Region对象。其中UUID为Beacon基站的唯一标识。</p>
+
+<pre><code>NSUUID* myUUID = [[NSUUID alloc] initWithUUIDString:@"E621E1F8-C36C-495A-93FC-0C247A3E6E5D"];
+self.targetBeaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:myUUID identifier:@"My Beacon Demo 20131221"];
+</code></pre>
+
+<p>2、 创建一个CLLocationManager对象</p>
+
+<pre><code>self.locationManager = [[CLLocationManager alloc] init];
+self.locationManager.delegate = self;
+</code></pre>
+
+<p>3、 开始搜索Beacon基站</p>
+
+<pre><code>[self.locationManager startRangingBeaconsInRegion:self.targetBeaconRegion];
+</code></pre>
+
+<p>接下来可以处理一下回调函数，如：</p>
+
+<pre><code>- (void)locationManager:(CLLocationManager *)manager
+    didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region
+- (void)locationManager:(CLLocationManager *)manager
+ didUpdateLocations:(NSArray *)locations
+- (void)locationManager:(CLLocationManager *)manager
+     didEnterRegion:(CLRegion *)region
+- (void)locationManager:(CLLocationManager *)manager
+      didExitRegion:(CLRegion *)region
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
+</code></pre>
+
+<p>效果图：</p>
+
+<p><img src="/images/201312211958.PNG" alt="CLProximityImmediate" /></p>
+
+<p><img src="/images/201312211959.PNG" alt="CLProximityNear" /></p>
+
+<p><img src="/images/201312212001.PNG" alt="CLProximityFar" /></p>
+
+<p><img src="/images/201312212002.PNG" alt="CLProximityUnknown" /></p>
+
+<p><img src="/images/201312212003.PNG" alt="didExitRegion" /></p>
+
+<h2>总结</h2>
+
+<p>通过Demo，可以对iBeacon有一个简单的了解。iBeacon可以方便实现室内导航、商品消息推送、支付等功能。网上很多文章认为iBeacon会成为NFC杀手。到底iBeacon能发展到什么地步，让我们拭目以待吧。</p>
+
+<p><a href="http://support.apple.com/kb/HT6048">iOS: Understanding iBeacon</a></p>
 
 		
 		

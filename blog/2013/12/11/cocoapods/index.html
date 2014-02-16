@@ -9,7 +9,7 @@
 	<meta name="author" content="王仙客">
 
 	
-	<meta name="description" content="CocoaPods：Objective-C的依赖管理工具 引子 在IOS开发中，工程中会用到很多第三方的开源库，像ASIHttpRequest、AFNetworking、JSONKit等等。要添加一个第三方库的： 先查找并下载到本地，然后添加到工程
+	<meta name="description" content="CocoaPods：Objective-C的依赖管理工具 引子 在iOS开发中，工程中会用到很多第三方的开源库，像ASIHttpRequest、AFNetworking、JSONKit等等。要添加一个第三方库的： 先查找并下载到本地，然后添加到工程
 添加第三方开源库所依赖的framework &hellip;">
 	
 
@@ -93,7 +93,7 @@
 	<h1 class="title" itemprop="name">CocoaPods：Objective-C的依赖管理工具</h1>
 	<div class="entry-content" itemprop="articleBody"><h2>引子</h2>
 
-<p>在IOS开发中，工程中会用到很多第三方的开源库，像ASIHttpRequest、AFNetworking、JSONKit等等。要添加一个第三方库的：</p>
+<p>在iOS开发中，工程中会用到很多第三方的开源库，像ASIHttpRequest、AFNetworking、JSONKit等等。要添加一个第三方库的：</p>
 
 <ol>
 <li>先查找并下载到本地，然后添加到工程</li>
@@ -126,6 +126,21 @@
 <pre><code>sudo gem install cocoapods
 pod setup
 </code></pre>
+
+<h2>修改gem源</h2>
+
+<p>默认的gem源为<code>https://rubygems.org/</code>,国内的网络有可能被墙。如果无法访问这个网址，可以使用淘宝的RubyGems 镜像。修改方法：</p>
+
+<pre><code>$ gem sources --remove https://rubygems.org/
+$ gem sources -a http://ruby.taobao.org/
+</code></pre>
+
+<p>查看gem源：</p>
+
+<pre><code>gem source -l
+</code></pre>
+
+<p>修改成功后，可以按照上面的步骤安装。</p>
 
 <h2>更新CocoaPods</h2>
 
@@ -186,6 +201,61 @@ Script: ${SRCROOT}/Pods/PodsResources.sh</li>
 
 
 <p>参见：<a href="http://guides.cocoapods.org/using/using-cocoapods.html#what-is-happening-behind-the-scenes?">Using CocoaPods</a></p>
+
+<h2>定义私有库</h2>
+
+<p>在开发的过程中，可以定义将通用的部分定义成私有的库，便于快速开发。</p>
+
+<h3>Podspec</h3>
+
+<p>.podspec文件是一个库的描述文件。.podspec文件可以标识该第三方库所需要的源码文件、依赖库、编译选项，以及其他第三方库需要的配置。</p>
+
+<p>在安装pods的时候，会从<a href="https://github.com/CocoaPods/CocoaPods">https://github.com/CocoaPods/CocoaPods</a>下载，里面包含了所有第三方库的.podspec文件。可以通过查看当前用户根目录下的.cocoapods/repos/master/  路径。</p>
+
+<p>以AFNetworking为例：</p>
+
+<pre><code>Pod::Spec.new do |s|
+s.name     = 'AFNetworking'
+s.version  = '2.0.2'
+s.license  = 'MIT'
+s.summary  = 'A delightful iOS and OS X networking framework.'
+s.homepage = 'https://github.com/AFNetworking/AFNetworking'
+s.authors  = { 'Mattt Thompson' =&gt; 'm@mattt.me' }
+s.source   = { :git =&gt; 'https://github.com/AFNetworking/AFNetworking.git', :tag =&gt; "2.0.2", :submodules =&gt; true }
+s.requires_arc = true
+
+...
+...
+
+end
+</code></pre>
+
+<h3>创建pods私有库描述文件</h3>
+
+<p>创建命令：</p>
+
+<pre><code>$ pod spec create REPO_NAME
+</code></pre>
+
+<p>会生成一个.podsepc文件。根据注释可以方便理解各个配置项的意义。</p>
+
+<h3>创建本地podsepc</h3>
+
+<p>在.cocoapods/repos/master/  路径下，创建文件，名称为新创建的私有库名称，在目录下创建不同版本路径，然后将对应的.podsepc文件拷贝到对应目录下。</p>
+
+<p>然后使用pods搜索：</p>
+
+<pre><code>$ pod search REPO_NAME
+</code></pre>
+
+<p>看看是否能够搜索到新创建的库。</p>
+
+<h3>删除pods私有Repo</h3>
+
+<p>输入命令：</p>
+
+<pre><code>pod repo remove [name]
+</code></pre>
 
 <h2>总结</h2>
 
