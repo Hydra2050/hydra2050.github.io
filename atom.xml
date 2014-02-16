@@ -4,7 +4,7 @@
   <title><![CDATA[王仙客的博客]]></title>
   <link href="http://Hydra2050.github.io/atom.xml" rel="self"/>
   <link href="http://Hydra2050.github.io/"/>
-  <updated>2014-01-21T22:37:42+08:00</updated>
+  <updated>2014-02-16T09:39:41+08:00</updated>
   <id>http://Hydra2050.github.io/</id>
   <author>
     <name><![CDATA[王仙客]]></name>
@@ -87,7 +87,101 @@ Rect: \{\{0, 0\}, \{200, 100\}\}
     <link href="http://Hydra2050.github.io/blog/2014/01/16/adding-properties-to-a-category-using-associated-objects/"/>
     <updated>2014-01-16T22:39:50+08:00</updated>
     <id>http://Hydra2050.github.io/blog/2014/01/16/adding-properties-to-a-category-using-associated-objects</id>
-    <content type="html"><![CDATA[
+    <content type="html"><![CDATA[<h2>Object-C中的Category</h2>
+
+<p>Object-C中的Category，相信大家一定不会陌生。一般来说，我们可以用它来为一个类添加新的方法：</p>
+
+<pre><code>@interface NSString (NumberUtils)
+- (BOOL)isNumeric; 
+@end
+
+@implementation NSString (NumberUtils) 
+- (BOOL)isNumeric
+{
+    NSScanner *scanner = [NSScanner scannerWithString:self];
+    return [scanner scanFloat:NULL]? [scanner isAtEnd]: NO;
+}
+@end
+</code></pre>
+
+<p>我们也可以Category中定义新的数据成员，但是不能够对它们使用synthesize。这是因为一个类的结构已经在编译器决定了，而Category是在运行期定义生成的，这样就没有办法改变类结构体中的ivars。</p>
+
+<pre><code>struct objc_class {  
+    Class isa  OBJC_ISA_AVAILABILITY;  
+
+    #if !__OBJC2__  
+    Class super_class                                        OBJC2_UNAVAILABLE;  
+    const charchar *name                                     OBJC2_UNAVAILABLE;  
+    long version                                             OBJC2_UNAVAILABLE;  
+    long info                                                OBJC2_UNAVAILABLE;  
+    long instance_size                                       OBJC2_UNAVAILABLE;  
+    struct objc_ivar_list *ivars                             OBJC2_UNAVAILABLE;  
+    struct objc_method_list **methodLists                    OBJC2_UNAVAILABLE;  
+    struct objc_cache *cache                                 OBJC2_UNAVAILABLE;  
+    struct objc_protocol_list *protocols                     OBJC2_UNAVAILABLE;  
+#endif  
+
+} OBJC2_UNAVAILABLE;    
+</code></pre>
+
+<p>可以向下面这样定义：</p>
+
+<pre><code>@interface NSString (NumberUtils)
+@property (nonatomic, readonly, getter=isNumeric) BOOL numeric;
+@end
+</code></pre>
+
+<p>如果我们想为一个类真正添加一个数据成员，要怎么办呢？当然你可能会想到使用修饰者，封装出一个对象，包含这个类和想要添加的数据成员。但是那样要麻烦一些。</p>
+
+<h2>使用Associated Objects为一个分类添加数据成员</h2>
+
+<p>使用Runtime来解决这个问题。要使用的API：</p>
+
+<pre><code> // 使用一个key值和关联策略来为一个对象设置一个关联的值
+void objc_setAssociatedObject(id object, const void *key, id value, objc_AssociationPolicy policy);
+</code></pre>
+
+<p><code>objc_setAssociatedObject</code>：使用一个key值和关联策略来为一个对象设置一个关联的值。类似NSDictionry，一个key值，对应一个value值。</p>
+
+<p>key值必须是进程的生命周期内一个唯一、不变的id值。可以使用一个NSString对象作为一个key值。但是如果试图通过一个相同的字符串值，但是不同内存地址作为key值，可能不会获得预期的结果。一个更好的选择是定义一个static的指针作为key值。</p>
+
+<p>下面一个例子：</p>
+
+<pre><code>@interface UIImage (Tagged)
+@property (nonatomic, copy) NSString *tag;
+@end    
+
+#import &lt;objc/runtime.h&gt; 
+
+static const void *ImageTagKey = &amp;ImageTagKey;
+@implementation UIImage (Tagged)
+
+- (void)setTag:(NSSting *)tag
+{
+    objc_setAssociatedObject(self, ImageTagKey, tag, OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (NSString *)tag
+{
+    return objc_getAssociatedObject(self, ImageTagKey);
+}
+@end
+</code></pre>
+
+<p>这个例子中有一点点需要主要：</p>
+
+<ul>
+<li>key值使用一个指针类型static const void * 。我们必须让这个指针初始化，否则它的值就会为NULL，但是我们不关心具体指向什么，只要它是唯一的，不变的。这里面，指针指向了自己，一个唯一、不变的值。</li>
+</ul>
+
+
+<p>参考文章：</p>
+
+<p><a href="https://developer.apple.com/library/ios/documentation/cocoa/reference/ObjCRuntimeRef/Reference/reference.html#//apple_ref/doc/constant_group/Associative_Object_Behaviors">Objective-C Runtime Reference</a></p>
+
+<p><a href="http://iosdevelopertips.com/objective-c/adding-properties-category-using-associated-objects.html">Adding Properties to a Category Using Associated Objects</a></p>
+
+<p><a href="http://nshipster.com/associated-objects/">Associated Objects</a></p>
 ]]></content>
   </entry>
   
