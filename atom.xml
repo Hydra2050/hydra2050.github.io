@@ -4,7 +4,7 @@
   <title><![CDATA[王仙客的博客]]></title>
   <link href="http://Hydra2050.github.io/atom.xml" rel="self"/>
   <link href="http://Hydra2050.github.io/"/>
-  <updated>2014-07-26T21:48:53+08:00</updated>
+  <updated>2014-07-26T22:41:54+08:00</updated>
   <id>http://Hydra2050.github.io/</id>
   <author>
     <name><![CDATA[王仙客]]></name>
@@ -12,6 +12,62 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[在Mac上iOS开发抓包的几种常用方法]]></title>
+    <link href="http://Hydra2050.github.io/blog/2014/07/26/iosshe-bei-zhua-bao-de-ji-chong-chang-yong-fang-fa/"/>
+    <updated>2014-07-26T21:56:07+08:00</updated>
+    <id>http://Hydra2050.github.io/blog/2014/07/26/iosshe-bei-zhua-bao-de-ji-chong-chang-yong-fang-fa</id>
+    <content type="html"><![CDATA[<p>在iOS开发中，经常需要抓包来查看网络请求、应答的情况，例如坚持服务端应答数据、服务端应答速度、客户端发生请求、流量检测、安全性检测等等。不论代码内如何实现，抓包能够最好的证实一切，往往可以更快地定位问题，解决问题。下面总结几种常用的抓包方法。</p>
+
+<h2>使用charles抓包</h2>
+
+<p>在mac下，<a href="http://www.charlesproxy.com/">charles</a>是一个非常好用的抓取http/https请求的工具。</p>
+
+<p>限制条件：</p>
+
+<ul>
+<li>需要mac与iOS设备连接相同的无线网络</li>
+<li>只能抓取http/https的数据包</li>
+<li>无法抓取2G/3G/4G网络下得数据</li>
+</ul>
+
+
+<p>［注］：更多关于charles的使用方法参照<a href="http://www.charlesproxy.com/documentation/">http://www.charlesproxy.com/documentation/</a></p>
+
+<h2>使用RVI（Remote Virtual Interface）+wireshark抓包</h2>
+
+<p>在iOS5以后，Apple为iOS引入了RVI（Remote Virtual Interface），只要设备通过USB连接到Mac，就可以虚拟出一个远程端口，这样就可以在Mac上使用Wireshark抓取这个远程虚拟端口的数据包了。</p>
+
+<p>限制条件：</p>
+
+<ul>
+<li>支持的设备系统iOS5以及之后</li>
+</ul>
+
+
+<h2>使用tcpdump命令抓包</h2>
+
+<p>限制条件：</p>
+
+<ul>
+<li>需要iOS设备越狱</li>
+</ul>
+
+
+<h2>小结</h2>
+
+<p>以上是平时常用到得几种抓包方法，各有优缺点，可以根据需要选择最方便的方法。</p>
+
+<h2>参考资料</h2>
+
+<p><a href="http://www.charlesproxy.com/">http://www.charlesproxy.com/</a></p>
+
+<p><a href="http://www.charlesproxy.com/documentation/">http://www.charlesproxy.com/documentation/</a></p>
+
+<p><a href="http://www.wireshark.org/">http://www.wireshark.org/</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[使用UIMotionEffect实现设备的倾斜视差]]></title>
@@ -1625,103 +1681,6 @@ NSObject's meta class is 0x7fff71038480
 <p>meta-class 总是会保证 Class 对象会有从基类继承的所有的的实例和类方法，加上之后继承的类方法。如从 NSObject 继承的类，就意味着在所有的 Class（和 meta-class）对象中定义了所有从 NSObject 继承的实例和协议方法。</p>
 
 <p>所有的 meta-class 使用基类的 meta-class（NSObject 的 meta-class 用于继承自 NSObject 的类）作为他们自己的类，包括在运行时自己定义的基础的 meta-class。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Object-c中的黑魔法——Method Swizzling]]></title>
-    <link href="http://Hydra2050.github.io/blog/2013/12/08/method-swizzling/"/>
-    <updated>2013-12-08T09:46:50+08:00</updated>
-    <id>http://Hydra2050.github.io/blog/2013/12/08/method-swizzling</id>
-    <content type="html"><![CDATA[<p>上一篇讲了<a href="http://hydra2050.github.io/blog/2013/12/04/object-cde-han-shu-diao-yong-ji-zhi/">Object-c的函数调用机制</a>，对理解Method Swizzling有很大帮助。这一次来看一看Object-c中的黑魔法——Method Swizzling。</p>
-
-<h2>Method Swizzling介绍</h2>
-
-<p>什么是Method Swizzling？简单来讲，就是修改SEL与IMP之间的映射关系，达到修改最终执行方法的目的。Method Swizzling，听起来就有黑魔法的意味。</p>
-
-<h2>如何实现Method Swizzling</h2>
-
-<h3>1.创建一个category</h3>
-
-<pre><code>#import &lt;Foundation/Foundation.h&gt;  
-@interface UIView (MyAdditions)   
-@end  
-</code></pre>
-
-<h3>2.创建一个swizzling函数</h3>
-
-<pre><code>@implementation UIView (MyAdditions)
-
-- (void)my_setFrame:(CGRect)frame {
-    // custom function
-    [self my_setFrame:frame];
-}
-@end
-</code></pre>
-
-<p>等等，这不是循环调用吗？别忘了，我们后面会施展黑魔法，改变IMP,调用的不再是自己，不会有循环调用的问题。</p>
-
-<h3>3.交换IMP</h3>
-
-<p><p style="color:red">注意别忘记引入：#import &lt;objc/runtime.h></p>
-
-<pre><code>Method oriMethod =  class_getInstanceMethod([UIView class], @selector(setFrame:));  
-Method myMethod = class_getInstanceMethod([UIView class], @selector(my_setFrame:));  
-method_exchangeImplementations(oriMethod, myMethod); 
-</code></pre>
-
-<p>这样调用 [UIView setFrame:] 时，实际调用的是自定义的方法 [UIView my_setFrame:]。</p>
-
-<h2>Method Swizzling的利与弊</h2>
-
-<p>这里有非常好的答案：</p>
-
-<p><a href="http://stackoverflow.com/questions/5339276/what-are-the-dangers-of-method-swizzling-in-objective-c">http://stackoverflow.com/questions/5339276/what-are-the-dangers-of-method-swizzling-in-objective-c</a></p>
-
-<p>其中给出了一个解决命名冲突的定义方式：</p>
-
-<pre><code>@implementation NSView (MyViewAdditions)
-static void MySetFrame(id self, SEL _cmd, NSRect frame);
-static void (*SetFrameIMP)(id self, SEL _cmd, NSRect frame);
-
-static void MySetFrame(id self, SEL _cmd, NSRect frame) {
-   // do custom work
-   SetFrameIMP(self, _cmd, frame);
-}
-
-+ (void)load {
-   [self swizzle:@selector(setFrame:) with:(IMP)MySetFrame store:(IMP *)&amp;SetFrameIMP];
-}
-@end
-
-typedef IMP *IMPPointer;
-BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMPPointer store) {
-    IMP imp = NULL;
-    Method method = class_getInstanceMethod(class, original);
-    if (method) {
-        const char *type = method_getTypeEncoding(method);
-        imp = class_replaceMethod(class, original, replacement, type);
-        if (!imp) {
-            imp = method_getImplementation(method);
-        }
-    }
-    if (imp &amp;&amp; store) { *store = imp; }
-    return (imp != NULL);
-}
-
-@implementation NSObject (FRRuntimeAdditions)
-+ (BOOL)swizzle:(SEL)original with:(IMP)replacement store:(IMPPointer)store {
-    return class_swizzleMethodAndStore(self, original, replacement, store);
-}
-@end
-</code></pre>
-
-<h2>总结</h2>
-
-<p>对于我个人而言，并不是非常喜欢这种黑魔法。感觉还是慎用为妙，如果使用，尽量仅在load中swizzling。另外，网上有人说使用了Method Swizzling无法通过appstore的审核，还没有验证过。
-虽然不建议发布使用，但是其他地方还是有很多用武之地的，比如调试、代码分析等，可以自由想像。</p>
-
-<p>这里有一个<a href="https://github.com/Hydra2050/MethodSwizzlingDemo">MethodSwizzlingDemo</a>，通过Method Swizzling，描绘每一个View的border。效果图：</p>
 ]]></content>
   </entry>
   

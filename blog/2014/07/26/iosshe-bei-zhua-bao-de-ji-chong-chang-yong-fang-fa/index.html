@@ -1,0 +1,180 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>在Mac上iOS开发抓包的几种常用方法 - 王仙客的博客</title>
+	<meta name="author" content="王仙客">
+
+	
+	<meta name="description" content="在Mac上iOS开发抓包的几种常用方法 在iOS开发中，经常需要抓包来查看网络请求、应答的情况，例如坚持服务端应答数据、服务端应答速度、客户端发生请求、流量检测、安全性检测等等。不论代码内如何实现，抓包能够最好的证实一切，往往可以更快地定位问题，解决问题。下面总结几种常用的抓包方法。 &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="王仙客的博客" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://Hydra2050.github.io/blog/2014/07/26/iosshe-bei-zhua-bao-de-ji-chong-chang-yong-fang-fa/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("wh2050@sina.cn") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+	<p style="color:white;font-size:24px">王仙客的博客</p>
+	<br>
+	<p style="color:white;font-size:18px">明白一些道理</p>
+	<p style="color:white;font-size:18px">遇到一些有趣的事</p>
+	<br>
+	<li><a href="/">博客</a></li>
+	<li><a href="/blog/archives">所有文章</a></li>
+	<li><a href="/blog/2013/12/04/about/">关于我</a></li>
+</ul>
+
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:wh2050@sina.cn" title="Email">Email</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">在Mac上iOS开发抓包的几种常用方法</h1>
+	<div class="entry-content" itemprop="articleBody"><p>在iOS开发中，经常需要抓包来查看网络请求、应答的情况，例如坚持服务端应答数据、服务端应答速度、客户端发生请求、流量检测、安全性检测等等。不论代码内如何实现，抓包能够最好的证实一切，往往可以更快地定位问题，解决问题。下面总结几种常用的抓包方法。</p>
+
+<h2>使用charles抓包</h2>
+
+<p>在mac下，<a href="http://www.charlesproxy.com/">charles</a>是一个非常好用的抓取http/https请求的工具。</p>
+
+<p>限制条件：</p>
+
+<ul>
+<li>需要mac与iOS设备连接相同的无线网络</li>
+<li>只能抓取http/https的数据包</li>
+<li>无法抓取2G/3G/4G网络下得数据</li>
+</ul>
+
+
+<p>［注］：更多关于charles的使用方法参照<a href="http://www.charlesproxy.com/documentation/">http://www.charlesproxy.com/documentation/</a></p>
+
+<h2>使用RVI（Remote Virtual Interface）+wireshark抓包</h2>
+
+<p>在iOS5以后，Apple为iOS引入了RVI（Remote Virtual Interface），只要设备通过USB连接到Mac，就可以虚拟出一个远程端口，这样就可以在Mac上使用Wireshark抓取这个远程虚拟端口的数据包了。</p>
+
+<p>限制条件：</p>
+
+<ul>
+<li>支持的设备系统iOS5以及之后</li>
+</ul>
+
+
+<h2>使用tcpdump命令抓包</h2>
+
+<p>限制条件：</p>
+
+<ul>
+<li>需要iOS设备越狱</li>
+</ul>
+
+
+<h2>小结</h2>
+
+<p>以上是平时常用到得几种抓包方法，各有优缺点，可以根据需要选择最方便的方法。</p>
+
+<h2>参考资料</h2>
+
+<p><a href="http://www.charlesproxy.com/">http://www.charlesproxy.com/</a></p>
+
+<p><a href="http://www.charlesproxy.com/documentation/">http://www.charlesproxy.com/documentation/</a></p>
+
+<p><a href="http://www.wireshark.org/">http://www.wireshark.org/</a></p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    王仙客
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+		</div>
+	</div>
+</body>
+</html>
