@@ -10,14 +10,14 @@ categories:
 
 感谢[破船之家](http://beyondvincent.com/)，分享了一篇关于使用octopress在Github上搭建博客文章，看了之后也尝试搭建了一个属于自己的博客。由于对于Ruby和git不是很了解，整个过程花费了不少时间。这篇文章主要记录MAC下搭建的过程。
 
-##1. 安装Git
+## 1. 安装Git
 
 首先在[Github](https://github.com/)上创建一个账号，下载[最新版本的Git](http://git-scm.com/downloads)，并安装。
 
 参见：[Set up Git](https://help.github.com/articles/set-up-git)
 
 
-##2. 使用RVM安装Ruby1.9.3
+## 2. 使用RVM安装Ruby1.9.3
 
 使用ruby --version查看当前Ruby版本。
 
@@ -43,7 +43,7 @@ categories:
 
 参见：[Installing Ruby With RVM](http://octopress.org/docs/setup/rvm/)
 
-##3. 安装octopress
+## 3. 安装octopress
 
 
 	git clone git://github.com/imathis/octopress.git octopress
@@ -61,7 +61,7 @@ categories:
 	
 参见：[Octopress Setup](http://octopress.org/docs/setup/)
 
-##4. 配置octopress
+## 4. 配置octopress
 
 octopress已经尽量简化需要配置的内容，下面列出了可能需要配置的文件：
 
@@ -91,7 +91,7 @@ _config.yml中url一定要修改，title、subtitle、author和支持的第三�
 
 参见：[Configuring Octopress](http://octopress.org/docs/configuring/)
 
-##5. 将博客部署到Github上
+## 5. 将博客部署到Github上
 
 在Github上创建一个仓库，命名为：username.github.io或organization.github.io (username为你的用户名)
 
@@ -129,7 +129,7 @@ _config.yml中url一定要修改，title、subtitle、author和支持的第三�
 参见：[Deploying to Github Pages](http://octopress.org/docs/deploying/github/)
 
 
-##6. 开始写博客
+## 6. 开始写博客
 
 
 	rake new_post["title"]
@@ -163,6 +163,6 @@ _config.yml中url一定要修改，title、subtitle、author和支持的第三�
 	
 参见：[Blogging Basics](http://octopress.org/docs/blogging/)
 
-##7. 小结
+## 7. 小结
 
 至此，使用octopress搭建的博客就已经完成了，之后可以选择新的主题,做一些个性化的配置。另外推荐一本学习git的好书：[Pro Git](http://www.ruanfei.com/doc/progit/)。
