@@ -9,7 +9,7 @@
 	<meta name="author" content="王仙客">
 
 	
-	<meta name="description" content="Jul 26th, 2014 在Mac上iOS开发抓包的几种常用方法 在iOS开发中，经常需要抓包来查看网络请求、应答的情况，例如坚持服务端应答数据、服务端应答速度、客户端发生请求、流量检测、安全性检测等等。不论代码内如何实现，抓包能够最好的证实一切，往往可以更快地定位问题，解决问题。 &hellip;">
+	<meta name="description" content="Oct 10th, 2014 The Python Challenge&#8211;Level 0 引子 最近空余时间，开始学习python，发现一个很有意思的网站：pythonchallenge。目前有33个挑战的级别，打算写一个系列的博客，记录下来学习的过程。那就从零开始吧！ Level 0 &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -90,6 +90,64 @@
 			<div class="mid-col-container">
 				<div id="content" class="inner">
 <div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-10-10T22:51:40+08:00" data-updated="true" itemprop="datePublished">Oct 10<span>th</span>, 2014</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/10/10/the-python-challenge-level-0/" itemprop="url">The Python Challenge&#8211;Level 0</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2>引子</h2>
+
+<p>最近空余时间，开始学习python，发现一个很有意思的网站：<a href="http://www.pythonchallenge.com/">pythonchallenge</a>。目前有33个挑战的级别，打算写一个系列的博客，记录下来学习的过程。那就从零开始吧！</p>
+
+<h2>Level 0</h2>
+
+<p>Level 0的地址：<a href="http://www.pythonchallenge.com/pc/def/0.html">http://www.pythonchallenge.com/pc/def/0.html</a></p>
+
+<p>一张图片，上面写着2的38次方</p>
+
+<pre><code>Hint: try to change the URL address.
+</code></pre>
+
+<p>使用python求2的38次方的值：</p>
+
+<pre><code>import math
+print(pow(2,38))
+</code></pre>
+
+<p>得到结果：274877906944</p>
+
+<p>根据提示，修改url为：<a href="http://www.pythonchallenge.com/pc/def/274877906944.html">http://www.pythonchallenge.com/pc/def/274877906944.html</a>。</p>
+
+<p>这样就进入下一关了， ^_^)</p>
+
+<p>参考资料：</p>
+
+<p><a href="http://sebug.net/paper/books/dive-into-python3/index.html">深入 Python 3</a></p>
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
@@ -705,126 +763,6 @@ static const void *ImageTagKey = &amp;ImageTagKey;
 	<h1 class="title" itemprop="name"><a href="/blog/2013/12/29/object-cgao-ji-bian-cheng-xue-xi-san/" itemprop="url">Object-C高级编程学习笔记(三)</a></h1>
 	<div class="entry-content" itemprop="articleBody">
 		
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-22T20:48:19+08:00" data-updated="true" itemprop="datePublished">Dec 22<span>nd</span>, 2013</time></div>
-		<div class="tags">
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/2013/12/22/object-cgao-ji-bian-cheng-xue-xi-2/" itemprop="url">Object-C高级编程学习笔记(二)</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<h1>Blocks</h1>
-
-<h2>What is blocks</h2>
-
-<h3>Block语法</h3>
-
-<p>Blocks是C语言的扩充功能：带有自动变量（局部变量）的匿名函数。</p>
-
-<p><code>^</code> <code>返回值类型</code> <code>参数列表</code> <code>表达式</code></p>
-
-<pre><code>^int (int count) {return count + 1;}
-</code></pre>
-
-<p>Block语法可以省略几个项目。首先是返回值类型：</p>
-
-<pre><code>^(int count) {return count + 1;}
-</code></pre>
-
-<p>其次，如果不使用参数，参数列表可以省略：</p>
-
-<pre><code>^{ print(“Block\n”);}
-</code></pre>
-
-<p>使用Block语法讲Block赋值为Block类型变量：</p>
-
-<pre><code>int(^blk) (int) = ^(int count) {return count + 1;}
-int(^blk1) (int) = blk;
-</code></pre>
-
-<p>使用typedef定义：</p>
-
-<pre><code>typedef int (^blk_t) (int);
-blk_t blk = ^(int count) {return count + 1;}
-int nResult = blk(10);
-</code></pre>
-
-<p>Block类型变量可以像C语言中其他类型变量一样使用。</p>
-
-<h3>截获自动变量值</h3>
-
-<p>Blocks中，Block表达式截获所使用的自动变量的值。因为Block表达式保存了自动变量的值，所以在执行Block语法后，即使改写Block中使用的自动变量的值也不会影响Block执行时自动变量的值。</p>
-
-<pre><code>int a = 10;
-int b = 10;
-int (^blk) (void) = ^(return a + b;);
-b = 2;
-blk();
-</code></pre>
-
-<p>执行结果为：<code>20</code></p>
-
-<h3>__block说明符</h3>
-
-<p>若想在Block语法的表达式中将值赋给Block语法外的自动变量，需要在自动变量附加<strong>block说明符，该变量成为</strong>block变量。</p>
-
-<pre><code>__block int val = 0;
-void(^blk) (void) = ^{val = 1;};
-blk();
-printf("%d",val);
-</code></pre>
-
-<p>执行结果为： <code>1</code></p>
-
-<p>赋值给截获的自动变量会产生编译错误：</p>
-
-<pre><code>id array = [[NSMutableArray alloc] init];
-void (^blk) {array = [[NSMutableArray alloc] init]};
-</code></pre>
-
-<p>会出现编译错误。</p>
-
-<p>另外，在使用C语言数组时，必须小心使用起指针。</p>
-
-<pre><code>const char text[] = "Hello";
-void (^blk) (void) = ^{
-    printf("%c\n",text[2]);
-};
-</code></pre>
-
-<p>在现在的Block中，截获自动变量的方法并没有实现对C语言数组的截获，因此会编译出错。可以使用指针解决：</p>
-
-<pre><code>const char *text = "Hello";
-void (^blk) (void) = ^{
-    printf("%c\n",text[2]);
-};  
-</code></pre>
-
-<h2>Blocks的实现</h2>
-
-<p>// TODO:需要一些时间理解</p>
 
 		
 		
