@@ -4,7 +4,7 @@
   <title><![CDATA[王仙客的博客]]></title>
   <link href="http://Hydra2050.github.io/atom.xml" rel="self"/>
   <link href="http://Hydra2050.github.io/"/>
-  <updated>2014-10-10T23:28:12+08:00</updated>
+  <updated>2014-10-11T23:59:31+08:00</updated>
   <id>http://Hydra2050.github.io/</id>
   <author>
     <name><![CDATA[王仙客]]></name>
@@ -12,6 +12,106 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[The Python Challenge--Level 1]]></title>
+    <link href="http://Hydra2050.github.io/blog/2014/10/11/the-python-challenge-level-1/"/>
+    <updated>2014-10-11T21:46:08+08:00</updated>
+    <id>http://Hydra2050.github.io/blog/2014/10/11/the-python-challenge-level-1</id>
+    <content type="html"><![CDATA[<p>Level 1的地址：<a href="http://www.pythonchallenge.com/pc/def/map.html">http://www.pythonchallenge.com/pc/def/map.html</a></p>
+
+<h2>分析</h2>
+
+<p>网页的标题为<code>What about making trans?</code>，然后再看图片：</p>
+
+<pre><code>K -&gt; M
+O -&gt; Q
+E -&gt; G
+</code></pre>
+
+<p>应该是一个类似凯撒密码的字母移位，每个字母向后移动两位，而要处理的就是下面那段文字。</p>
+
+<h2>解决</h2>
+
+<p>代码如下：</p>
+
+<pre><code>'''
+Level 1
+'''
+text = '''
+g fmnc wms bgblr rpylqjyrc gr zw fylb. rfyrq ufyr amknsrcpq ypc dmp. bmgle gr   gl zw fylb gq glcddgagclr ylb rfyr'q ufw rfgq rcvr gq qm jmle. sqgle    qrpgle.kyicrpylq() gq pcamkkclbcb. lmu ynnjw ml rfc spj.
+'''
+trans = ''
+for x in text:
+    trans += chr((ord(x) - ord('a') + 2)%26 + ord('a')) if x.isalpha() else x
+print(trans)
+</code></pre>
+
+<p>输出结果：</p>
+
+<pre><code>i hope you didnt translate it by hand. thats what computers are for. doing it in
+by hand is inefficient and that's why this text is so long. using string.maketrans() 
+is recommended. now apply on the url.
+</code></pre>
+
+<p>根据转化后的信息，处理url中的map进行同样的转换，获得新的url：<a href="http://www.pythonchallenge.com/pc/def/ocr.html">http://www.pythonchallenge.com/pc/def/ocr.html</a>，顺利进入下一关。</p>
+
+<h2>str.maketrans()</h2>
+
+<p>等等，仔细看转换后的信息，推荐使用string.maketrans()方法。</p>
+
+<p>查找<a href="https://docs.python.org/3/">python3在线文档</a>，发现在python3.4后有所变化。</p>
+
+<p>代码如下：</p>
+
+<pre><code>''
+use str.maketrans()
+'''
+
+import string
+
+text = '''
+g fmnc wms bgblr rpylqjyrc gr zw fylb. rfyrq ufyr amknsrcpq ypc dmp. bmgle gr   gl zw fylb gq glcddgagclr ylb rfyr'q ufw rfgq rcvr gq qm jmle. sqgle    qrpgle.kyicrpylq() gq pcamkkclbcb. lmu ynnjw ml rfc spj.
+'''
+
+dlist = string.ascii_lowercase
+table = str.maketrans(dlist,dlist[2:] + dlist[:2])
+print(text.translate(table))
+</code></pre>
+
+<p>首先，使用str.maketrans()方法生成一个映射表，从[A－Z]映射为[C-A]，打印<code>table</code>：</p>
+
+<pre><code>{97: 99, 98: 100, 99: 101, 100: 102, 101: 103, 102: 104, 103: 105, 104: 106, 105: 107, 106: 108, 107: 109, 108: 110, 109: 111, 110: 112, 111: 113, 112: 114, 113: 115, 114: 116, 115: 117, 116: 118, 117: 119, 118: 120, 119: 121, 120: 122, 121: 97, 122: 98}
+</code></pre>
+
+<p>然后，调用translate()方法，将映射表作为参数。最终获取想要的结果。</p>
+
+<p><code>str.maketrans()</code>的第一个和第二个参数长度必须相同，转换的时候一一对应；如果有第三个参数，将会转换为<code>None</code>。</p>
+
+<pre><code>mm = 'abcdefg'
+tb1 = str.maketrans('abcd','1234')
+tb2 = str.maketrans('abcd','1234','ef')
+print(mm.translate(tb1))
+print(mm.translate(tb2))
+</code></pre>
+
+<p>输出结果：</p>
+
+<pre><code>1234efg
+1234g
+</code></pre>
+
+<h2>其他的解决方法</h2>
+
+<p>进入下一个Level的页面，有一条tips，将当前url中的<code>pc</code>改为<code>pcc</code>就可以查看前一个Level的解决方法了。</p>
+
+<p><a href="http://www.pythonchallenge.com/pcc/def/ocr.html">http://www.pythonchallenge.com/pcc/def/ocr.html</a></p>
+
+<p>参考资料：</p>
+
+<p><a href="https://docs.python.org/3/">Python documentation</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[The Python Challenge--Level 0]]></title>
@@ -33,8 +133,18 @@
 
 <p>使用python求2的38次方的值：</p>
 
+<pre><code>2**38
+</code></pre>
+
+<p>或者：</p>
+
 <pre><code>import math
-print(pow(2,38))
+pow(2,38)
+</code></pre>
+
+<p>或者：</p>
+
+<pre><code>1 &lt;&lt; 38
 </code></pre>
 
 <p>得到结果：274877906944</p>
@@ -1517,19 +1627,6 @@ end
     <content type="html"><![CDATA[<p>最近在做一些与ios7适配相关的工作，打算持续更新一些ios7适配的一些内容。</p>
 
 <p>// TODO</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[WWDC字幕]]></title>
-    <link href="http://Hydra2050.github.io/blog/2013/12/09/wwdczi-mu/"/>
-    <updated>2013-12-09T23:24:34+08:00</updated>
-    <id>http://Hydra2050.github.io/blog/2013/12/09/wwdczi-mu</id>
-    <content type="html"><![CDATA[<h2><a href="http://asciiwwdc.com/">ASCIIwwdc</a></h2>
-
-<p>Searchable full-text transcripts of WWDC sessions</p>
-
-<p><a href="https://github.com/mattt/asciiwwdc.com">source code on GitHub</a></p>
 ]]></content>
   </entry>
   
