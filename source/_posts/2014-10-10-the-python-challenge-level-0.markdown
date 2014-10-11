@@ -20,8 +20,16 @@ Level 0的地址：[http://www.pythonchallenge.com/pc/def/0.html](http://www.pyt
 	
 使用python求2的38次方的值：
 
+	2**38
+	
+或者：
+	
 	import math
-	print(pow(2,38))
+	pow(2,38)
+	
+或者：
+
+	1 << 38
 	
 得到结果：274877906944
 
