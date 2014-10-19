@@ -4,7 +4,7 @@
   <title><![CDATA[王仙客的博客]]></title>
   <link href="http://Hydra2050.github.io/atom.xml" rel="self"/>
   <link href="http://Hydra2050.github.io/"/>
-  <updated>2014-10-19T11:06:04+08:00</updated>
+  <updated>2014-10-19T11:26:03+08:00</updated>
   <id>http://Hydra2050.github.io/</id>
   <author>
     <name><![CDATA[王仙客]]></name>
@@ -12,6 +12,28 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Mac book升级Yosemite异常的解决方法]]></title>
+    <link href="http://Hydra2050.github.io/blog/2014/10/19/mac-booksheng-ji-yosemiteyi-chang-de-jie-jue-fang-fa/"/>
+    <updated>2014-10-19T11:11:55+08:00</updated>
+    <id>http://Hydra2050.github.io/blog/2014/10/19/mac-booksheng-ji-yosemiteyi-chang-de-jie-jue-fang-fa</id>
+    <content type="html"><![CDATA[<p>前天苹果更新新版桌面操作系统OS X Yosemite，版本号为OS X 10.10。兴匆匆地升级我的Mac book，等了好久，更新重启之后出现了下面这个画面：</p>
+
+<p><img src="http://Hydra2050.github.io/images/20141019.jpg" alt="OooppP" /></p>
+
+<p>解决方法很简单：</p>
+
+<ul>
+<li>第一步：长按关机键，然后重新启动，同时一直按住<code>alt</code>键</li>
+<li>第二步：在出现的界面选择无线网络，并成功连接</li>
+<li>第三部：按<code>command</code> ＋ <code>r</code>，进入网络恢复模式</li>
+</ul>
+
+
+<p>经过N久的等待，终于又恢复正常了，开始体验新的OS X —— Yosemite！</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[The Python Challenge–Level 3]]></title>
@@ -1634,17 +1656,6 @@ end
 <p>使用CocoaPods管理第三方库，能够帮助完成很多之前繁琐的工作，提高工作效率。第三方库的更新更是省心了不少，不再需要再一个一个查看，哪个第三方库更新了没有。</p>
 
 <p>另外有一款APP，<a href="http://davander.com/podlife.html">Podlife</a>，让我们了解Pods上第三方库更新的情况，很不错。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[2013杭州西部越野]]></title>
-    <link href="http://Hydra2050.github.io/blog/2013/12/11/hang-zhou-xi-bu-yue-ye/"/>
-    <updated>2013-12-11T00:02:55+08:00</updated>
-    <id>http://Hydra2050.github.io/blog/2013/12/11/hang-zhou-xi-bu-yue-ye</id>
-    <content type="html"><![CDATA[<p>2013杭州西部越野是一次环杭州城山脊越野跑：从西湖区转塘风水洞出发，穿越周浦、龙坞、西湖三大山脊，最终到达终点浙大玉泉校区。这条线路也被称为“风浙线”，全程约42公里。</p>
-
-<p><img src="http://Hydra2050.github.io/images/hzxbyys.jpg" alt="2013杭州西部越野路线图" /></p>
 ]]></content>
   </entry>
   
