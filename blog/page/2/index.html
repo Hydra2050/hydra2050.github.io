@@ -9,7 +9,13 @@
 	<meta name="author" content="王仙客">
 
 	
-	<meta name="description" content="Jan 12th, 2014 HTTP的缓存机制 前言 HTTP的缓存机制，主要体现在HTTP协议头里面的几个字段——Expires、Cache-control、Last-Modified/If-Modified-Since、Etag/If-None-Match等。在移动开发中， &hellip;">
+	<meta name="description" content="Jan 12th, 2014 2013年读过的好书 技术类书籍 首先时技术类书籍： 《从小工到专家——程序员修炼之道》：
+《Head First 设计模式》：
+《iOS 高级编程》：
+《Python》：
+《STL源码剖析》： 非技术类书籍 非技术类： 《一个人的村庄》：
+《1984》：
+《 &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -90,6 +96,66 @@
 			<div class="mid-col-container">
 				<div id="content" class="inner">
 <div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-12T16:45:59+08:00" data-updated="true" itemprop="datePublished">Jan 12<span>th</span>, 2014</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/01/12/2013nian-du-guo-de-hao-shu/" itemprop="url">2013年读过的好书</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2>技术类书籍</h2>
+
+<p>首先时技术类书籍：</p>
+
+<ul>
+<li>《从小工到专家——程序员修炼之道》：</li>
+<li>《Head First 设计模式》：</li>
+<li>《iOS 高级编程》：</li>
+<li>《Python》：</li>
+<li>《STL源码剖析》：</li>
+</ul>
+
+
+<h2>非技术类书籍</h2>
+
+<p>非技术类：</p>
+
+<ul>
+<li>《一个人的村庄》：</li>
+<li>《1984》：</li>
+<li>《少有人走的路：》：</li>
+<li>《自由在高处》：</li>
+<li>《九种孤独》：</li>
+<li>《天才在左，疯子在右》：</li>
+<li>《猎命师传奇：卷二十》：</li>
+<li>《上帝掷骰子吗》：</li>
+<li>《沉默的大多数》：</li>
+<li>《变身》、《新参者》：</li>
+</ul>
+
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
@@ -1370,102 +1436,6 @@ end
 		<p>2013杭州西部越野是一次环杭州城山脊越野跑：从西湖区转塘风水洞出发，穿越周浦、龙坞、西湖三大山脊，最终到达终点浙大玉泉校区。这条线路也被称为“风浙线”，全程约42公里。</p>
 
 <p><img src="/images/hzxbyys.jpg" alt="2013杭州西部越野路线图" /></p>
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-10T23:03:49+08:00" data-updated="true" itemprop="datePublished">Dec 10<span>th</span>, 2013</time></div>
-		<div class="tags">
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/2013/12/10/guan-yu-uitableview/" itemprop="url">关于UITableView的一个有趣的问题</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<h2>起因</h2>
-
-<p>今天碰到了一个很有趣的问题，大概现象是这个样子的：在一个可以动态增加、删除tablviewcell的页面，每个cell上有一个输入框，当离开页面的时候，记录cell个数、输入框内容，下次进入自动填充显示。</p>
-
-<p>发现之前在ios6上运行完全没有问题，但是在ios7上，一旦删除过一条后，退出页面，再进来，第一个行的输入框记录的内容会变成删除的那个cell的输入框内容。</p>
-
-<p style="color:red" > 另外一个值得注意的地方是，cell个数很少，没有超过tableview的高度。</p>
-
-
-<p>难道又是ios7兼容的问题，原来一直都没有问题啊？</p>
-
-<p>好吧，开始查看代码，单步调试，看看到底是哪一步逻辑出错。</p>
-
-<h2>哪里出了问题</h2>
-
-<p>在退出页面，保持内容的时候，大概有这样一段代码逻辑：</p>
-
-<pre><code>for(UIView* v in self.tableView.subviews)
-{
-    if([v isKindOfClass:[UITableViewCell class]])
-    {
-        UITextField* textField = cell.myTextField;
-        // 取出textField.text 根据cell的 indexPath值 保存到data model
-    }
-}
-</code></pre>
-
-<p>单步调试的时候，发现tableview上竟然存在一个为nil的cell。不错，就是我们删除的那个cell。程序内并没有非空检测，结果取它的的indexPath.row ，得到的值为零。这样就将它的textField内容保存了下来。</p>
-
-<h2>删掉的cell为什么还在</h2>
-
-<p>这是该到我们的利器大显身手了——<a href="http://revealapp.com/">Reveal</a>。
-我写了一个demo，最初有6个cell，功能是点击cell，就让cell的个数减一。当我删除五行后，在Reveal中可以看到：</p>
-
-<p><img src="/images/tvst.png" alt="Reveal截图" /></p>
-
-<p>是的，那个cell还在！还在tableview上，只不过被隐藏掉了。
-打印tableview上的cell：</p>
-
-<pre><code>&lt;UITableViewCell: 0x755be20; frame = (0 220; 320 44); text = '5'; hidden = YES; autoresize = W; layer = &lt;CALayer: 0x755bf50&gt;&gt;
-&lt;UITableViewCell: 0x755b680; frame = (0 176; 320 44); text = '4'; hidden = YES; autoresize = W; layer = &lt;CALayer: 0x755b480&gt;&gt;
-&lt;UITableViewCell: 0x755aee0; frame = (0 132; 320 44); text = '3'; hidden = YES; autoresize = W; layer = &lt;CALayer: 0x755ae10&gt;&gt;
-&lt;UITableViewCell: 0x755a870; frame = (0 88; 320 44); text = '2'; hidden = YES; autoresize = W; layer = &lt;CALayer: 0x755a730&gt;&gt;
-&lt;UITableViewCell: 0x7559f60; frame = (0 44; 320 44); text = '1'; hidden = YES; autoresize = W; layer = &lt;CALayer: 0x755a090&gt;&gt;
-&lt;UITableViewCell: 0x7556f70; frame = (0 0; 320 44); text = '0'; hidden = YES; autoresize = W; layer = &lt;CALayer: 0x75570f0&gt;&gt;
-</code></pre>
-
-<p>可以看到，还是存在6个cell对象。</p>
-
-<h2>好吧，那为什么当初在ios6上没有问题呢</h2>
-
-<p>ios6上运行没有问题，不代表代码逻辑没有问题，只不过问题被巧妙的掩藏过去了。</p>
-
-<p>问题的关键在于查找到的顺序：在ios7中，被删除的cell会最后被遍历，会覆盖row为0的内容；而在ios6中，被删除的cell最先被遍历，虽然会先写入错误的内容，但是后面会被真正的第0行内容覆盖，所以才看起来没有问题。</p>
-
-<p>终于，又解决了一个有趣的bug。</p>
-
-<h2>总结</h2>
-
-<p>这种遍历的方式本来就有问题，应该根据indexPath，遍历查找cell。另外程序缺少异常情况的处理，cell为空时，没有做异常处理。对UITableView的机制缺乏了解，通过这个bug又有了新的认识。</p>
-
-<p>Reveal乃居家旅行必备神器。</p>
-
-<p>也许很多时候，我们埋下了陷阱，由于某种巧合，表面上安然无事。但是终究有一天会暴漏出来。要不断提高代码质量。</p>
-
-<p>（ps：如果没有埋下这个错误，也许就没有了今天解决问题的乐趣，就不会又进一步的了解。就像那句话说的：无知让我感到痛苦，无知为我带来快乐。）</p>
 
 		
 		

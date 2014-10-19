@@ -9,7 +9,7 @@
 	<meta name="author" content="王仙客">
 
 	
-	<meta name="description" content="Oct 19th, 2014 The Python Challenge–Level 2 分析 Level2的地址：http://www.pythonchallenge.com/pc/def/ocr.html 文字提示MAYBE they are in the page source &hellip;">
+	<meta name="description" content="Oct 19th, 2014 The Python Challenge–Level 3 Level3地址：http://www.pythonchallenge.com/pc/def/equality.html 分析 提示文字： One small letter, surrounded by &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -90,6 +90,77 @@
 			<div class="mid-col-container">
 				<div id="content" class="inner">
 <div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-10-19T10:35:11+08:00" data-updated="true" itemprop="datePublished">Oct 19<span>th</span>, 2014</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/10/19/the-python-challenge-level-3/" itemprop="url">The Python Challenge–Level 3</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>Level3地址：<a href="http://www.pythonchallenge.com/pc/def/equality.html">http://www.pythonchallenge.com/pc/def/equality.html</a></p>
+
+<h2>分析</h2>
+
+<p>提示文字：</p>
+
+<pre><code>One small letter, surrounded by EXACTLY three big bodyguards on each of its sides.
+</code></pre>
+
+<p>根据上一次的经验，查看网页的源码，标题为<code>re</code>，看来和正则表达式有关系了。</p>
+
+<p>网页源码里仍然有一段被注释的字符串，看来就要在这一串中找出两边大写中间小写字母的内容了。</p>
+
+<h2>解决</h2>
+
+<pre><code>text = ‘’’
+       …
+       ‘’’
+import re
+pattern = re.compile(r'[A-Z]{3}([a-z])[A-Z]{3}')
+result = re.findall(pattern,text)
+print(‘’.join(result))
+</code></pre>
+
+<p>发现打印出来很多结果，哪里出了问题？</p>
+
+<p>再仔细看提示语：<code>EXACTLY</code>，必须是有且只有三个大写字母。</p>
+
+<p>修改正则表达式：</p>
+
+<pre><code>pattern = re.compile(r'[^A-Z][A-Z]{3}([a-z])[A-Z]{3}[^A-Z]')
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code>linkedlist
+</code></pre>
+
+<h2>其他解决方法</h2>
+
+<p><a href="http://www.pythonchallenge.com/pcc/def/linkedlist.php">http://www.pythonchallenge.com/pcc/def/linkedlist.php</a></p>
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
@@ -742,66 +813,6 @@ static const void *ImageTagKey = &amp;ImageTagKey;
 	<h1 class="title" itemprop="name"><a href="/blog/2014/01/12/reactivecocoajian-jie/" itemprop="url">ReactiveCocoa简介</a></h1>
 	<div class="entry-content" itemprop="articleBody">
 		
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-01-12T16:45:59+08:00" data-updated="true" itemprop="datePublished">Jan 12<span>th</span>, 2014</time></div>
-		<div class="tags">
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/2014/01/12/2013nian-du-guo-de-hao-shu/" itemprop="url">2013年读过的好书</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<h2>技术类书籍</h2>
-
-<p>首先时技术类书籍：</p>
-
-<ul>
-<li>《从小工到专家——程序员修炼之道》：</li>
-<li>《Head First 设计模式》：</li>
-<li>《iOS 高级编程》：</li>
-<li>《Python》：</li>
-<li>《STL源码剖析》：</li>
-</ul>
-
-
-<h2>非技术类书籍</h2>
-
-<p>非技术类：</p>
-
-<ul>
-<li>《一个人的村庄》：</li>
-<li>《1984》：</li>
-<li>《少有人走的路：》：</li>
-<li>《自由在高处》：</li>
-<li>《九种孤独》：</li>
-<li>《天才在左，疯子在右》：</li>
-<li>《猎命师传奇：卷二十》：</li>
-<li>《上帝掷骰子吗》：</li>
-<li>《沉默的大多数》：</li>
-<li>《变身》、《新参者》：</li>
-</ul>
-
 
 		
 		
