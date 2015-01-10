@@ -9,7 +9,7 @@
 	<meta name="author" content="王仙客">
 
 	
-	<meta name="description" content="Oct 19th, 2014 Mac book升级Yosemite异常的解决方法 前天苹果更新新版桌面操作系统OS X Yosemite，版本号为OS X 10.10。兴匆匆地升级我的Mac book，等了好久，更新重启之后出现了下面这个画面： 解决方法很简单： 第一步：长按关机键，然后重新启动 &hellip;">
+	<meta name="description" content="Jan 10th, 2015 UIImagePickerController Cause idleTimerDisabled Setting Problem 前一段时间，遇到了一个奇怪的问题：在程序里设置了idleTimerDisabled为YES，但是还是有用户反馈，程序会自动锁屏。 &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -90,6 +90,99 @@
 			<div class="mid-col-container">
 				<div id="content" class="inner">
 <div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-10T10:48:27+08:00" data-updated="true" itemprop="datePublished">Jan 10<span>th</span>, 2015</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2015/01/10/uiimagepickercontroller-cause-idletimerdisabled-setting-not-working/" itemprop="url">UIImagePickerController Cause idleTimerDisabled Setting Problem</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>前一段时间，遇到了一个奇怪的问题：在程序里设置了<code>idleTimerDisabled</code>为<code>YES</code>，但是还是有用户反馈，程序会自动锁屏。测试也曾反馈，曾经遇到过这个问题，但一直未找到重现方法。在Stackoverflow看到，与UIImagePickerController的使用有关。</p>
+
+<h2>重现</h2>
+
+<p>设置<code>idleTimerDisabled</code>为<code>YES</code>，创建UIImagePickerController，设置sourceType为<code>UIImagePickerControllerSourceTypeCamera</code>，然后弹出拍照页面。拍照页面关闭后，等待自动锁屏的出现。</p>
+
+<h2>分析</h2>
+
+<p>设置断点:</p>
+
+<pre><code>-[UIApplication setIdleTimerDisabled:]
+</code></pre>
+
+<p><img src="/images/20150110_1.png" alt="idleTimer breakpoint" /></p>
+
+<p>运行后会发现，在UIImagePickerController弹出的时候，进入一次断点。使用LLDB命令(因为我用的是arm64的机器，所以寄存器为x，如果是armv7，为r)：</p>
+
+<pre><code>po $x0
+&lt;UIApplication: 0x156e008e0&gt;
+
+p (SEL)$x1
+(SEL) $1 = "setIdleTimerDisabled:"
+
+po $x2
+1
+</code></pre>
+
+<p>在弹出UIImagePickerController的时候，系统会自动将<code>idleTimerDisabled</code>设置为<code>YES</code>。</p>
+
+<p>继续运行，关闭UIImagePickerController，由于这只的animation为<code>YES</code>，会进入两次断点。两次的参数相同，都为<code>nil</code>。</p>
+
+<pre><code>po $x2
+nil
+</code></pre>
+
+<p>这就会将<code>idleTimerDisabled</code>设置为<code>NO</code>，导致之前设置的值被修改。</p>
+
+<h2>解决</h2>
+
+<p>目前想到的解决方法，在UIImagePickerController消失后，重新设置idleTimerDisabled为需要的值。</p>
+
+<pre><code>#pragma mark - UIImagePickerControllerDelegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker         didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    [self dismissViewControllerAnimated:YES completion:^{
+    [self performSelector:@selector(resetIdleTimerDisabled) withObject:nil          afterDelay:1.0];
+     }];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+  [self dismissViewControllerAnimated:YES completion:^{
+  [self performSelector:@selector(resetIdleTimerDisabled) withObject:nil        afterDelay:1.0];
+   }];
+}
+</code></pre>
+
+<p>参考：</p>
+
+<p><a href="http://stackoverflow.com/questions/23391564/ios-idletimerdisabled-yes-works-only-until-imagepicker-was-used">http://stackoverflow.com/questions/23391564/ios-idletimerdisabled-yes-works-only-until-imagepicker-was-used</a></p>
+
+<p><a href="http://www.objc.io/issue-19/">http://www.objc.io/issue-19/</a></p>
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
@@ -708,131 +801,6 @@ Rect: \{\{0, 0\}, \{200, 100\}\}
 
 </article>
 
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-01-16T22:39:50+08:00" data-updated="true" itemprop="datePublished">Jan 16<span>th</span>, 2014</time></div>
-		<div class="tags">
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/2014/01/16/adding-properties-to-a-category-using-associated-objects/" itemprop="url">Adding Properties to a Category Using Associated Objects</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<h2>Object-C中的Category</h2>
-
-<p>Object-C中的Category，相信大家一定不会陌生。一般来说，我们可以用它来为一个类添加新的方法：</p>
-
-<pre><code>@interface NSString (NumberUtils)
-- (BOOL)isNumeric; 
-@end
-
-@implementation NSString (NumberUtils) 
-- (BOOL)isNumeric
-{
-    NSScanner *scanner = [NSScanner scannerWithString:self];
-    return [scanner scanFloat:NULL]? [scanner isAtEnd]: NO;
-}
-@end
-</code></pre>
-
-<p>我们也可以Category中定义新的数据成员，但是不能够对它们使用synthesize。这是因为一个类的结构已经在编译器决定了，而Category是在运行期定义生成的，这样就没有办法改变类结构体中的ivars。</p>
-
-<pre><code>struct objc_class {  
-    Class isa  OBJC_ISA_AVAILABILITY;  
-
-    #if !__OBJC2__  
-    Class super_class                                        OBJC2_UNAVAILABLE;  
-    const charchar *name                                     OBJC2_UNAVAILABLE;  
-    long version                                             OBJC2_UNAVAILABLE;  
-    long info                                                OBJC2_UNAVAILABLE;  
-    long instance_size                                       OBJC2_UNAVAILABLE;  
-    struct objc_ivar_list *ivars                             OBJC2_UNAVAILABLE;  
-    struct objc_method_list **methodLists                    OBJC2_UNAVAILABLE;  
-    struct objc_cache *cache                                 OBJC2_UNAVAILABLE;  
-    struct objc_protocol_list *protocols                     OBJC2_UNAVAILABLE;  
-#endif  
-
-} OBJC2_UNAVAILABLE;    
-</code></pre>
-
-<p>可以向下面这样定义：</p>
-
-<pre><code>@interface NSString (NumberUtils)
-@property (nonatomic, readonly, getter=isNumeric) BOOL numeric;
-@end
-</code></pre>
-
-<p>如果我们想为一个类真正添加一个数据成员，要怎么办呢？当然你可能会想到使用修饰者，封装出一个对象，包含这个类和想要添加的数据成员。但是那样要麻烦一些。</p>
-
-<h2>使用Associated Objects为一个分类添加数据成员</h2>
-
-<p>使用Runtime来解决这个问题。要使用的API：</p>
-
-<pre><code> // 使用一个key值和关联策略来为一个对象设置一个关联的值
-void objc_setAssociatedObject(id object, const void *key, id value, objc_AssociationPolicy policy);
-</code></pre>
-
-<p><code>objc_setAssociatedObject</code>：使用一个key值和关联策略来为一个对象设置一个关联的值。类似NSDictionry，一个key值，对应一个value值。</p>
-
-<p>key值必须是进程的生命周期内一个唯一、不变的id值。可以使用一个NSString对象作为一个key值。但是如果试图通过一个相同的字符串值，但是不同内存地址作为key值，可能不会获得预期的结果。一个更好的选择是定义一个static的指针作为key值。</p>
-
-<p>下面一个例子：</p>
-
-<pre><code>@interface UIImage (Tagged)
-@property (nonatomic, copy) NSString *tag;
-@end    
-
-#import &lt;objc/runtime.h&gt; 
-
-static const void *ImageTagKey = &amp;ImageTagKey;
-@implementation UIImage (Tagged)
-
-- (void)setTag:(NSSting *)tag
-{
-    objc_setAssociatedObject(self, ImageTagKey, tag, OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
-
-- (NSString *)tag
-{
-    return objc_getAssociatedObject(self, ImageTagKey);
-}
-@end
-</code></pre>
-
-<p>这个例子中有一点点需要主要：</p>
-
-<ul>
-<li>key值使用一个指针类型static const void * 。我们必须让这个指针初始化，否则它的值就会为NULL，但是我们不关心具体指向什么，只要它是唯一的，不变的。这里面，指针指向了自己，一个唯一、不变的值。</li>
-</ul>
-
-
-<p>参考文章：</p>
-
-<p><a href="https://developer.apple.com/library/ios/documentation/cocoa/reference/ObjCRuntimeRef/Reference/reference.html#//apple_ref/doc/constant_group/Associative_Object_Behaviors">Objective-C Runtime Reference</a></p>
-
-<p><a href="http://iosdevelopertips.com/objective-c/adding-properties-category-using-associated-objects.html">Adding Properties to a Category Using Associated Objects</a></p>
-
-<p><a href="http://nshipster.com/associated-objects/">Associated Objects</a></p>
-
-		
-		
-	</div>
-
-</article>
-
 </div>
 <nav id="pagenavi">
     
@@ -842,7 +810,7 @@ static const void *ImageTagKey = &amp;ImageTagKey;
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav></div>
 			</div>
-			<footer id="footer" class="inner">Copyright &copy; 2014
+			<footer id="footer" class="inner">Copyright &copy; 2015
 
     王仙客
 

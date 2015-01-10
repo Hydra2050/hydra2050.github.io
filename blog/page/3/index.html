@@ -9,7 +9,7 @@
 	<meta name="author" content="王仙客">
 
 	
-	<meta name="description" content="Dec 11th, 2013 2013杭州西部越野 2013杭州西部越野是一次环杭州城山脊越野跑：从西湖区转塘风水洞出发，穿越周浦、龙坞、西湖三大山脊，最终到达终点浙大玉泉校区。这条线路也被称为“风浙线”，全程约42公里。 Dec 10th, 2013 关于UITableView的一个有趣的问题 &hellip;">
+	<meta name="description" content="Dec 11th, 2013 CocoaPods：Objective-C的依赖管理工具 引子 在iOS开发中，工程中会用到很多第三方的开源库，像ASIHttpRequest、AFNetworking、JSONKit等等。要添加一个第三方库的： 先查找并下载到本地，然后添加到工程 &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -90,6 +90,207 @@
 			<div class="mid-col-container">
 				<div id="content" class="inner">
 <div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-11T21:31:32+08:00" data-updated="true" itemprop="datePublished">Dec 11<span>th</span>, 2013</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/12/11/cocoapods/" itemprop="url">CocoaPods：Objective-C的依赖管理工具</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2>引子</h2>
+
+<p>在iOS开发中，工程中会用到很多第三方的开源库，像ASIHttpRequest、AFNetworking、JSONKit等等。要添加一个第三方库的：</p>
+
+<ol>
+<li>先查找并下载到本地，然后添加到工程</li>
+<li>添加第三方开源库所依赖的framework</li>
+<li>一些第三方开源库需要修改OtherLinerFlag的参数</li>
+</ol>
+
+
+<p>一旦开始一个新的项目，这些工作又要重新做一遍。另外还需要自己管理第三方库更新的问题。</p>
+
+<p>有没有一个能够帮助我们自动完成这一系列工作的方法呢？没错，就是今天的主角——CocoaPods。</p>
+
+<h2>CocoaPods介绍</h2>
+
+<p>CocoaPods为你的Xcode工程管理库的依赖。你的工程的第三方库依赖由一个单独的叫做Podfile的文本文件管理。CocoaPods可以获取第三方库源代码、解决库的依赖，然后将你的工程与它放在一个新创建的workspace中。最终的目标是通过创建一个更集中的生态系统，以提高第三方的开源库可发现性和参与性。</p>
+
+<p>官网地址：<a href="http://cocoapods.org/">http://cocoapods.org/</a></p>
+
+<p>GitHub地址：<a href="https://github.com/cocoapods/cocoapods">https://github.com/cocoapods/cocoapods</a></p>
+
+<h2>安装CocoaPods</h2>
+
+<p>CocoaPods使用Ruby创建，需要预先安装ruby。Mac下自默认安装好了ruby，可以通过命令查看：</p>
+
+<pre><code>ruby --version
+</code></pre>
+
+<p>使用ruby的gem命令安装：</p>
+
+<pre><code>sudo gem install cocoapods
+pod setup
+</code></pre>
+
+<h2>修改gem源</h2>
+
+<p>默认的gem源为<code>https://rubygems.org/</code>,国内的网络有可能被墙。如果无法访问这个网址，可以使用淘宝的RubyGems 镜像。修改方法：</p>
+
+<pre><code>$ gem sources --remove https://rubygems.org/
+$ gem sources -a http://ruby.taobao.org/
+</code></pre>
+
+<p>查看gem源：</p>
+
+<pre><code>gem source -l
+</code></pre>
+
+<p>修改成功后，可以按照上面的步骤安装。</p>
+
+<h2>更新CocoaPods</h2>
+
+<p>更新已安装的CocoaPods，只需要输入：</p>
+
+<pre><code>sudo gem update cocoapods
+</code></pre>
+
+<p>参见：<a href="http://guides.cocoapods.org/using/getting-started.html">CocoaPods Getting Started</a></p>
+
+<h2>使用CocoaPods查找第三方库</h2>
+
+<p>CocoaPods可以很方便地查找第三方库：</p>
+
+<pre><code>pod search ReactiveCocoa
+</code></pre>
+
+<h2>将CocoaPods添加到Xcode工程</h2>
+
+<p>创建一个<a href="http://guides.cocoapods.org/using/the-podfile.html">Podfile</a>文件，添加你所需要的第三方库文件：</p>
+
+<pre><code>platform :ios, '6.0'
+pod 'AFNetworking', '~&gt; 2.0'  
+pod 'ObjectiveSugar', '~&gt; 0.5'
+</code></pre>
+
+<p>保存并放在工程的根目录，然后：</p>
+
+<pre><code>pod install
+</code></pre>
+
+<p>这样就会生成一个MyApp.xcworkspace，以后经通过使用这个打开工程，而不是原来的MyApp.xcodeproj.</p>
+
+<p>如果需要更新工程使用的第三方库，只需要编辑Podfile文件，然后再次执行pod install 即可。</p>
+
+<h2>集成到一个已存在的workspace中</h2>
+
+<p>如果想将CocoaPods集成到一个已经存在的workspace中，只需要在Podfile中增加一句：</p>
+
+<pre><code>workspace 'MyWorkspace'
+</code></pre>
+
+<h2>这一系列命令后到底做了什么</h2>
+
+<p>使用pod install命令，实际做了：</p>
+
+<ol>
+<li>创建或者更新workspace</li>
+<li>将你的工程添加到这个workspace中</li>
+<li>如果需要将CocoaPods静态库工程添加到workspace中</li>
+<li>添加libPods.a</li>
+<li>将CocoaPods的Xocde configurations file添加到你的工程</li>
+<li>将你的工程的target configurations改变为急于CocoaPods的</li>
+<li>添加一个编译参数来拷贝pods中的资源文件到你的app bundle。i.e. a ‘Script build phase’ after all other build phases with the following:
+Shell: /bin/sh
+Script: ${SRCROOT}/Pods/PodsResources.sh</li>
+</ol>
+
+
+<p>参见：<a href="http://guides.cocoapods.org/using/using-cocoapods.html#what-is-happening-behind-the-scenes?">Using CocoaPods</a></p>
+
+<h2>定义私有库</h2>
+
+<p>在开发的过程中，可以定义将通用的部分定义成私有的库，便于快速开发。</p>
+
+<h3>Podspec</h3>
+
+<p>.podspec文件是一个库的描述文件。.podspec文件可以标识该第三方库所需要的源码文件、依赖库、编译选项，以及其他第三方库需要的配置。</p>
+
+<p>在安装pods的时候，会从<a href="https://github.com/CocoaPods/CocoaPods">https://github.com/CocoaPods/CocoaPods</a>下载，里面包含了所有第三方库的.podspec文件。可以通过查看当前用户根目录下的.cocoapods/repos/master/  路径。</p>
+
+<p>以AFNetworking为例：</p>
+
+<pre><code>Pod::Spec.new do |s|
+s.name     = 'AFNetworking'
+s.version  = '2.0.2'
+s.license  = 'MIT'
+s.summary  = 'A delightful iOS and OS X networking framework.'
+s.homepage = 'https://github.com/AFNetworking/AFNetworking'
+s.authors  = { 'Mattt Thompson' =&gt; 'm@mattt.me' }
+s.source   = { :git =&gt; 'https://github.com/AFNetworking/AFNetworking.git', :tag =&gt; "2.0.2", :submodules =&gt; true }
+s.requires_arc = true
+
+...
+...
+
+end
+</code></pre>
+
+<h3>创建pods私有库描述文件</h3>
+
+<p>创建命令：</p>
+
+<pre><code>$ pod spec create REPO_NAME
+</code></pre>
+
+<p>会生成一个.podsepc文件。根据注释可以方便理解各个配置项的意义。</p>
+
+<h3>创建本地podsepc</h3>
+
+<p>在.cocoapods/repos/master/  路径下，创建文件，名称为新创建的私有库名称，在目录下创建不同版本路径，然后将对应的.podsepc文件拷贝到对应目录下。</p>
+
+<p>然后使用pods搜索：</p>
+
+<pre><code>$ pod search REPO_NAME
+</code></pre>
+
+<p>看看是否能够搜索到新创建的库。</p>
+
+<h3>删除pods私有Repo</h3>
+
+<p>输入命令：</p>
+
+<pre><code>pod repo remove [name]
+</code></pre>
+
+<h2>总结</h2>
+
+<p>使用CocoaPods管理第三方库，能够帮助完成很多之前繁琐的工作，提高工作效率。第三方库的更新更是省心了不少，不再需要再一个一个查看，哪个第三方库更新了没有。</p>
+
+<p>另外有一款APP，<a href="http://davander.com/podlife.html">Podlife</a>，让我们了解Pods上第三方库更新的情况，很不错。</p>
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
@@ -1081,7 +1282,7 @@ $ rake deploy
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav></div>
 			</div>
-			<footer id="footer" class="inner">Copyright &copy; 2014
+			<footer id="footer" class="inner">Copyright &copy; 2015
 
     王仙客
 
