@@ -1,0 +1,206 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>如何创建和使用私有cocoapods repo - 王仙客的博客</title>
+	<meta name="author" content="王仙客">
+
+	
+	<meta name="description" content="如何创建和使用私有cocoapods Repo 安装cocoapods gem update --system
+gem sources -l
+gem install cocoapods
+pod setup 创建私有cocoapods repo 第一步，创建私有Spec Repo &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="王仙客的博客" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://Hydra2050.github.io/blog/2015/02/08/ru-he-chuang-jian-he-shi-yong-si-you-cocoapods-repo/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("wh2050@sina.cn") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+	<p style="color:white;font-size:24px">王仙客的博客</p>
+	<br>
+	<p style="color:white;font-size:18px">明白一些道理</p>
+	<p style="color:white;font-size:18px">遇到一些有趣的事</p>
+	<br>
+	<li><a href="/">博客</a></li>
+	<li><a href="/blog/archives">所有文章</a></li>
+	<li><a href="/blog/2013/12/04/about/">关于我</a></li>
+</ul>
+
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:wh2050@sina.cn" title="Email">Email</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">如何创建和使用私有cocoapods Repo</h1>
+	<div class="entry-content" itemprop="articleBody"><h2>安装cocoapods</h2>
+
+<pre><code>gem update --system
+gem sources -l
+gem install cocoapods
+pod setup
+</code></pre>
+
+<h2>创建私有cocoapods repo</h2>
+
+<h3>第一步，创建私有Spec Repo</h3>
+
+<p>在服务器创建repo裸仓库：</p>
+
+<pre><code>mkdir REPO_NAME.git
+cd REPO_NAME.git
+git init --bare
+</code></pre>
+
+<h3>第二步，将私有pod repo添加到本地</h3>
+
+<pre><code>pod repo list
+pod repo add REPO_NAME SOURCE_URL
+</code></pre>
+
+<h3>第三步，检测pod repo是否正确</h3>
+
+<pre><code>pod repo lint REPO_NAME
+</code></pre>
+
+<h2>为私有pod添加新的Spec</h2>
+
+<h3>第一步，创建podspec文件</h3>
+
+<pre><code>pod spec create SPEC_NAME
+</code></pre>
+
+<h3>第二步，修改Spec文件</h3>
+
+<h3>第三步，检测Spec文件是否正确</h3>
+
+<pre><code>pod spec lint SPEC_NAME
+</code></pre>
+
+<h3>第四步，上传Spec文件至私有pod repo</h3>
+
+<pre><code>pod repo push REPO_NAME SPEC_NAME.podspec
+</code></pre>
+
+<p>因为我使用的时<code>ssh</code>URL获取，会产生<code>warning</code>：</p>
+
+<pre><code>    - WARN  | [source] Git SSH URLs will NOT work for people behind firewalls configured to only allow HTTP, therefore HTTPS is preferred.
+</code></pre>
+
+<p>可以忽略这个警告：</p>
+
+<pre><code>pod repo push --allow-warnings REPO_NAME SPEC_NAME.podspec
+</code></pre>
+
+<h2>spec lint 技巧</h2>
+
+<p>在执行<code>pod spec line xxx</code>的时候出错，但提示往往比较简单，可以添加参数<code>--no-clean</code>：</p>
+
+<pre><code>pod spec lint --no-clean xxx
+</code></pre>
+
+<p>执行完成后，根据提示的路径，打开lint生成的工程文件，编译查看出错的原因。</p>
+
+<p>一般路径为：<code>/private/tmp/CocoaPods/Lint/Pods/Pods.xcodeproj</code>。</p>
+
+<p>参考链接：<a href="http://guides.cocoapods.org/making/private-cocoapods.html">http://guides.cocoapods.org/making/private-cocoapods.html</a></p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2015
+
+    王仙客
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+		</div>
+	</div>
+</body>
+</html>

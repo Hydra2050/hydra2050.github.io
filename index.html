@@ -9,7 +9,10 @@
 	<meta name="author" content="王仙客">
 
 	
-	<meta name="description" content="Feb 8th, 2015 如何提高pod Install执行速度 应用集成了cocoapods一段时间，发现每次执行pod insgtall命令都会比较慢，有时要等十多分钟甚至更久，严重影响工作效率和开发的心情。 pod install执行慢的原因 Cocopods的pod &hellip;">
+	<meta name="description" content="Feb 8th, 2015 如何创建和使用私有cocoapods Repo 安装cocoapods gem update --system
+gem sources -l
+gem install cocoapods
+pod setup 创建私有cocoapods repo 第一步，创建私有Spec &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -90,6 +93,107 @@
 			<div class="mid-col-container">
 				<div id="content" class="inner">
 <div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-02-08T15:22:36+08:00" data-updated="true" itemprop="datePublished">Feb 8<span>th</span>, 2015</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2015/02/08/ru-he-chuang-jian-he-shi-yong-si-you-cocoapods-repo/" itemprop="url">如何创建和使用私有cocoapods Repo</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2>安装cocoapods</h2>
+
+<pre><code>gem update --system
+gem sources -l
+gem install cocoapods
+pod setup
+</code></pre>
+
+<h2>创建私有cocoapods repo</h2>
+
+<h3>第一步，创建私有Spec Repo</h3>
+
+<p>在服务器创建repo裸仓库：</p>
+
+<pre><code>mkdir REPO_NAME.git
+cd REPO_NAME.git
+git init --bare
+</code></pre>
+
+<h3>第二步，将私有pod repo添加到本地</h3>
+
+<pre><code>pod repo list
+pod repo add REPO_NAME SOURCE_URL
+</code></pre>
+
+<h3>第三步，检测pod repo是否正确</h3>
+
+<pre><code>pod repo lint REPO_NAME
+</code></pre>
+
+<h2>为私有pod添加新的Spec</h2>
+
+<h3>第一步，创建podspec文件</h3>
+
+<pre><code>pod spec create SPEC_NAME
+</code></pre>
+
+<h3>第二步，修改Spec文件</h3>
+
+<h3>第三步，检测Spec文件是否正确</h3>
+
+<pre><code>pod spec lint SPEC_NAME
+</code></pre>
+
+<h3>第四步，上传Spec文件至私有pod repo</h3>
+
+<pre><code>pod repo push REPO_NAME SPEC_NAME.podspec
+</code></pre>
+
+<p>因为我使用的时<code>ssh</code>URL获取，会产生<code>warning</code>：</p>
+
+<pre><code>    - WARN  | [source] Git SSH URLs will NOT work for people behind firewalls configured to only allow HTTP, therefore HTTPS is preferred.
+</code></pre>
+
+<p>可以忽略这个警告：</p>
+
+<pre><code>pod repo push --allow-warnings REPO_NAME SPEC_NAME.podspec
+</code></pre>
+
+<h2>spec lint 技巧</h2>
+
+<p>在执行<code>pod spec line xxx</code>的时候出错，但提示往往比较简单，可以添加参数<code>--no-clean</code>：</p>
+
+<pre><code>pod spec lint --no-clean xxx
+</code></pre>
+
+<p>执行完成后，根据提示的路径，打开lint生成的工程文件，编译查看出错的原因。</p>
+
+<p>一般路径为：<code>/private/tmp/CocoaPods/Lint/Pods/Pods.xcodeproj</code>。</p>
+
+<p>参考链接：<a href="http://guides.cocoapods.org/making/private-cocoapods.html">http://guides.cocoapods.org/making/private-cocoapods.html</a></p>
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
@@ -780,66 +884,6 @@ horizontalMotionEffect.maximumRelativeValue = @(50);
 <p><a href="http://www.teehanlax.com/blog/introduction-to-uimotioneffect/">http://www.teehanlax.com/blog/introduction-to-uimotioneffect/</a>
 <a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIMotionEffect_class/Reference/Reference.html#//apple_ref/doc/uid/TP40013376">https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIMotionEffect_class/Reference/Reference.html#//apple_ref/doc/uid/TP40013376</a>
 <a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIMotionEffectGroup_class/Reference/Reference.html#//apple_ref/doc/uid/TP40013378">https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIMotionEffectGroup_class/Reference/Reference.html#//apple_ref/doc/uid/TP40013378</a></p>
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-01-18T22:02:46+08:00" data-updated="true" itemprop="datePublished">Jan 18<span>th</span>, 2014</time></div>
-		<div class="tags">
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/2014/01/18/use-nslog-to-print-cgpoint-cgrect/" itemprop="url">如何使用NSLog打印CGPoint、CGSize、CGRect</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<p>平时调试程序的时候，经常会使用NSLog打印出来。当有CGPoint、CGSize、CGRect对象要打印时，一般要写成下面的方式：</p>
-
-<pre><code>CGPoint point = CGPointMake(0, 20);
-NSLog(@"Point: x=%f, y=%f", point.x, point.y);
-
-CGSize size = CGSizeMake(200, 100);
-NSLog(@"Size: w=%f, h=%f", size.width, size.height);
-
-CGRect rect = CGRectMake(0, 0, 200, 100);
-NSLog(@"Rect: x=%f, y=%f, w=%f, h=%f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
-</code></pre>
-
-<p>今天看到一篇文章：<a href="http://iosdevelopertips.com/debugging/how-to-use-nslog-to-debug-cgrect-and-cgpoint.html">How to Use NSLog to Debug CGRect and CGPoint</a>，才了解到有一些其他方便的方法。</p>
-
-<pre><code>CGPoint point = CGPointMake(0, 20);
-NSLog(@"Point: %@", NSStringFromCGPoint(point));
-
-CGSize size = CGSizeMake(200, 100);
-NSLog(@"Size: %@", NSStringFromCGSize(size));
-
-CGRect rect = CGRectMake(0, 0, 200, 100);
-NSLog(@"Rect: %@", NSStringFromCGRect(rect));
-</code></pre>
-
-<p>打印结果：</p>
-
-<pre><code>Point: {0, 20}
-Size: {200, 100}
-Rect: \{\{0, 0\}, \{200, 100\}\}
-</code></pre>
 
 		
 		

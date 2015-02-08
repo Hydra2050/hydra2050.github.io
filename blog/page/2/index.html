@@ -9,7 +9,7 @@
 	<meta name="author" content="王仙客">
 
 	
-	<meta name="description" content="Jan 18th, 2014 iOS开发中一些常用的宏定义 Debug输出： #ifdef DEBUG #define debug(format, ...) CFShow([NSString stringWithFormat:format, ## __VA_ARGS__]); #define &hellip;">
+	<meta name="description" content="Jan 18th, 2014 如何使用NSLog打印CGPoint、CGSize、CGRect 平时调试程序的时候，经常会使用NSLog打印出来。当有CGPoint、CGSize、CGRect对象要打印时，一般要写成下面的方式： CGPoint point = CGPointMake(0, 20 &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -90,6 +90,66 @@
 			<div class="mid-col-container">
 				<div id="content" class="inner">
 <div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-18T22:02:46+08:00" data-updated="true" itemprop="datePublished">Jan 18<span>th</span>, 2014</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/01/18/use-nslog-to-print-cgpoint-cgrect/" itemprop="url">如何使用NSLog打印CGPoint、CGSize、CGRect</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>平时调试程序的时候，经常会使用NSLog打印出来。当有CGPoint、CGSize、CGRect对象要打印时，一般要写成下面的方式：</p>
+
+<pre><code>CGPoint point = CGPointMake(0, 20);
+NSLog(@"Point: x=%f, y=%f", point.x, point.y);
+
+CGSize size = CGSizeMake(200, 100);
+NSLog(@"Size: w=%f, h=%f", size.width, size.height);
+
+CGRect rect = CGRectMake(0, 0, 200, 100);
+NSLog(@"Rect: x=%f, y=%f, w=%f, h=%f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+</code></pre>
+
+<p>今天看到一篇文章：<a href="http://iosdevelopertips.com/debugging/how-to-use-nslog-to-debug-cgrect-and-cgpoint.html">How to Use NSLog to Debug CGRect and CGPoint</a>，才了解到有一些其他方便的方法。</p>
+
+<pre><code>CGPoint point = CGPointMake(0, 20);
+NSLog(@"Point: %@", NSStringFromCGPoint(point));
+
+CGSize size = CGSizeMake(200, 100);
+NSLog(@"Size: %@", NSStringFromCGSize(size));
+
+CGRect rect = CGRectMake(0, 0, 200, 100);
+NSLog(@"Rect: %@", NSStringFromCGRect(rect));
+</code></pre>
+
+<p>打印结果：</p>
+
+<pre><code>Point: {0, 20}
+Size: {200, 100}
+Rect: \{\{0, 0\}, \{200, 100\}\}
+</code></pre>
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
@@ -1073,224 +1133,6 @@ self.locationManager.delegate = self;
 <p>通过Demo，可以对iBeacon有一个简单的了解。iBeacon可以方便实现室内导航、商品消息推送、支付等功能。网上很多文章认为iBeacon会成为NFC杀手。到底iBeacon能发展到什么地步，让我们拭目以待吧。</p>
 
 <p><a href="http://support.apple.com/kb/HT6048">iOS: Understanding iBeacon</a></p>
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-14T20:41:36+08:00" data-updated="true" itemprop="datePublished">Dec 14<span>th</span>, 2013</time></div>
-		<div class="tags">
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/2013/12/14/ios7-new-feature-textkit/" itemprop="url">IOS7 New Feature: TextKit</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<h2>引子</h2>
-
-<p>今年的WWDC大会上，苹果推出了IOS7,UI上有了很大变化，向扁平化发展；在新的SDK中，新的特性、新的功能无疑给开发者带来了更大的惊喜。其中最感兴趣的主要有三点,今天的主角TextKit就是其中之一。</p>
-
-<p><img src="/images/20131215-1.png" alt="TextKit" /></p>
-
-<h2>What is Text Kit?</h2>
-
-<ol>
-<li>快速现代化的文本布局和渲染引擎</li>
-<li>基于core text，拥有core text的所有功能和灵活性，而不需要使用不易用的API（CF type）</li>
-<li>完美地集成在UIKit中</li>
-</ol>
-
-
-<p>下图是IOS6中的类结构图：</p>
-
-<p><img src="/images/20131215-3.png" alt="Structure in IOS6" /></p>
-
-<p>下图是IOS7中的类结构图：</p>
-
-<p><img src="/images/20131215-2.png" alt="Structure in IOS7" /></p>
-
-<p>可以看出，iOS7之前，几乎所有的文本和UIWebview都是WebKit来处理的，由它来布局和渲染。在IOS7中，UIWebview还是由WebKit作为排版和渲染引擎，但是文本都由TextKit来处理，TextKit又是基于CoreText之上，这是一个很大的改动。</p>
-
-<h2>TextKit结构设计</h2>
-
-<p>TextKit的设计符合模型-视图-控制器（MVC）架构：</p>
-
-<p><img src="/images/20131217-1.png" alt="TextKit结构设计" /></p>
-
-<p><em>NSTextStorage</em>：MVC中的模型，用于存储需要显示的文本内容以及他们的属性。它继承自NSMutableAttributedString。当内容变化时，会通知NSLayoutManager；</p>
-
-<p><em>NSTextContainer</em>：MVC中的视图。每个文本视图都有一个文本容器，用来定义了一个文本可以绘制的区域，即NSTextContainer。</p>
-
-<p><em>UITextView</em>：实际中的文本视图组件，每一文本视图都有一个文本容器，即NSTextContainer。</p>
-
-<p><em>NSLayoutManager</em>：MVC中的控制器，用来管理文本的显示：</p>
-
-<ol>
-<li>这个管理器监听NSTextStorage中文本或属性改变的通知，一旦接收到通知就触发布局进程;</li>
-<li>从NSTextStorage提供的文本开始，它将所有的字符翻译为字形（Glyph);</li>
-<li>一旦字形全部生成，这个管理器向它的文本容器（们）查询文本可用以绘制的区域;</li>
-<li>然后这些区域被行逐步填充，而行又被字形逐步填充。一旦一行填充完毕，下一行开始填充;</li>
-<li>对于每一行，布局管理器必须考虑断行行为（放不下的单词必须移到下一行）、连字符、内联的图像附件等等;</li>
-<li>当布局完成，文本的当前显示状态被设为无效，然后文本管理器将前面几步排版好的文本设给文本视图。</li>
-</ol>
-
-
-<h2>Text Layout</h2>
-
-<p>什么是TextLayout？</p>
-
-<pre><code>TextLayout ＝ Glyph ＋ Location
-Glyph = Font + String
-</code></pre>
-
-<p>什么是Glyph？</p>
-
-<p><img src="/images/20131217-2.png" alt="Glyph" /></p>
-
-<ol>
-<li>字符的图形表示（A Graphical Representation of Characters）。</li>
-<li>Character + font &ndash;> glyph</li>
-<li>图形系统的Glyph IDs: CGGlyph</li>
-</ol>
-
-
-<p>有了TextLayout可以实现的功能：</p>
-
-<p>1.字距调整（Kerning）</p>
-
-<p><img src="/images/20131217-3.png" alt="Kerning" /></p>
-
-<p>2.连写</p>
-
-<p><img src="/images/20131217-4.png" alt="Ligature" /></p>
-
-<p>3.断字</p>
-
-<p><img src="/images/20131217-5.png" alt="Break" /></p>
-
-<p>4.隐藏文字</p>
-
-<p><img src="/images/20131217-6.png" alt="Truncation" /></p>
-
-<p>5.更加完美的排版</p>
-
-<h2>DEMO演示</h2>
-
-<p>下载地址：<a href="https://github.com/Hydra2050/TextKitDemo">Demo地址</a></p>
-
-<h4>Demo1:BaseInteraction</h4>
-
-<p>对文本内容进行基本的检测，包括地址、电话、URl等。</p>
-
-<pre><code>-(BOOL) textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange
-{
-    //...
-}
-</code></pre>
-
-<p>通过回调函数，对URL的点击进行处理。</p>
-
-<p><img src="/images/20131217-7.png" alt="BaseInteraction" /></p>
-
-<h4>Demo2:ExclusionPaths</h4>
-
-<p>为TextView中的文字设置ExclusionPaths，即设置一个不可填充文本的区域。</p>
-
-<pre><code>- (UIBezierPath *)translatedBezierPath
-{
-    static dispatch_once_t onceToken;
-    dispatch_once(&amp;onceToken, ^{
-        //从预先设置好的plist中读取
-        _originalButterflyPath = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"butterflyPath" ofType:@"plist"]];
-    });
-
-    CGRect butterflyImageRect = [self.textView convertRect:self.imageView.frame fromView:self.view];
-    UIBezierPath *newButterflyPath = [self.originalButterflyPath copy];
-    [newButterflyPath applyTransform:CGAffineTransformMakeTranslation(butterflyImageRect.origin.x, butterflyImageRect.origin.y)];
-
-    return newButterflyPath;
-}
-
-- (void)viewDidLayoutSubviews
-{
-    [super viewDidLayoutSubviews];
-
-    self.textView.textContainer.exclusionPaths = @[[self translatedBezierPath]];
-}
-</code></pre>
-
-<p><img src="/images/20131217-8.png" alt="ExclusionPaths" /></p>
-
-<h4>Demo3:TextColoring</h4>
-
-<p>实现对文本特殊字段的高亮处理，对URL类型字符串添加边框等。</p>
-
-<pre><code>self.textStorage = [[TextColoringTextStorage alloc] init];
-OutliningLayoutManager* layoutManager = [[OutliningLayoutManager alloc] init];
-NSTextContainer* textContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(self.view.frame.size.width, CGFLOAT_MAX)];
-[layoutManager addTextContainer:textContainer];
-[self.textStorage addLayoutManager:layoutManager];
-
-UITextView* textView = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) textContainer:textContainer];
-[self.view addSubview:textView];
-
-//设置需要处理的文本片段
-self.textStorage.tokens = @{ @"Alice" : @{ NSForegroundColorAttributeName : [UIColor redColor] },
-                             @"once" : @{ NSForegroundColorAttributeName : [UIColor greenColor] },
-                             TKDDefaultTokenName : @{ NSForegroundColorAttributeName : [UIColor blackColor],NSFontAttributeName:[UIFont fontWithName:@"Helvetica" size:18.] } };
-</code></pre>
-
-<p><img src="/images/20131217-9.png" alt="TextColoring" /></p>
-
-<h3>Demo4:FontType</h3>
-
-<p>UIFontDescriptor的简单使用。</p>
-
-<pre><code>UIFontDescriptor* fontDescriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleBody];
-UIFontDescriptor* boldFontDescriptor = [fontDescriptor fontDescriptorWithSymbolicTraits:UIFontDescriptorTraitBold];
-UIFont* boldFont = [UIFont fontWithDescriptor:boldFontDescriptor size:0.0];
-</code></pre>
-
-<h2>总结</h2>
-
-<p>通过几个例子，TextKit已经初步展示了它强大的处理能力，但这只是冰山一角。在WWDC的视频中关于自动布局、更加精细的排版方面例子，Demo中并没有实现。</p>
-
-<p>参考资料：</p>
-
-<p>WWDC2013视频：
-<a href="https://developer.apple.com/wwdc/videos/">https://developer.apple.com/wwdc/videos/</a></p>
-
-<p>Session 210: Introducing Text Kit</p>
-
-<p>Session 223: Using Fonts with Text Kit</p>
-
-<p>Session 220: Advanced Text Layouts and Effects with Text Kit</p>
-
-<p>WWDC 2013 sample code:
-<a href="https://developer.apple.com/downloads/index.action?name=WWDC%202013">https://developer.apple.com/downloads/index.action?name=WWDC%202013</a></p>
-
-<p>objc.io原文地址：
-<a href="http://www.objc.io/issue-5/getting-to-know-textkit.html">http://www.objc.io/issue-5/getting-to-know-textkit.html</a></p>
-
-<p>译文地址：
-<a href="http://blog.jobbole.com/5196">http://blog.jobbole.com/5196</a></p>
 
 		
 		
