@@ -9,7 +9,7 @@
 	<meta name="author" content="王仙客">
 
 	
-	<meta name="description" content="Jan 10th, 2015 UIImagePickerController Cause idleTimerDisabled Setting Problem 前一段时间，遇到了一个奇怪的问题：在程序里设置了idleTimerDisabled为YES，但是还是有用户反馈，程序会自动锁屏。 &hellip;">
+	<meta name="description" content="Feb 8th, 2015 如何提高pod Install执行速度 应用集成了cocoapods一段时间，发现每次执行pod insgtall命令都会比较慢，有时要等十多分钟甚至更久，严重影响工作效率和开发的心情。 pod install执行慢的原因 Cocopods的pod &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -90,6 +90,105 @@
 			<div class="mid-col-container">
 				<div id="content" class="inner">
 <div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-02-08T14:05:04+08:00" data-updated="true" itemprop="datePublished">Feb 8<span>th</span>, 2015</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2015/02/08/ru-he-ti-gao-pod-installzhi-xing-su-du/" itemprop="url">如何提高pod Install执行速度</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>应用集成了cocoapods一段时间，发现每次执行<code>pod insgtall</code>命令都会比较慢，有时要等十多分钟甚至更久，严重影响工作效率和开发的心情。</p>
+
+<h2><code>pod install</code>执行慢的原因</h2>
+
+<p>Cocopods的<code>pod install</code>命令一般分两步：</p>
+
+<ol>
+<li>执行<code>pod repo update</code>，更新本地的repo Spec文件（<a href="https://github.com/CocoaPods/Specs.git">https://github.com/CocoaPods/Specs.git</a>）</li>
+<li>根据spec的配置，获取源文件，一般是通过git clone的方式从github上下载第三方库</li>
+</ol>
+
+
+<p>由于<code>GWF</code>的存在，经常存在github无法访问的情况；有时可以访问，速度也比较慢。人生苦短！！</p>
+
+<p>可以针对这两方面进行提高<code>pod install</code>执行速度。</p>
+
+<h2>减少pod repo update的次数</h2>
+
+<p>执行<code>pod repo update</code>是必要的，保证每次安装的时候，能够获取最新的Spec文件。但不必每次都执行，建议每天执行一次。在执行<code>pod install</code>的时候添加参数，不再执行<code>pod repo update</code>：</p>
+
+<pre><code>pod install --no-repo-update
+</code></pre>
+
+<h2>使用本地的git mirror解决下载慢的问题</h2>
+
+<p>解决了repo更新的问题，仍然存在一系列问题：</p>
+
+<ul>
+<li>将源文件克隆到本地速度缓慢</li>
+<li>一旦被托管在github上的第三方库被删除掉，我们将再也无法获取到第三方库</li>
+<li>如果访问外网的网络暂时性的中断，无法执行<code>pod install</code>，影响正常开发</li>
+</ul>
+
+
+<p>为了解决以上问题，在公共服务器上搭建了一个GitMirror，为每一个使用到的第三方库创建一个mirror仓库。以后每次执行install的时候，实际都是从本地服务器下载，速度就会有明显的提升。</p>
+
+<h3>修改本地spec配置</h3>
+
+<p>第一步要将第三库的源文件下载地址修改为本地服务器。写了一个脚本<code>moveToGitMirror.py</code>自动完成本地spec配置修改。执行命令如下：</p>
+
+<pre><code>cd ~/.cocoapods/repos/master/
+python moveToGitMirror.py
+</code></pre>
+
+<p>这个脚本的功能很简单，遍历当前目录下的文件，查找后缀名为.spec.json的文件，查找到source路径，然后修改为镜像地址。</p>
+
+<p>这里需要注意的是，一旦修改，将完全依赖镜像的服务器。可以替换成一个指定的域名，而不是一个固定的ip地址。这样通过修改本地<code>hosts</code>文件，实现source路径的整体切换。</p>
+
+<h3>为一个第三方库创建git mirror</h3>
+
+<p>如果项目中需要一个第三方库，以<code>Masonry</code>为例。</p>
+
+<pre><code>ssh root@xx.xx.xx.xx
+cd GitRepoMirror/
+git clone --mirror https://github.com/Masonry/Masonry.git
+</code></pre>
+
+<h3>设置免密码远程访问</h3>
+
+<p>完成以上的操作，执行<code>pod install</code>，会发现下载一个第三方库都需要我们输入一次密码。what？？？太烦了！</p>
+
+<p>为了实现免密码远程访问，我们需要把本机的rsa公钥放入远程服务器的<code>authorized_keys</code>文件下。如果本机没有生产过rsa密钥，执行以下命令：</p>
+
+<pre><code>ssh-keygen -t rsa -C "xxx.com"
+</code></pre>
+
+<h2>下一步</h2>
+
+<p>下一步，可以创建一个属于自己的私有pod repo了，以后再介绍。</p>
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
@@ -741,59 +840,6 @@ NSLog(@"Rect: %@", NSStringFromCGRect(rect));
 Size: {200, 100}
 Rect: \{\{0, 0\}, \{200, 100\}\}
 </code></pre>
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-01-18T21:55:51+08:00" data-updated="true" itemprop="datePublished">Jan 18<span>th</span>, 2014</time></div>
-		<div class="tags">
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/2014/01/18/ioskai-fa-zhong-%5B%3F%5D-xie-chang-yong-de-hong-ding-yi/" itemprop="url">iOS开发中一些常用的宏定义</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<p>Debug输出：</p>
-
-<pre><code>#ifdef DEBUG
-    #define debug(format, ...) CFShow([NSString stringWithFormat:format, ## __VA_ARGS__]);
-    #define debugAlert(format, ...)  {UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"%s\n line: %d ", __PRETTY_FUNCTION__, __LINE__] message:[NSString stringWithFormat:format, ##__VA_ARGS__]  delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil]; [alert show]; [alert release];}
-#else
-    #define debug(format, ...) 
-    #define debugAlert(format, ...)
-#endif
-</code></pre>
-
-<p>检测是否支持ARC：</p>
-
-<pre><code>#if __has_feature(objc_arc)
-    // ARC
-#else
-    // No ARC
-#endif
-</code></pre>
-
-<p><a href="http://iosdevelopertips.com/debugging/remove-debug-code-for-release-build.html">http://iosdevelopertips.com/debugging/remove-debug-code-for-release-build.html</a></p>
-
-<p><a href="http://iosdevelopertips.com/debugging/display-debug-information-in-uialertview.html">http://iosdevelopertips.com/debugging/display-debug-information-in-uialertview.html</a></p>
 
 		
 		

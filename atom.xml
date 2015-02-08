@@ -4,7 +4,7 @@
   <title><![CDATA[王仙客的博客]]></title>
   <link href="http://Hydra2050.github.io/atom.xml" rel="self"/>
   <link href="http://Hydra2050.github.io/"/>
-  <updated>2015-01-10T12:01:52+08:00</updated>
+  <updated>2015-02-08T15:12:05+08:00</updated>
   <id>http://Hydra2050.github.io/</id>
   <author>
     <name><![CDATA[王仙客]]></name>
@@ -12,6 +12,83 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[如何提高pod install执行速度]]></title>
+    <link href="http://Hydra2050.github.io/blog/2015/02/08/ru-he-ti-gao-pod-installzhi-xing-su-du/"/>
+    <updated>2015-02-08T14:05:04+08:00</updated>
+    <id>http://Hydra2050.github.io/blog/2015/02/08/ru-he-ti-gao-pod-installzhi-xing-su-du</id>
+    <content type="html"><![CDATA[<p>应用集成了cocoapods一段时间，发现每次执行<code>pod insgtall</code>命令都会比较慢，有时要等十多分钟甚至更久，严重影响工作效率和开发的心情。</p>
+
+<h2><code>pod install</code>执行慢的原因</h2>
+
+<p>Cocopods的<code>pod install</code>命令一般分两步：</p>
+
+<ol>
+<li>执行<code>pod repo update</code>，更新本地的repo Spec文件（<a href="https://github.com/CocoaPods/Specs.git">https://github.com/CocoaPods/Specs.git</a>）</li>
+<li>根据spec的配置，获取源文件，一般是通过git clone的方式从github上下载第三方库</li>
+</ol>
+
+
+<p>由于<code>GWF</code>的存在，经常存在github无法访问的情况；有时可以访问，速度也比较慢。人生苦短！！</p>
+
+<p>可以针对这两方面进行提高<code>pod install</code>执行速度。</p>
+
+<h2>减少pod repo update的次数</h2>
+
+<p>执行<code>pod repo update</code>是必要的，保证每次安装的时候，能够获取最新的Spec文件。但不必每次都执行，建议每天执行一次。在执行<code>pod install</code>的时候添加参数，不再执行<code>pod repo update</code>：</p>
+
+<pre><code>pod install --no-repo-update
+</code></pre>
+
+<h2>使用本地的git mirror解决下载慢的问题</h2>
+
+<p>解决了repo更新的问题，仍然存在一系列问题：</p>
+
+<ul>
+<li>将源文件克隆到本地速度缓慢</li>
+<li>一旦被托管在github上的第三方库被删除掉，我们将再也无法获取到第三方库</li>
+<li>如果访问外网的网络暂时性的中断，无法执行<code>pod install</code>，影响正常开发</li>
+</ul>
+
+
+<p>为了解决以上问题，在公共服务器上搭建了一个GitMirror，为每一个使用到的第三方库创建一个mirror仓库。以后每次执行install的时候，实际都是从本地服务器下载，速度就会有明显的提升。</p>
+
+<h3>修改本地spec配置</h3>
+
+<p>第一步要将第三库的源文件下载地址修改为本地服务器。写了一个脚本<code>moveToGitMirror.py</code>自动完成本地spec配置修改。执行命令如下：</p>
+
+<pre><code>cd ~/.cocoapods/repos/master/
+python moveToGitMirror.py
+</code></pre>
+
+<p>这个脚本的功能很简单，遍历当前目录下的文件，查找后缀名为.spec.json的文件，查找到source路径，然后修改为镜像地址。</p>
+
+<p>这里需要注意的是，一旦修改，将完全依赖镜像的服务器。可以替换成一个指定的域名，而不是一个固定的ip地址。这样通过修改本地<code>hosts</code>文件，实现source路径的整体切换。</p>
+
+<h3>为一个第三方库创建git mirror</h3>
+
+<p>如果项目中需要一个第三方库，以<code>Masonry</code>为例。</p>
+
+<pre><code>ssh root@xx.xx.xx.xx
+cd GitRepoMirror/
+git clone --mirror https://github.com/Masonry/Masonry.git
+</code></pre>
+
+<h3>设置免密码远程访问</h3>
+
+<p>完成以上的操作，执行<code>pod install</code>，会发现下载一个第三方库都需要我们输入一次密码。what？？？太烦了！</p>
+
+<p>为了实现免密码远程访问，我们需要把本机的rsa公钥放入远程服务器的<code>authorized_keys</code>文件下。如果本机没有生产过rsa密钥，执行以下命令：</p>
+
+<pre><code>ssh-keygen -t rsa -C "xxx.com"
+</code></pre>
+
+<h2>下一步</h2>
+
+<p>下一步，可以创建一个属于自己的私有pod repo了，以后再介绍。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[UIImagePickerController cause idleTimerDisabled setting problem]]></title>
@@ -1456,98 +1533,6 @@ UIFont* boldFont = [UIFont fontWithDescriptor:boldFontDescriptor size:0.0];
 
 <p>译文地址：
 <a href="http://blog.jobbole.com/5196">http://blog.jobbole.com/5196</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[为IOS应用添加字体]]></title>
-    <link href="http://Hydra2050.github.io/blog/2013/12/14/ios-font/"/>
-    <updated>2013-12-14T16:42:10+08:00</updated>
-    <id>http://Hydra2050.github.io/blog/2013/12/14/ios-font</id>
-    <content type="html"><![CDATA[<h2>引子</h2>
-
-<p>ios6中默认提供了大概200种字体，有时为了让应用中的文字更好看，希望能有其他的字体可以选择。今天主要来介绍一下如何为IOS应用添加字体。</p>
-
-<h2>方法一、将字体包打包到工程</h2>
-
-<p>步骤如下：</p>
-
-<h3>1.下载字体包</h3>
-
-<p>在网上搜索字体包，可以找到很多资源，我下载了一个名字叫 DIN-Medium.otf 的字体包。（有一些特殊的字体可能涉及到版权的问题，所以在使用之前要确认清楚。）</p>
-
-<h3>2.将字体包添加到工程</h3>
-
-<p>将字体包添加到工程</p>
-
-<p><img src="http://Hydra2050.github.io/images/fontexample.png" alt="添加字体包" /></p>
-
-<p style="color:red">注：如果不选 Show Raw Keys/Values，需要添加的Key值为 Fonts provided by application </p>
-
-
-<h3>3.修改plist文件</h3>
-
-<p>在工程的plist文件中添加key值为UIAppFonts：</p>
-
-<p><img src="http://Hydra2050.github.io/images/201312141752.png" alt="添加键值" /></p>
-
-<p>这样就可以使用我们新加的字体了。</p>
-
-<p><img src="http://Hydra2050.github.io/images/201312141754.png" alt="使用新增字体" /></p>
-
-<p>效果图：</p>
-
-<p><img src="http://Hydra2050.github.io/images/201312141757.png" alt="效果图" /></p>
-
-<h2>方法二、动态下载字体库</h2>
-
-<p>在IOS6之后，苹果支持动态字体库下载。这样的好处可以不必增加程序包大小，不过下载的字体只能从官方支持的列表中选择：</p>
-
-<p><a href="http://support.apple.com/kb/HT5484">iOS 6: Font list</a></p>
-
-<p><a href="http://support.apple.com/kb/HT5878">iOS 7: Font list</a></p>
-
-<p><a href="https://developer.apple.com/library/ios/samplecode/DownloadFont/Introduction/Intro.html#//apple_ref/doc/uid/DTS40013404">苹果提供的Demo</a></p>
-
-<p>具体实现方法可以看一看Demo。</p>
-
-<p>在Readme中有一句很奇怪的话：</p>
-
-<pre><code>Fonts downloaded from applications in this manner are not installed permanently. 
-The system may decide to remove them under certain usage scenarios.
-</code></pre>
-
-<p>按照Readme中的说法，系统可能会删除我们下载的字体，所以在每次程序启动前都需要检查一遍，使用的时候要确定字体已经可以使用。</p>
-
-<p>什么场景下会删除？Readme中并没有详细说。</p>
-
-<p>Demo效果图：</p>
-
-<p><img src="http://Hydra2050.github.io/images/201312141811.png" alt="Demo效果图" /></p>
-
-<h2>总结</h2>
-
-<h3>将字体包打包到工程的方法</h3>
-
-<p>适用情况：字体包比较小</p>
-
-<p>存在的问题：对字体包大小有限制；版权的问题</p>
-
-<h3>动态下载字体库的方法</h3>
-
-<p>适用场景：字体包比较大，无法打包到工程（一个完整的字体包要10M多）；不用担心版权的问题。</p>
-
-<p>字体会下载一个系统的路径/private/var/mobile/Library/Assets/com_apple_MobileAsset_Font/，一次下载，所有的App都能使用（在被系统删除之前）。</p>
-
-<p>存在的问题：</p>
-
-<ol>
-<li>需要预先下载10几M的字体包，对用户来说是一个负担</li>
-<li>每次应用重新启动，即使已经下载，都需要“预热”一次。需要先到上面所说的下载路径进行匹配，检查是否已经下载；如果已经下载，就会将字体缓存到另外一个cache目录下，才能使用，这个过程需要3s左右的时间。（我试过手动删除下载的字体包，但不去改里面的XML文件，结果匹配出错返回错误结果，但是不再会重新下载）</li>
-<li>可选择的字体有限制，只能从苹果提高的列表中选择</li>
-<li>只支持IOS6以上（按照目前的统计来看，这个慢慢不是问题了）</li>
-</ol>
-
 ]]></content>
   </entry>
   
