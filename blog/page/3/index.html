@@ -9,7 +9,7 @@
 	<meta name="author" content="王仙客">
 
 	
-	<meta name="description" content="Dec 14th, 2013 IOS7 New Feature: TextKit 引子 今年的WWDC大会上，苹果推出了IOS7,UI上有了很大变化，向扁平化发展；在新的SDK中，新的特性、新的功能无疑给开发者带来了更大的惊喜。其中最感兴趣的主要有三点,今天的主角TextKit就是其中之一。 &hellip;">
+	<meta name="description" content="Dec 22nd, 2013 Object-C高级编程学习笔记(二) Blocks What is blocks Block语法 Blocks是C语言的扩充功能：带有自动变量（局部变量）的匿名函数。 ^ 返回值类型 参数列表 表达式 ^int (int count) {return count &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -90,6 +90,557 @@
 			<div class="mid-col-container">
 				<div id="content" class="inner">
 <div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-22T20:48:19+08:00" data-updated="true" itemprop="datePublished">Dec 22<span>nd</span>, 2013</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/12/22/object-cgao-ji-bian-cheng-xue-xi-2/" itemprop="url">Object-C高级编程学习笔记(二)</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h1>Blocks</h1>
+
+<h2>What is blocks</h2>
+
+<h3>Block语法</h3>
+
+<p>Blocks是C语言的扩充功能：带有自动变量（局部变量）的匿名函数。</p>
+
+<p><code>^</code> <code>返回值类型</code> <code>参数列表</code> <code>表达式</code></p>
+
+<pre><code>^int (int count) {return count + 1;}
+</code></pre>
+
+<p>Block语法可以省略几个项目。首先是返回值类型：</p>
+
+<pre><code>^(int count) {return count + 1;}
+</code></pre>
+
+<p>其次，如果不使用参数，参数列表可以省略：</p>
+
+<pre><code>^{ print(“Block\n”);}
+</code></pre>
+
+<p>使用Block语法讲Block赋值为Block类型变量：</p>
+
+<pre><code>int(^blk) (int) = ^(int count) {return count + 1;}
+int(^blk1) (int) = blk;
+</code></pre>
+
+<p>使用typedef定义：</p>
+
+<pre><code>typedef int (^blk_t) (int);
+blk_t blk = ^(int count) {return count + 1;}
+int nResult = blk(10);
+</code></pre>
+
+<p>Block类型变量可以像C语言中其他类型变量一样使用。</p>
+
+<h3>截获自动变量值</h3>
+
+<p>Blocks中，Block表达式截获所使用的自动变量的值。因为Block表达式保存了自动变量的值，所以在执行Block语法后，即使改写Block中使用的自动变量的值也不会影响Block执行时自动变量的值。</p>
+
+<pre><code>int a = 10;
+int b = 10;
+int (^blk) (void) = ^(return a + b;);
+b = 2;
+blk();
+</code></pre>
+
+<p>执行结果为：<code>20</code></p>
+
+<h3>__block说明符</h3>
+
+<p>若想在Block语法的表达式中将值赋给Block语法外的自动变量，需要在自动变量附加<strong>block说明符，该变量成为</strong>block变量。</p>
+
+<pre><code>__block int val = 0;
+void(^blk) (void) = ^{val = 1;};
+blk();
+printf("%d",val);
+</code></pre>
+
+<p>执行结果为： <code>1</code></p>
+
+<p>赋值给截获的自动变量会产生编译错误：</p>
+
+<pre><code>id array = [[NSMutableArray alloc] init];
+void (^blk) {array = [[NSMutableArray alloc] init]};
+</code></pre>
+
+<p>会出现编译错误。</p>
+
+<p>另外，在使用C语言数组时，必须小心使用起指针。</p>
+
+<pre><code>const char text[] = "Hello";
+void (^blk) (void) = ^{
+    printf("%c\n",text[2]);
+};
+</code></pre>
+
+<p>在现在的Block中，截获自动变量的方法并没有实现对C语言数组的截获，因此会编译出错。可以使用指针解决：</p>
+
+<pre><code>const char *text = "Hello";
+void (^blk) (void) = ^{
+    printf("%c\n",text[2]);
+};  
+</code></pre>
+
+<h2>Blocks的实现</h2>
+
+<p>// TODO:需要一些时间理解</p>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-22T14:28:55+08:00" data-updated="true" itemprop="datePublished">Dec 22<span>nd</span>, 2013</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/12/22/object-cgao-ji-bian-cheng/" itemprop="url">Object-C高级编程学习笔记(一)</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>书名：《Object-C高级编程 IOS与OS X多线程和内存管理》</p>
+
+<h2>ARC</h2>
+
+<p>在Object-C中采用Automatic Reference Counting(ARC)机制，让编译器来进行内存管理。</p>
+
+<ol>
+<li>使用Xcode4.2或以上版本</li>
+<li>使用LLVM编译器3.0或以上版本</li>
+<li>编译器选项中设置ARC为有效</li>
+</ol>
+
+
+<h3>所有权修饰符</h3>
+
+<ul>
+<li>__strong修饰符</li>
+<li>__weak修饰符</li>
+<li>__unsafe_unretained修饰符</li>
+<li>__autoreleasing修饰符</li>
+</ul>
+
+
+<h4>1. __strong修饰符</h4>
+
+<p>__strong修饰符为id类型和对象类型默认的所有权修饰符,可以省略。</p>
+
+<pre><code>id __strong obj = [[NSObject alloc] init];
+</code></pre>
+
+<h4>2. __weak修饰符</h4>
+
+<p>如果只用__strong修饰符，自动引用计数式内容管理必然会发生“循环引用”的问题。</p>
+
+<p>__weak提供弱引用，弱引用不能持有对象实例，可以解决“循环引用”的问题。</p>
+
+<p>下面这段代码：</p>
+
+<pre><code>id __weak obj = [[NSObject alloc] init];
+NSLog(@"%@",obj);
+</code></pre>
+
+<p>会输出 nil 。因为__weak修饰的obj持用弱引用，在赋值过后，并没有对象强引用它，生成的对象会立即释放。这样obj自动赋值为nil。</p>
+
+<p>再来看看下面这段代码的输出：</p>
+
+<pre><code>id __weak obj0 = nil;
+{
+    id __strong obj1 = [[NSObject alloc] init];
+    obj0 = obj1;
+    NSLog(@"%@",obj0);
+}
+NSLog(@"%@",obj0);
+</code></pre>
+
+<p>结果：</p>
+
+<pre><code>&lt;NSObject: 0x109420000&gt;
+nil
+</code></pre>
+
+<p>注：<strong>weak修饰符只能用于IOS5以上以及OS X Lion以上版本的应用程序。在它们一下的程序可使用</strong>unsafe_unretained修饰符来代替。</p>
+
+<h4>3. __unsafe_unretained修饰符</h4>
+
+<p><strong>unsafe_unretained修饰符，是不安全的所有权修饰符。有</strong>unsafe_unretained修饰符的变量不属于编译器的内存管理对象。</p>
+
+<pre><code>id __unsafe_unretained obj = [[NSObject alloc] init];
+NSLog(@"%@",obj);
+</code></pre>
+
+<p>这里和__weak一样，会输出<code>nil</code>。难道这两个修饰符相同吗？再来看第二个例子：</p>
+
+<pre><code>id __unsafe_unretained obj0 = nil;
+{
+    id __strong obj1 = [[NSObject alloc] init];
+    obj0 = obj1;
+    NSLog(@"%@",obj0);
+}
+NSLog(@"%@",obj0);
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code>&lt;NSObject: 0x10972ced0&gt;
+&lt;NSObject: 0x10972ced0&gt;
+</code></pre>
+
+<p>可以看到结果已经和__weak不同。</p>
+
+<p>这里在第二次打印的时候，obj0已经成为一个野指针。</p>
+
+<p><strong>weak与</strong>unsafe_unretained的区别可以简单地说：</p>
+
+<p>当弱引用的对象被释放，<strong>weak修饰的对象会自动赋值为nil；而</strong>unsafe_unretained修饰的对象不会。</p>
+
+<h4>4. __autoreleasing修饰符</h4>
+
+<p>在ARC有效的时候，不能使用NSAutoreleasePool。为了实现想非ARC工程的NSAutoreleasePool该怎么办？使用__autoreleasing修饰符。</p>
+
+<p>一下两段代码效果相同：</p>
+
+<pre><code>/* NO ARC */
+NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+id obj = [[NSObject alloc] init];
+[obj autorelease];
+[pool drain];
+
+/*  ARC  */
+@autoreleasepool {
+    id __autoreleasing obj = [[NSObject alloc] init];
+}
+</code></pre>
+
+<p>但是，显式地附加<strong>autoreleasing修饰符同显式地附加</strong>strong一样罕见。一般不必显示地添加__autoreleasing修饰符。</p>
+
+<p style="color:red"> 另外，无论ARC是否有效，调试用的私有方法_objc_autoreleasePoolPrint()都可以使用。利用这个函数可以有效地帮助我们调试注册到autoreleasepool上的对象。 </p>
+
+
+<h3>ARC的规则</h3>
+
+<p>1. 不能使用retain/release/retainCount/autorelease</p>
+
+<p>2. 不能使用NSAllocateObject/NSDeallocateObject</p>
+
+<p>3. 遵守内存管理的方法命名规则</p>
+
+<p>4. 不要显示调用dealloc</p>
+
+<p>5. 使用@autoreleasepool快代替NSAutoreleasePool</p>
+
+<p>6. 不能使用NSZone</p>
+
+<p>7. 对象型变量不能作为C语言结构体的成员</p>
+
+<p>要把对象型变量加入到结构体成员，可强制转换为void* 或是添加<code>__unsafe_unretained</code>修饰符。</p>
+
+<h4>显示转换id 和 void*</h4>
+
+<p>下面这段代码，在ARC下会编译错误：</p>
+
+<pre><code>id obj = [[NSObject alloc] init];
+void* p = obj;
+</code></pre>
+
+<p>需要使用“__bridge转换”：</p>
+
+<p>1、 __bridge</p>
+
+<pre><code>/* ARC */
+id obj1 = [[NSObject alloc] init];
+void* p = (__bridge void*)obj1;
+</code></pre>
+
+<p>相当于：</p>
+
+<pre><code>/* NO ARC */
+id obj = [[NSObject alloc] init];
+void* p = obj;
+</code></pre>
+
+<p>但是使用<strong>bridge转换，其安全性与赋值</strong>unsafe_unretained修饰符相似，甚至更低。</p>
+
+<p>2、 __bridge_retained</p>
+
+<pre><code>/* ARC */
+id obj1 = [[NSObject alloc] init];
+void* p = (__bridge_retained void*)obj1;
+</code></pre>
+
+<p>相当于：</p>
+
+<pre><code>/* NO ARC */
+id obj1 = [[NSObject alloc] init];
+void* p = obj1;
+[(id)p retain];
+</code></pre>
+
+<p>下面的代码：</p>
+
+<pre><code>void* p = 0;
+{
+    id obj1 = [[NSObject alloc] init];
+    void* p = (__bridge_retained void*)obj1;
+}
+NSLog(@"%@",p);
+</code></pre>
+
+<p>由于使用__bridge_retained，p在对后持有该对象，所以会打印出该对象。</p>
+
+<p>3、 __bridge_transfer</p>
+
+<pre><code>/* ARC */
+id obj1 = [[NSObject alloc] init];
+void* p = (__bridge_transfer void*)obj1;
+</code></pre>
+
+<p>相当于：</p>
+
+<pre><code>id obj1 = [[NSObject alloc] init];
+void* p = obj1;
+[(id)p retain];
+[obj1 release];
+</code></pre>
+
+<p>当然可是实现双向的转换。这些转换多数使用在Objec-C对象和Core Foundation对象之间的互相转换。</p>
+
+<p>以下两个函数为系统提供的方法，实现Toll-Free Bridging：</p>
+
+<pre><code>NS_INLINE id CFBridgingRelease(CFTypeRef CF_CONSUMED X) {
+return (__bridge_transfer id)X;
+}
+NS_INLINE CF_RETURNS_RETAINED CFTypeRef CFBridgingRetain(id X) {
+return (__bridge_retained CFTypeRef)X;
+}
+</code></pre>
+
+<p><a href="https://developer.apple.com/library/ios/documentation/General/Conceptual/CocoaEncyclopedia/Toll-FreeBridgin/Toll-FreeBridgin.html">Toll-Free Bridging</a></p>
+
+<h3>属性</h3>
+
+<p>ARC中，属性声明的属性与所有权修饰符的关系</p>
+
+<table>
+<thead>
+<tr>
+<th align="center">   属性声明   </th>
+<th align="center"> 所有权修饰符           </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">assign           </td>
+<td align="center"> __unsafe_unretained  </td>
+</tr>
+<tr>
+<td align="center">copy             </td>
+<td align="center"> __strong(复制对象)    </td>
+</tr>
+<tr>
+<td align="center">retain           </td>
+<td align="center"> __strong             </td>
+</tr>
+<tr>
+<td align="center">strong           </td>
+<td align="center"> __strong             </td>
+</tr>
+<tr>
+<td align="center">unsafe_unretained</td>
+<td align="center"> __unsafe_unretained </td>
+</tr>
+<tr>
+<td align="center">weak             </td>
+<td align="center"> __weak               </td>
+</tr>
+</tbody>
+</table>
+
+
+<p style="color:red">有一种情况不能使用__weak修饰符：</p>
+
+
+<p></p>
+
+<pre><code>- (BOOL)allowsWeakReference UNAVAILABLE_ATTRIBUTE;
+- (BOOL)retainWeakReference UNAVAILABLE_ATTRIBUTE;
+</code></pre>
+
+<p>如果NSobject实例上面的两个方法返回NO，绝对不能使用__weak修饰符。</p>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-21T18:32:32+08:00" data-updated="true" itemprop="datePublished">Dec 21<span>st</span>, 2013</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/12/21/ios7-new-feature-ibeacon/" itemprop="url">IOS7 New Feature: iBeacon</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2>前言</h2>
+
+<p>iBeacon作为IOS7的一项新特性，在今年的WWDC大会上正式正式发布。虽然官方对它的描述并不多，WWDC的视频中也没有一个是讲解iBeacon的，但是在WWDC2013的Keynote上还是看到了它的身影。</p>
+
+<p><img src="/images/201312211904.jpeg" alt="WWDC2013 Keynote" /></p>
+
+<p>iBeacon也是我今年WWDC上最喜欢的新特性之一，因为我一直认为更便捷、去中心化的沟通才是未来。在IOS7推出Beta版的时候，我也曾经实践过新推出的Nearby Networking With Multipeer Connectivity。但是相比之下，iBeacon要优秀很多。</p>
+
+<p>目前有不少硬件厂商在生产基于iBeacon的基站，Estimote很早就推出了Estimote Beacons，利用苹果的iBeacon技术，实现Distance、Proximity和Notification三种功能。如果想体验一下，可以在Appstore搜索下载应用Estimote。同时Estimote Beacons提供了一套API，可以方便地进行编程。</p>
+
+<p><a href="https://github.com/Estimote/iOS-SDK">Estimote Beacons的API地址</a></p>
+
+<p><img src="/images/201312211906.jpeg" alt="Estimote Beacons" /></p>
+
+<h2>What is iBeacon?</h2>
+
+<p>iBeacon通过使用低功耗蓝牙技术（Bluetooth Low Energy，也就是通常所说的Bluetooth 4.0或者Bluetooth Smart），可以创建一个信号区域，当设备进入该区域时，相应的应用程序便会提示用户是否需要接入这个信号网络。通过能够放置在任何物体中的小型无线传感器和低功耗蓝牙技术，用户便能使用iPhone来传输数据。</p>
+
+<p><img src="/images/201312211907.jpeg" alt="iBeacon" /></p>
+
+<h2>什么是低功耗蓝牙技术？</h2>
+
+<p>低功耗蓝牙技术的最大特点便在于低功耗，从而能使设备拥有更长的续航时间。不过低功耗蓝牙技术仅支持较低的文件传输速率，因此可以用于可穿戴式智能设备之间的信息传送，但却不能完成像传输音频这样的任务。</p>
+
+<h2>一个简单的Demo</h2>
+
+<p><a href="https://github.com/Hydra2050/BeaconDemo">Demo下载地址</a></p>
+
+<h3>Start a BeaconBroadcast</h3>
+
+<p>1、 创建一个BeaconRegion，作为Beacon基站的广播的Region对象。其中UUID为Beacon基站的唯一标识。</p>
+
+<pre><code>NSUUID* myUUID = [[NSUUID alloc] initWithUUIDString:@"E621E1F8-C36C-495A-93FC-0C247A3E6E5D"];
+self.targetBeaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:myUUID identifier:@"My Beacon Demo 20131221"];
+</code></pre>
+
+<p>2、 创建一个CBPeripheralManager对象</p>
+
+<pre><code> self.peripheraManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil options:nil];
+</code></pre>
+
+<p>3、 开始广播</p>
+
+<pre><code>NSDictionary* peripheraData = [self.boardcastBeaconRegion peripheralDataWithMeasuredPower:nil];
+[self.peripheraManager startAdvertising:peripheraData];
+</code></pre>
+
+<p>开始广播后，可以处理一下回调函数，如：</p>
+
+<pre><code>- (void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral
+- (void)peripheralManagerDidStartAdvertising:(CBPeripheralManager *)peripheral error:(NSError *)error
+</code></pre>
+
+<h3>Start a BeaconMonitor</h3>
+
+<p>1、 创建一个BeaconRegion，作为搜索的Region对象。其中UUID为Beacon基站的唯一标识。</p>
+
+<pre><code>NSUUID* myUUID = [[NSUUID alloc] initWithUUIDString:@"E621E1F8-C36C-495A-93FC-0C247A3E6E5D"];
+self.targetBeaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:myUUID identifier:@"My Beacon Demo 20131221"];
+</code></pre>
+
+<p>2、 创建一个CLLocationManager对象</p>
+
+<pre><code>self.locationManager = [[CLLocationManager alloc] init];
+self.locationManager.delegate = self;
+</code></pre>
+
+<p>3、 开始搜索Beacon基站</p>
+
+<pre><code>[self.locationManager startRangingBeaconsInRegion:self.targetBeaconRegion];
+</code></pre>
+
+<p>接下来可以处理一下回调函数，如：</p>
+
+<pre><code>- (void)locationManager:(CLLocationManager *)manager
+    didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region
+- (void)locationManager:(CLLocationManager *)manager
+ didUpdateLocations:(NSArray *)locations
+- (void)locationManager:(CLLocationManager *)manager
+     didEnterRegion:(CLRegion *)region
+- (void)locationManager:(CLLocationManager *)manager
+      didExitRegion:(CLRegion *)region
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
+</code></pre>
+
+<p>效果图：</p>
+
+<p><img src="/images/201312211958.PNG" alt="CLProximityImmediate" /></p>
+
+<p><img src="/images/201312211959.PNG" alt="CLProximityNear" /></p>
+
+<p><img src="/images/201312212001.PNG" alt="CLProximityFar" /></p>
+
+<p><img src="/images/201312212002.PNG" alt="CLProximityUnknown" /></p>
+
+<p><img src="/images/201312212003.PNG" alt="didExitRegion" /></p>
+
+<h2>总结</h2>
+
+<p>通过Demo，可以对iBeacon有一个简单的了解。iBeacon可以方便实现室内导航、商品消息推送、支付等功能。网上很多文章认为iBeacon会成为NFC杀手。到底iBeacon能发展到什么地步，让我们拭目以待吧。</p>
+
+<p><a href="http://support.apple.com/kb/HT6048">iOS: Understanding iBeacon</a></p>
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
@@ -814,542 +1365,6 @@ end
 <p>Searchable full-text transcripts of WWDC sessions</p>
 
 <p><a href="https://github.com/mattt/asciiwwdc.com">source code on GitHub</a></p>
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-09T23:08:40+08:00" data-updated="true" itemprop="datePublished">Dec 9<span>th</span>, 2013</time></div>
-		<div class="tags">
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/2013/12/09/objective-c-meta-class/" itemprop="url">［转］Objective-C 中的 Meta-class 是什么？</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<p>注：文章转自：<a href="http://blog.cocoabit.com/blog/2013/12/08/meta-class/">http://blog.cocoabit.com/blog/2013/12/08/meta-class/</a></p>
-
-<p>   英文原文地址：<a href="http://www.cocoawithlove.com/2010/01/getting-subclasses-of-objective-c-class.html">http://www.cocoawithlove.com/2010/01/getting-subclasses-of-objective-c-class.html</a></p>
-
-<p>   感谢原文作者以及翻译！</p>
-
-<p>==============================================================</p>
-
-<p>在这篇文章中，我关注的是 Objective-C 中的一个陌生的概念—— meta-class。在 Objective-C 中的每个类都有一个相关联的 meta-class，但是你很少会直接使用 meta-class，他们仍旧保持着神秘的面纱。我们从在运行时创建一个类开始。通过查看 “class pair”，我会解释 meta-class 是什么，同时也会谈谈在 Objective-C 中的对象或者类相关的一些一般主题。</p>
-
-<h2>在运行时创建一个类</h2>
-
-<p>下面的代码在运行时创建了一个 NSError 的子类同时为它添加了一个方法：</p>
-
-<pre><code>Class newClass = objc_allocateClassPair([NSError class],"RuntimeErrorSubclass", 0);
-class_addMethod(newClass, @selector(report), (IMP)ReportFunction, "v@:");
-objc_registerClassPair(newClass);
-</code></pre>
-
-<p>添加的方法使用叫 ReportFunction 的函数作为实现，定义如下：</p>
-
-<pre><code>void ReportFunction(id self, SEL _cmd)
-{
-    NSLog(@"This object is %p.", self);
-    NSLog(@"Class is %@, and super is %@.", [self class], [self superclass]);
-
-    Class currentClass = [self class];
-    for (int i = 1; i &lt; 5; i++)
-    {
-        NSLog(@"Following the isa pointer %d times gives %p", i, currentClass);
-        currentClass = object_getClass(currentClass);
-    }
-
-    NSLog(@"NSObject's class is %p", [NSObject class]);
-    NSLog(@"NSObject's meta class is %p", object_getClass([NSObject class]));
-} 
-</code></pre>
-
-<p>表面上来看，非常简单。在运行时创建一个类只需要这三步：</p>
-
-<ol>
-<li>为 “class pair” 创建存储空间（使用 objc_allocateClassPair）。</li>
-<li>为这个类添加所需的 methods 和 ivars（我已经使用 class_addMethod 添加过一个方法了）。</li>
-<li>注册这个类，然后就可以使用了（使用 objc_registerClassPair）。</li>
-</ol>
-
-
-<p>然后，中级问题是：“class pair” 是什么？函数 objc_allocateClassPair 只返回了一个值：这个 class。这一对中的另一个在哪？（译注：pair 有 “一对，一双” 的意思）</p>
-
-<p>我敢肯定你已经猜到了另一半就是 meta-class（就是这篇文章的标题），但是要解释那是什么和你为什么需要它，我需要介绍一些在 Objective-C 中的关于对象和类的背景知识。</p>
-
-<h2>把一个数据结构变为对象需要什么？</h2>
-
-<p>每个对象都有一个类。这是面相对象概念的基础知识，但在 Objective-C 中不是这样，它（译注：class）同样是这个数据的一部分。每个可以被当成对象的数据结构都在恰当的位置有一个指向一个类的指针。</p>
-
-<p>在 Objective-C，一个对象的类由它的 isa 指针决定。isa 指针指向这个对象的 Class。</p>
-
-<p>事实上，在 Objective-C 中的对象的定义看起来像这样：</p>
-
-<pre><code>typedef struct objc_object {
-    Class isa;
-} *id;
-</code></pre>
-
-<p>这就是说：任何结构体只要以一个指向 Class 结构的指针开始的就可以被当成是 objc_object。</p>
-
-<p>在 Objective-C 中的对象的一个重要的特性是，你可以向它们发送消息：</p>
-
-<pre><code>[@"stringValue"
-    writeToFile:@"/file.txt" atomically:YES encoding:NSUTF8StringEncoding error:NULL];
-</code></pre>
-
-<p>你可以这么做是因为，当你向一个 Objective-C 的对象（像这里的 NSCFString）发送消息的时候，runtime 沿着对象的 isa 指针找到了这个对象的 Class（这里是 NSCFString 的类）结构体。 Class 结构体中包含了一个这个类的方法列表和一个指向父类的指针，用于查找继承的方法。</p>
-
-<p>关键点是 Class 结构体中定义了你可以向一个对象发送的消息。</p>
-
-<h2>meta-class 是什么？</h2>
-
-<p>现在，你可能已经知道，在 Objective-C 中一个 Class 也是一个对象。这就意味着你也可以向一个 Class 发送消息。</p>
-
-<pre><code>NSStringEncoding defaultStringEncoding = [NSString defaultStringEncoding];
-</code></pre>
-
-<p>这里，向 NSString 类发送了 defaultStringEncoding。</p>
-
-<p>可以这么做是因为在 Objective-C 中每个 Class 它自己同样也是个对象。也就是说 Class 结构体必须以 isa 指针开始，然后就可以在二进制兼容（binary compatible）我上面介绍的 objc_object 结构了，接着下一个字段必须是一个指向它的父类的指针（要是类就是基类就是 nil）。</p>
-
-<p><a href="http://www.cocoawithlove.com/2010/01/getting-subclasses-of-objective-c-class.html">我上周已经介绍过</a>，定义一个类有好几种方法，主要依赖于你正在运行的 runtime 的版本。但，是的，都是由一个 isa 字段开始然后是 superclass 字段。</p>
-
-<pre><code>typedef struct objc_class *Class;
-struct objc_class {
-    Class isa;
-    Class super_class;
-    /* 以下依赖于 runtime 的具体实现 …… */
-};
-</code></pre>
-
-<p>然而，为了让我们在 Class 上调用一个方法，Class 的 isa 指针必须指向一个 Class 结构体，并且那个 Class 结构体必须包含我们可以在那个 Class 上调用的方法的列表。</p>
-
-<p>这就引出了 meta-class 的定义：meta-class 是 Class 对象的类（the meta-class is the class for a Class object）。</p>
-
-<p>简单来说：</p>
-
-<p>[1] 当你向一个对象发送消息，就在那个对象的方法列表中查找那个消息。</p>
-
-<p>[2] 当你想一个类发送消息，就再那个类的 meta-class 中查找那个消息。</p>
-
-<p>meta-class 是必须的，因为它为一个 Class 存储类方法。每个类都必须有一个唯一的 meta-class，因为每个 Class 都有一个可能不一样的类方法。</p>
-
-<h2>meta-class 的类是什么？</h2>
-
-<p>meta-class，如之前的 Class，同样是个对象。这就意味着你也可以在它上面调用方法。自然的，这就意味着它也必须有一个类（译注：isa 指针）。</p>
-
-<p>所有的 meta-class 使用它们基类的 meta-class （继承层次中最顶层的 Class 的 meta-class）作为它们自己的类。这就是说所有继承自 NSObject 的类（大部分的类），以 NSObject 的 meta-class 作为自己的 meta-class 的类。</p>
-
-<p>遵循这个规则，所有的 meta-class 使用基类的 meta-class 作为他们的类，任何基类的 meta-class 将会是他们自己（它们的 isa 指向他们自己）。这就是说 NSObject 的 meta-class 的 isa 指针指向它们自己（是自己的一个实例）。</p>
-
-<h2>class 和 meta-class 的继承</h2>
-
-<p>和 Class 以 super_class 指针指向它的父类的方法一样，meta-class 以 super_class 指针指向 Class 的 super_class 的 meta-class。（译注：这句话有点绕，就是 super-class 一个指向 Class 的父类，一个指向 meta-class 的父类。Class 是一般对象的类型，meta-class 是 Class 的类型。）</p>
-
-<p>进一步来讲，基类的 meta-class 设置 super_class 指针指向基类自己。</p>
-
-<p>这个继承层次的结果就是，所有在这个继承层次中的的实例，类和 meta-class 都继承了基类的层次。</p>
-
-<p>对于所有在 NSObject 层次中的实例，类和 meta-class，这就意味着所有 NSObject 的实例方法都是有效的。对于类和 meta-class，所有 NSObject 的类方法也同样是有效的。</p>
-
-<p>所有这些在字面上相当让人困惑。Greg Parker 已经把实例，类，meta-class 还有他们的超类以非常棒的图解的方式聚合在一起，展示他们是如何在一起工作的。</p>
-
-<h2>用实验验证这点</h2>
-
-<p>为了验证这些，让我们看看在我文章开头提供的 ReportFunction 的输出。这个函数的目的是顺着 isa 指针打引出它找到的。</p>
-
-<p>要运行 ReportFunction，我们需要为这个动态创建的类创建一个实例，然后在上面调用这个方法。</p>
-
-<pre><code>id instanceOfNewClass =
-    [[newClass alloc] initWithDomain:@"someDomain" code:0 userInfo:nil];
-[instanceOfNewClass performSelector:@selector(report)];
-[instanceOfNewClass release];
-</code></pre>
-
-<p>因为没有这个方法的声明，所以我使用 performSelector: 调用这个方法，这样编译器就不会输出警告了。</p>
-
-<p>现在 ReportFunction 会沿着 isa 指针告诉我们这个对象使用了哪些类，meta-class 和 meta-class 的类。</p>
-
-<p>获取一个对象的类：ReportFunction 使用 object_getClass 跟随 isa 指针，因为 isa 指针是一个类中一个受保护的成员变量（你不能直接访问其他对象的 isa 指针）。ReportFunction 没有以类方法的形式这样调用，因为在 Class 对象上调用类方法不会返回 meta-class，而是再次返回 Class 对象（所以 [NSString class] 会返回 NSString 的类而不是 NSString 的 meta-class）。</p>
-
-<p>这个是程序运行后的结果（省去了 NSLog 的前缀）。</p>
-
-<pre><code>This object is 0x10010c810.
-Class is RuntimeErrorSubclass, and super is NSError.
-Following the isa pointer 1 times gives 0x10010c600
-Following the isa pointer 2 times gives 0x10010c630
-Following the isa pointer 3 times gives 0x7fff71038480
-Following the isa pointer 4 times gives 0x7fff71038480
-NSObject's class is 0x7fff710384a8
-NSObject's meta class is 0x7fff71038480
-</code></pre>
-
-<p>看看通过递归的查看 isa 的地址：</p>
-
-<ol>
-<li>the object is address 0x10010c810.</li>
-<li>the class is address 0x10010c600.</li>
-<li>the meta-class is address 0x10010c630.</li>
-<li>the meta-class’s class (i.e. the NSObject meta-class) is address 0x7fff71038480.</li>
-<li>the NSObject meta-class’ class is itself.</li>
-</ol>
-
-
-<p>地址的值不是很重要，只是演示了上面讨论的从类到 meta-class 到 NSObject 的 meta-class 的过程。</p>
-
-<h2>结论</h2>
-
-<p>meta-class 是 Class 对象的类。每个 Class 都有个不同的自己的 meta-class（因此每个 Class 都可以有一个自己不同的方法列表）。也就是说每个类的 Class 不完全相同。</p>
-
-<p>meta-class 总是会保证 Class 对象会有从基类继承的所有的的实例和类方法，加上之后继承的类方法。如从 NSObject 继承的类，就意味着在所有的 Class（和 meta-class）对象中定义了所有从 NSObject 继承的实例和协议方法。</p>
-
-<p>所有的 meta-class 使用基类的 meta-class（NSObject 的 meta-class 用于继承自 NSObject 的类）作为他们自己的类，包括在运行时自己定义的基础的 meta-class。</p>
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-08T09:46:50+08:00" data-updated="true" itemprop="datePublished">Dec 8<span>th</span>, 2013</time></div>
-		<div class="tags">
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/2013/12/08/method-swizzling/" itemprop="url">Object-c中的黑魔法——Method Swizzling</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<p>上一篇讲了<a href="http://hydra2050.github.io/blog/2013/12/04/object-cde-han-shu-diao-yong-ji-zhi/">Object-c的函数调用机制</a>，对理解Method Swizzling有很大帮助。这一次来看一看Object-c中的黑魔法——Method Swizzling。</p>
-
-<h2>Method Swizzling介绍</h2>
-
-<p>什么是Method Swizzling？简单来讲，就是修改SEL与IMP之间的映射关系，达到修改最终执行方法的目的。Method Swizzling，听起来就有黑魔法的意味。</p>
-
-<h2>如何实现Method Swizzling</h2>
-
-<h3>1.创建一个category</h3>
-
-<pre><code>#import &lt;Foundation/Foundation.h&gt;  
-@interface UIView (MyAdditions)   
-@end  
-</code></pre>
-
-<h3>2.创建一个swizzling函数</h3>
-
-<pre><code>@implementation UIView (MyAdditions)
-
-- (void)my_setFrame:(CGRect)frame {
-    // custom function
-    [self my_setFrame:frame];
-}
-@end
-</code></pre>
-
-<p>等等，这不是循环调用吗？别忘了，我们后面会施展黑魔法，改变IMP,调用的不再是自己，不会有循环调用的问题。</p>
-
-<h3>3.交换IMP</h3>
-
-<p><p style="color:red">注意别忘记引入：#import &lt;objc/runtime.h></p>
-
-<pre><code>Method oriMethod =  class_getInstanceMethod([UIView class], @selector(setFrame:));  
-Method myMethod = class_getInstanceMethod([UIView class], @selector(my_setFrame:));  
-method_exchangeImplementations(oriMethod, myMethod); 
-</code></pre>
-
-<p>这样调用 [UIView setFrame:] 时，实际调用的是自定义的方法 [UIView my_setFrame:]。</p>
-
-<h2>Method Swizzling的利与弊</h2>
-
-<p>这里有非常好的答案：</p>
-
-<p><a href="http://stackoverflow.com/questions/5339276/what-are-the-dangers-of-method-swizzling-in-objective-c">http://stackoverflow.com/questions/5339276/what-are-the-dangers-of-method-swizzling-in-objective-c</a></p>
-
-<p>其中给出了一个解决命名冲突的定义方式：</p>
-
-<pre><code>@implementation NSView (MyViewAdditions)
-static void MySetFrame(id self, SEL _cmd, NSRect frame);
-static void (*SetFrameIMP)(id self, SEL _cmd, NSRect frame);
-
-static void MySetFrame(id self, SEL _cmd, NSRect frame) {
-   // do custom work
-   SetFrameIMP(self, _cmd, frame);
-}
-
-+ (void)load {
-   [self swizzle:@selector(setFrame:) with:(IMP)MySetFrame store:(IMP *)&amp;SetFrameIMP];
-}
-@end
-
-typedef IMP *IMPPointer;
-BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMPPointer store) {
-    IMP imp = NULL;
-    Method method = class_getInstanceMethod(class, original);
-    if (method) {
-        const char *type = method_getTypeEncoding(method);
-        imp = class_replaceMethod(class, original, replacement, type);
-        if (!imp) {
-            imp = method_getImplementation(method);
-        }
-    }
-    if (imp &amp;&amp; store) { *store = imp; }
-    return (imp != NULL);
-}
-
-@implementation NSObject (FRRuntimeAdditions)
-+ (BOOL)swizzle:(SEL)original with:(IMP)replacement store:(IMPPointer)store {
-    return class_swizzleMethodAndStore(self, original, replacement, store);
-}
-@end
-</code></pre>
-
-<h2>总结</h2>
-
-<p>对于我个人而言，并不是非常喜欢这种黑魔法。感觉还是慎用为妙，如果使用，尽量仅在load中swizzling。另外，网上有人说使用了Method Swizzling无法通过appstore的审核，还没有验证过。
-虽然不建议发布使用，但是其他地方还是有很多用武之地的，比如调试、代码分析等，可以自由想像。</p>
-
-<p>这里有一个<a href="https://github.com/Hydra2050/MethodSwizzlingDemo">MethodSwizzlingDemo</a>，通过Method Swizzling，描绘每一个View的border。效果图：</p>
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-04T22:01:26+08:00" data-updated="true" itemprop="datePublished">Dec 4<span>th</span>, 2013</time></div>
-		<div class="tags">
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/2013/12/04/object-cde-han-shu-diao-yong-ji-zhi/" itemprop="url">Object-c的函数调用机制</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<h2>起因</h2>
-
-<p>有一次，被问到，下面这段代码执行，会得到什么结果：</p>
-
-<pre><code>@interface ClassA : NSObject  
--(void) foo;  
-@end  
-@implementation ClassA  
--(void) foo  
-{  
-    NSLog(@"fork Class A's function");  
-}  
-@end  
-
-@interface ClassB : NSObject  
--(void) foo;  
-@end  
-@implementation ClassB  
--(void) foo  
-{  
-    NSLog(@"fork Class B's function");  
-}  
-@end  
-
-ClassA* a = [[ClassA alloc] init];  
-[a foo];  
-ClassB* b = (ClassB*)a;  
-[b foo];
-</code></pre>
-
-<p>说来惭愧，这么久竟然不清楚object-c的函数调用机制，于是网上查阅了一些资料，整理出一篇文章。</p>
-
-<h2>Object-C的函数调用的机制</h2>
-
-<p>OC的方法调用与C++不同： Ｃ++中的方法调用可能是动态的，也可能是静态的；而ObjC中的函数调用都为动态的，通过消息传递的方式调用。</p>
-
-<p>首先通过command＋shift＋o，查找NSObject类，可以看到类的定义：</p>
-
-<pre><code>@interface NSObject &lt;NSObject&gt; {  
-Class isa  OBJC_ISA_AVAILABILITY;  
-}  
-
-typedef struct objc_selector *SEL;  
-
-typedef id (*IMP)(id, SEL, ...);  
-</code></pre>
-
-<p>在object-c中，每个对象都有一个isa成员，指向自己的类结构体，这也是object-c自省的特性实现。
-为了理解消息调用机制，需要理解以上三个定义：Class   SEL   IMP</p>
-
-<h3>Class  SEL IMP</h3>
-
-<p>先来看一看Class的定义：</p>
-
-<pre><code>struct objc_class {  
-Class isa  OBJC_ISA_AVAILABILITY;  
-
-#if !__OBJC2__  
-Class super_class                                        OBJC2_UNAVAILABLE;  
-const charchar *name                                         OBJC2_UNAVAILABLE;  
-long version                                             OBJC2_UNAVAILABLE;  
-long info                                                OBJC2_UNAVAILABLE;  
-long instance_size                                       OBJC2_UNAVAILABLE;  
-struct objc_ivar_list *ivars                             OBJC2_UNAVAILABLE;  
-struct objc_method_list **methodLists                    OBJC2_UNAVAILABLE;  
-struct objc_cache *cache                                 OBJC2_UNAVAILABLE;  
-struct objc_protocol_list *protocols                     OBJC2_UNAVAILABLE;  
-#endif  
-
-} OBJC2_UNAVAILABLE; 
-</code></pre>
-
-<p>其中我们比较关心的是参数列表ivars，方法列表methodLists，协议列表protocols。当一个类有调用方法时：</p>
-
-<pre><code>[receiver message]
-</code></pre>
-
-<p>会调用消息函数，objc_msgSend：</p>
-
-<pre><code>objc_msgSend(receiver, selector)
-</code></pre>
-
-<p>如果有参数要传递的话：</p>
-
-<pre><code>objc_msgSend(receiver, selector, arg1, arg2, ...)
-</code></pre>
-
-<p><img src="/images/messaging.jpg" alt="Selector" /></p>
-
-<p>当一个消息传递给一个对象的时候，objc_msgSend根据对象的isa指针，到类结构体methodLists链表找指定selector，如果没有，向父类寻找，知道找到NSObject类位置。这样就实现了动态方法调用。</p>
-
-<p>那么IMP又是什么呢？
-简单来说，就是一个函数指针，指向SEL的方法的地址。NSObject 类中的methodForSelector：方法就是这样一个获取指向方法实现IMP 的指针。
-下面的例子展示了怎么使用指针来调用setFilled:的方法实现：</p>
-
-<pre><code>void (*setter)(id, SEL, BOOL);  
-int i;  
-setter = (void (*)(id, SEL, BOOL))[target methodForSelector:@selector(setFilled:)];  
-for ( i = 0 ; i &lt; 1000 ; i++ )  
-    setter(targetList[i], @selector(setFilled:), YES); 
-</code></pre>
-
-<p>查找IMP 时：</p>
-
-<ol>
-<li><p>首先去该类的方法 cache 中查找，如果找到了就返回它；</p></li>
-<li><p>如果没有找到，就去该类的方法列表中查找。如果在该类的方法列表中找到了，则将 IMP 返回，并将它加入cache中缓存起来。根据最近使用原则，这个方法再次调用的可能性很大，缓存起来可以节省下次调用再次查找的开销。</p></li>
-<li><p>如果在该类的方法列表中没找到对应的IMP，在通过该类结构中的super_class指针在其父类结构的方法列表中去查找，直到在某个父类的方法列表中找到对应的IMP，返回它，并加入cache中。</p></li>
-<li><p>如果在自身以及所有父类的方法列表中都没有找到对应的 IMP，则进入下文中要讲的消息转发流程。</p></li>
-</ol>
-
-
-<p><em>这里可以做一个延伸：如何提高调用Object－C方法的速度？</em></p>
-
-<p>利用“IMP Caching”的方法，在框架初始化时获取类名、方法名和方法运行时的函数指针IMP。在执行这个函数的时候，使用Caching的指针执行，一般速度要提高2倍左右。</p>
-
-<h3>消息转发</h3>
-
-<p>通常，给一个对象发送它不能处理的消息会得到出错提示，然而，Objective-C运行时系统在抛出错误之前，会给消息接收对象发送一条特别的消息forwardInvocation来通知该对象，该消息的唯一参数是个NSInvocation类型的对象——该对象封装了原始的消息和消息的参数。</p>
-
-<p>我们可以实现forwardInvocation:方法来对不能处理的消息做一些默认的处理，也可以将消息转发给其他对象来处理，而不抛出错误。</p>
-
-<p>NSObject 的forwardInvocation:方法默认的调用doesNotRecognizeSelector:方法</p>
-
-<pre><code>0   CoreFoundation                      0x01a1c5e4 __exceptionPreprocess + 180  
-1   libobjc.A.dylib                     0x015728b6 objc_exception_throw + 44  
-2   CoreFoundation                      0x01ab9903 -[NSObject(NSObject) doesNotRecognizeSelector:] + 275  
-</code></pre>
-
-<p>重写forwardInvocation：</p>
-
-<pre><code>-(void) helloWorld
-{  
-     NSLog(@"Hello world!");
-}  
-- (void) forwardInvocation:(NSInvocation *)anInvocation  
-{  
-    if([self respondsToSelector:@selector(helloWorld)])  
-     {  
-          [self helloWorld];  
-     }  
-    else  
-    {  
-        [super forwardInvocation:anInvocation];  
-    }  
-}  
-- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector  
-{  
-    if ([self respondsToSelector:aSelector]) {  
-        return [super methodSignatureForSelector:aSelector];  
-    }  
-    else {  
-        return [NSMethodSignature signatureWithObjCTypes:"v@:"];  
-    }  
-}  
-</code></pre>
-
-<p>执行结果：</p>
-
-<pre><code>2013-11-23 15:23:50.464 VCTransitionDemo[1272:70b] Hello world! 
-</code></pre>
-
-<p style="color:red">注意：我们重写forwardInvocation方法的时候，还必须同时重写methodSignatureForSelector方法，该方法返回表示一个方法的字符串，具体如何使用请看Type Encodings。</p>
-
-
-<h2>小结</h2>
-
-<p>到这里，应该能够回答最初的那个问题了。</p>
-
-<p>OC扩展了标准的ANSI C编程语言，将Smalltalk式的消息传递机制加入到ANSI C中。它的方法调用与C/C++还是有很大差别的。</p>
-
-<p>接下来，会再深入OC的方法调用，写一些关于Method Swizzling的内容。</p>
-
-<p>参考资料：</p>
-
-<p><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtHowMessagingWorks.html#//apple_ref/doc/uid/TP40008048-CH104-SW1">Objective-C Runtime Reference</a></p>
-
-<p><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html#//apple_ref/doc/uid/TP40008048-CH100-SW1">Type Encodings</a></p>
 
 		
 		

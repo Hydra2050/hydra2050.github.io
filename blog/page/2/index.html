@@ -9,7 +9,7 @@
 	<meta name="author" content="王仙客">
 
 	
-	<meta name="description" content="Jan 18th, 2014 如何使用NSLog打印CGPoint、CGSize、CGRect 平时调试程序的时候，经常会使用NSLog打印出来。当有CGPoint、CGSize、CGRect对象要打印时，一般要写成下面的方式： CGPoint point = CGPointMake(0, 20 &hellip;">
+	<meta name="description" content="Oct 10th, 2014 The Python Challenge&#8211;Level 0 引子 最近空余时间，开始学习python，发现一个很有意思的网站：pythonchallenge。目前有33个挑战的级别，打算写一个系列的博客，记录下来学习的过程。那就从零开始吧！ Level 0 &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -90,6 +90,197 @@
 			<div class="mid-col-container">
 				<div id="content" class="inner">
 <div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-10-10T22:51:40+08:00" data-updated="true" itemprop="datePublished">Oct 10<span>th</span>, 2014</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/10/10/the-python-challenge-level-0/" itemprop="url">The Python Challenge&#8211;Level 0</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2>引子</h2>
+
+<p>最近空余时间，开始学习python，发现一个很有意思的网站：<a href="http://www.pythonchallenge.com/">pythonchallenge</a>。目前有33个挑战的级别，打算写一个系列的博客，记录下来学习的过程。那就从零开始吧！</p>
+
+<h2>Level 0</h2>
+
+<p>Level 0的地址：<a href="http://www.pythonchallenge.com/pc/def/0.html">http://www.pythonchallenge.com/pc/def/0.html</a></p>
+
+<p>一张图片，上面写着2的38次方</p>
+
+<pre><code>Hint: try to change the URL address.
+</code></pre>
+
+<p>使用python求2的38次方的值：</p>
+
+<pre><code>2**38
+</code></pre>
+
+<p>或者：</p>
+
+<pre><code>import math
+pow(2,38)
+</code></pre>
+
+<p>或者：</p>
+
+<pre><code>1 &lt;&lt; 38
+</code></pre>
+
+<p>得到结果：274877906944</p>
+
+<p>根据提示，修改url为：<a href="http://www.pythonchallenge.com/pc/def/274877906944.html">http://www.pythonchallenge.com/pc/def/274877906944.html</a>。</p>
+
+<p>这样就进入下一关了， ^_^)</p>
+
+<p>参考资料：</p>
+
+<p><a href="http://sebug.net/paper/books/dive-into-python3/index.html">深入 Python 3</a></p>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-26T21:56:07+08:00" data-updated="true" itemprop="datePublished">Jul 26<span>th</span>, 2014</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/07/26/iosshe-bei-zhua-bao-de-ji-chong-chang-yong-fang-fa/" itemprop="url">在Mac上iOS开发抓包的几种常用方法</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>在iOS开发中，经常需要抓包来查看网络请求、应答的情况，例如坚持服务端应答数据、服务端应答速度、客户端发生请求、流量检测、安全性检测等等。不论代码内如何实现，抓包能够最好的证实一切，往往可以更快地定位问题，解决问题。下面总结几种常用的抓包方法。</p>
+
+<h2>使用charles抓包</h2>
+
+<p>在mac下，<a href="http://www.charlesproxy.com/">charles</a>是一个非常好用的抓取http/https请求的工具。</p>
+
+<p>限制条件：</p>
+
+<ul>
+<li>需要mac与iOS设备连接相同的无线网络</li>
+<li>只能抓取http/https的数据包</li>
+<li>无法抓取2G/3G/4G网络下得数据</li>
+</ul>
+
+
+<p>［注］：更多关于charles的使用方法参照<a href="http://www.charlesproxy.com/documentation/">http://www.charlesproxy.com/documentation/</a></p>
+
+<h2>使用RVI（Remote Virtual Interface）+wireshark抓包</h2>
+
+<p>在iOS5以后，Apple为iOS引入了RVI（Remote Virtual Interface），只要设备通过USB连接到Mac，就可以虚拟出一个远程端口，这样就可以在Mac上使用Wireshark抓取这个远程虚拟端口的数据包了。</p>
+
+<p>限制条件：</p>
+
+<ul>
+<li>支持的设备系统iOS5以及之后</li>
+</ul>
+
+
+<h2>使用tcpdump命令抓包</h2>
+
+<p>限制条件：</p>
+
+<ul>
+<li>需要iOS设备越狱</li>
+</ul>
+
+
+<h2>小结</h2>
+
+<p>以上是平时常用到得几种抓包方法，各有优缺点，可以根据需要选择最方便的方法。</p>
+
+<h2>参考资料</h2>
+
+<p><a href="http://www.charlesproxy.com/">http://www.charlesproxy.com/</a></p>
+
+<p><a href="http://www.charlesproxy.com/documentation/">http://www.charlesproxy.com/documentation/</a></p>
+
+<p><a href="http://www.wireshark.org/">http://www.wireshark.org/</a></p>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-16T18:28:08+08:00" data-updated="true" itemprop="datePublished">Feb 16<span>th</span>, 2014</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/02/16/shi-yong-uimotioneffect/" itemprop="url">使用UIMotionEffect实现设备的倾斜视差</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>iOS7更新后，当倾斜手机的时候，会看到屏幕上的背景图片会随着手机的倾斜度而移动，产生视差。刚开始更新的时候，还以为是自己的错觉，－－！。</p>
+
+<p>UIMotionEffect就像它的名字一样，处理motion effect。UIMotionEffect是一个抽象的基类，子类通过重写<code>keyPathsAndRelativeValuesForViewerOffset:</code>方法，当检测到动作的时候</p>
+
+<p>苹果提供了一个子类UIInterpolatingMotionEffect，通过它我们可以实现对设备水平和竖直方向倾斜。</p>
+
+<pre><code>UIInterpolatingMotionEffect *horizontalMotionEffect = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.x" type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
+horizontalMotionEffect.minimumRelativeValue = @(-50);
+horizontalMotionEffect.maximumRelativeValue = @(50);
+[redView addMotionEffect:horizontalMotionEffect];
+</code></pre>
+
+<p><a href="http://www.teehanlax.com/blog/introduction-to-uimotioneffect/">http://www.teehanlax.com/blog/introduction-to-uimotioneffect/</a>
+<a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIMotionEffect_class/Reference/Reference.html#//apple_ref/doc/uid/TP40013376">https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIMotionEffect_class/Reference/Reference.html#//apple_ref/doc/uid/TP40013376</a>
+<a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIMotionEffectGroup_class/Reference/Reference.html#//apple_ref/doc/uid/TP40013378">https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIMotionEffectGroup_class/Reference/Reference.html#//apple_ref/doc/uid/TP40013378</a></p>
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
@@ -388,11 +579,10 @@ static const void *ImageTagKey = &amp;ImageTagKey;
 <p>首先时技术类书籍：</p>
 
 <ul>
-<li>《从小工到专家——程序员修炼之道》：</li>
-<li>《Head First 设计模式》：</li>
-<li>《iOS 高级编程》：</li>
-<li>《Python》：</li>
-<li>《STL源码剖析》：</li>
+<li>《从小工到专家——程序员修炼之道》</li>
+<li>《Head First 设计模式》</li>
+<li>《iOS 高级编程》</li>
+<li>《Python》</li>
 </ul>
 
 
@@ -401,16 +591,16 @@ static const void *ImageTagKey = &amp;ImageTagKey;
 <p>非技术类：</p>
 
 <ul>
-<li>《一个人的村庄》：</li>
-<li>《1984》：</li>
-<li>《少有人走的路：》：</li>
-<li>《自由在高处》：</li>
-<li>《九种孤独》：</li>
-<li>《天才在左，疯子在右》：</li>
-<li>《猎命师传奇：卷二十》：</li>
-<li>《上帝掷骰子吗》：</li>
-<li>《沉默的大多数》：</li>
-<li>《变身》、《新参者》：</li>
+<li>《一个人的村庄》</li>
+<li>《1984》</li>
+<li>《少有人走的路》</li>
+<li>《自由在高处》</li>
+<li>《九种孤独》</li>
+<li>《天才在左，疯子在右》</li>
+<li>《猎命师传奇：卷二十》</li>
+<li>《上帝掷骰子吗》</li>
+<li>《沉默的大多数》</li>
+<li>《变身》、《新参者》</li>
 </ul>
 
 
@@ -582,557 +772,6 @@ static const void *ImageTagKey = &amp;ImageTagKey;
 	<h1 class="title" itemprop="name"><a href="/blog/2013/12/29/object-cgao-ji-bian-cheng-xue-xi-san/" itemprop="url">Object-C高级编程学习笔记(三)</a></h1>
 	<div class="entry-content" itemprop="articleBody">
 		
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-22T20:48:19+08:00" data-updated="true" itemprop="datePublished">Dec 22<span>nd</span>, 2013</time></div>
-		<div class="tags">
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/2013/12/22/object-cgao-ji-bian-cheng-xue-xi-2/" itemprop="url">Object-C高级编程学习笔记(二)</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<h1>Blocks</h1>
-
-<h2>What is blocks</h2>
-
-<h3>Block语法</h3>
-
-<p>Blocks是C语言的扩充功能：带有自动变量（局部变量）的匿名函数。</p>
-
-<p><code>^</code> <code>返回值类型</code> <code>参数列表</code> <code>表达式</code></p>
-
-<pre><code>^int (int count) {return count + 1;}
-</code></pre>
-
-<p>Block语法可以省略几个项目。首先是返回值类型：</p>
-
-<pre><code>^(int count) {return count + 1;}
-</code></pre>
-
-<p>其次，如果不使用参数，参数列表可以省略：</p>
-
-<pre><code>^{ print(“Block\n”);}
-</code></pre>
-
-<p>使用Block语法讲Block赋值为Block类型变量：</p>
-
-<pre><code>int(^blk) (int) = ^(int count) {return count + 1;}
-int(^blk1) (int) = blk;
-</code></pre>
-
-<p>使用typedef定义：</p>
-
-<pre><code>typedef int (^blk_t) (int);
-blk_t blk = ^(int count) {return count + 1;}
-int nResult = blk(10);
-</code></pre>
-
-<p>Block类型变量可以像C语言中其他类型变量一样使用。</p>
-
-<h3>截获自动变量值</h3>
-
-<p>Blocks中，Block表达式截获所使用的自动变量的值。因为Block表达式保存了自动变量的值，所以在执行Block语法后，即使改写Block中使用的自动变量的值也不会影响Block执行时自动变量的值。</p>
-
-<pre><code>int a = 10;
-int b = 10;
-int (^blk) (void) = ^(return a + b;);
-b = 2;
-blk();
-</code></pre>
-
-<p>执行结果为：<code>20</code></p>
-
-<h3>__block说明符</h3>
-
-<p>若想在Block语法的表达式中将值赋给Block语法外的自动变量，需要在自动变量附加<strong>block说明符，该变量成为</strong>block变量。</p>
-
-<pre><code>__block int val = 0;
-void(^blk) (void) = ^{val = 1;};
-blk();
-printf("%d",val);
-</code></pre>
-
-<p>执行结果为： <code>1</code></p>
-
-<p>赋值给截获的自动变量会产生编译错误：</p>
-
-<pre><code>id array = [[NSMutableArray alloc] init];
-void (^blk) {array = [[NSMutableArray alloc] init]};
-</code></pre>
-
-<p>会出现编译错误。</p>
-
-<p>另外，在使用C语言数组时，必须小心使用起指针。</p>
-
-<pre><code>const char text[] = "Hello";
-void (^blk) (void) = ^{
-    printf("%c\n",text[2]);
-};
-</code></pre>
-
-<p>在现在的Block中，截获自动变量的方法并没有实现对C语言数组的截获，因此会编译出错。可以使用指针解决：</p>
-
-<pre><code>const char *text = "Hello";
-void (^blk) (void) = ^{
-    printf("%c\n",text[2]);
-};  
-</code></pre>
-
-<h2>Blocks的实现</h2>
-
-<p>// TODO:需要一些时间理解</p>
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-22T14:28:55+08:00" data-updated="true" itemprop="datePublished">Dec 22<span>nd</span>, 2013</time></div>
-		<div class="tags">
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/2013/12/22/object-cgao-ji-bian-cheng/" itemprop="url">Object-C高级编程学习笔记(一)</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<p>书名：《Object-C高级编程 IOS与OS X多线程和内存管理》</p>
-
-<h2>ARC</h2>
-
-<p>在Object-C中采用Automatic Reference Counting(ARC)机制，让编译器来进行内存管理。</p>
-
-<ol>
-<li>使用Xcode4.2或以上版本</li>
-<li>使用LLVM编译器3.0或以上版本</li>
-<li>编译器选项中设置ARC为有效</li>
-</ol>
-
-
-<h3>所有权修饰符</h3>
-
-<ul>
-<li>__strong修饰符</li>
-<li>__weak修饰符</li>
-<li>__unsafe_unretained修饰符</li>
-<li>__autoreleasing修饰符</li>
-</ul>
-
-
-<h4>1. __strong修饰符</h4>
-
-<p>__strong修饰符为id类型和对象类型默认的所有权修饰符,可以省略。</p>
-
-<pre><code>id __strong obj = [[NSObject alloc] init];
-</code></pre>
-
-<h4>2. __weak修饰符</h4>
-
-<p>如果只用__strong修饰符，自动引用计数式内容管理必然会发生“循环引用”的问题。</p>
-
-<p>__weak提供弱引用，弱引用不能持有对象实例，可以解决“循环引用”的问题。</p>
-
-<p>下面这段代码：</p>
-
-<pre><code>id __weak obj = [[NSObject alloc] init];
-NSLog(@"%@",obj);
-</code></pre>
-
-<p>会输出 nil 。因为__weak修饰的obj持用弱引用，在赋值过后，并没有对象强引用它，生成的对象会立即释放。这样obj自动赋值为nil。</p>
-
-<p>再来看看下面这段代码的输出：</p>
-
-<pre><code>id __weak obj0 = nil;
-{
-    id __strong obj1 = [[NSObject alloc] init];
-    obj0 = obj1;
-    NSLog(@"%@",obj0);
-}
-NSLog(@"%@",obj0);
-</code></pre>
-
-<p>结果：</p>
-
-<pre><code>&lt;NSObject: 0x109420000&gt;
-nil
-</code></pre>
-
-<p>注：<strong>weak修饰符只能用于IOS5以上以及OS X Lion以上版本的应用程序。在它们一下的程序可使用</strong>unsafe_unretained修饰符来代替。</p>
-
-<h4>3. __unsafe_unretained修饰符</h4>
-
-<p><strong>unsafe_unretained修饰符，是不安全的所有权修饰符。有</strong>unsafe_unretained修饰符的变量不属于编译器的内存管理对象。</p>
-
-<pre><code>id __unsafe_unretained obj = [[NSObject alloc] init];
-NSLog(@"%@",obj);
-</code></pre>
-
-<p>这里和__weak一样，会输出<code>nil</code>。难道这两个修饰符相同吗？再来看第二个例子：</p>
-
-<pre><code>id __unsafe_unretained obj0 = nil;
-{
-    id __strong obj1 = [[NSObject alloc] init];
-    obj0 = obj1;
-    NSLog(@"%@",obj0);
-}
-NSLog(@"%@",obj0);
-</code></pre>
-
-<p>输出：</p>
-
-<pre><code>&lt;NSObject: 0x10972ced0&gt;
-&lt;NSObject: 0x10972ced0&gt;
-</code></pre>
-
-<p>可以看到结果已经和__weak不同。</p>
-
-<p>这里在第二次打印的时候，obj0已经成为一个野指针。</p>
-
-<p><strong>weak与</strong>unsafe_unretained的区别可以简单地说：</p>
-
-<p>当弱引用的对象被释放，<strong>weak修饰的对象会自动赋值为nil；而</strong>unsafe_unretained修饰的对象不会。</p>
-
-<h4>4. __autoreleasing修饰符</h4>
-
-<p>在ARC有效的时候，不能使用NSAutoreleasePool。为了实现想非ARC工程的NSAutoreleasePool该怎么办？使用__autoreleasing修饰符。</p>
-
-<p>一下两段代码效果相同：</p>
-
-<pre><code>/* NO ARC */
-NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-id obj = [[NSObject alloc] init];
-[obj autorelease];
-[pool drain];
-
-/*  ARC  */
-@autoreleasepool {
-    id __autoreleasing obj = [[NSObject alloc] init];
-}
-</code></pre>
-
-<p>但是，显式地附加<strong>autoreleasing修饰符同显式地附加</strong>strong一样罕见。一般不必显示地添加__autoreleasing修饰符。</p>
-
-<p style="color:red"> 另外，无论ARC是否有效，调试用的私有方法_objc_autoreleasePoolPrint()都可以使用。利用这个函数可以有效地帮助我们调试注册到autoreleasepool上的对象。 </p>
-
-
-<h3>ARC的规则</h3>
-
-<p>1. 不能使用retain/release/retainCount/autorelease</p>
-
-<p>2. 不能使用NSAllocateObject/NSDeallocateObject</p>
-
-<p>3. 遵守内存管理的方法命名规则</p>
-
-<p>4. 不要显示调用dealloc</p>
-
-<p>5. 使用@autoreleasepool快代替NSAutoreleasePool</p>
-
-<p>6. 不能使用NSZone</p>
-
-<p>7. 对象型变量不能作为C语言结构体的成员</p>
-
-<p>要把对象型变量加入到结构体成员，可强制转换为void* 或是添加<code>__unsafe_unretained</code>修饰符。</p>
-
-<h4>显示转换id 和 void*</h4>
-
-<p>下面这段代码，在ARC下会编译错误：</p>
-
-<pre><code>id obj = [[NSObject alloc] init];
-void* p = obj;
-</code></pre>
-
-<p>需要使用“__bridge转换”：</p>
-
-<p>1、 __bridge</p>
-
-<pre><code>/* ARC */
-id obj1 = [[NSObject alloc] init];
-void* p = (__bridge void*)obj1;
-</code></pre>
-
-<p>相当于：</p>
-
-<pre><code>/* NO ARC */
-id obj = [[NSObject alloc] init];
-void* p = obj;
-</code></pre>
-
-<p>但是使用<strong>bridge转换，其安全性与赋值</strong>unsafe_unretained修饰符相似，甚至更低。</p>
-
-<p>2、 __bridge_retained</p>
-
-<pre><code>/* ARC */
-id obj1 = [[NSObject alloc] init];
-void* p = (__bridge_retained void*)obj1;
-</code></pre>
-
-<p>相当于：</p>
-
-<pre><code>/* NO ARC */
-id obj1 = [[NSObject alloc] init];
-void* p = obj1;
-[(id)p retain];
-</code></pre>
-
-<p>下面的代码：</p>
-
-<pre><code>void* p = 0;
-{
-    id obj1 = [[NSObject alloc] init];
-    void* p = (__bridge_retained void*)obj1;
-}
-NSLog(@"%@",p);
-</code></pre>
-
-<p>由于使用__bridge_retained，p在对后持有该对象，所以会打印出该对象。</p>
-
-<p>3、 __bridge_transfer</p>
-
-<pre><code>/* ARC */
-id obj1 = [[NSObject alloc] init];
-void* p = (__bridge_transfer void*)obj1;
-</code></pre>
-
-<p>相当于：</p>
-
-<pre><code>id obj1 = [[NSObject alloc] init];
-void* p = obj1;
-[(id)p retain];
-[obj1 release];
-</code></pre>
-
-<p>当然可是实现双向的转换。这些转换多数使用在Objec-C对象和Core Foundation对象之间的互相转换。</p>
-
-<p>以下两个函数为系统提供的方法，实现Toll-Free Bridging：</p>
-
-<pre><code>NS_INLINE id CFBridgingRelease(CFTypeRef CF_CONSUMED X) {
-return (__bridge_transfer id)X;
-}
-NS_INLINE CF_RETURNS_RETAINED CFTypeRef CFBridgingRetain(id X) {
-return (__bridge_retained CFTypeRef)X;
-}
-</code></pre>
-
-<p><a href="https://developer.apple.com/library/ios/documentation/General/Conceptual/CocoaEncyclopedia/Toll-FreeBridgin/Toll-FreeBridgin.html">Toll-Free Bridging</a></p>
-
-<h3>属性</h3>
-
-<p>ARC中，属性声明的属性与所有权修饰符的关系</p>
-
-<table>
-<thead>
-<tr>
-<th align="center">   属性声明   </th>
-<th align="center"> 所有权修饰符           </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="center">assign           </td>
-<td align="center"> __unsafe_unretained  </td>
-</tr>
-<tr>
-<td align="center">copy             </td>
-<td align="center"> __strong(复制对象)    </td>
-</tr>
-<tr>
-<td align="center">retain           </td>
-<td align="center"> __strong             </td>
-</tr>
-<tr>
-<td align="center">strong           </td>
-<td align="center"> __strong             </td>
-</tr>
-<tr>
-<td align="center">unsafe_unretained</td>
-<td align="center"> __unsafe_unretained </td>
-</tr>
-<tr>
-<td align="center">weak             </td>
-<td align="center"> __weak               </td>
-</tr>
-</tbody>
-</table>
-
-
-<p style="color:red">有一种情况不能使用__weak修饰符：</p>
-
-
-<p></p>
-
-<pre><code>- (BOOL)allowsWeakReference UNAVAILABLE_ATTRIBUTE;
-- (BOOL)retainWeakReference UNAVAILABLE_ATTRIBUTE;
-</code></pre>
-
-<p>如果NSobject实例上面的两个方法返回NO，绝对不能使用__weak修饰符。</p>
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-21T18:32:32+08:00" data-updated="true" itemprop="datePublished">Dec 21<span>st</span>, 2013</time></div>
-		<div class="tags">
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/2013/12/21/ios7-new-feature-ibeacon/" itemprop="url">IOS7 New Feature: iBeacon</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<h2>前言</h2>
-
-<p>iBeacon作为IOS7的一项新特性，在今年的WWDC大会上正式正式发布。虽然官方对它的描述并不多，WWDC的视频中也没有一个是讲解iBeacon的，但是在WWDC2013的Keynote上还是看到了它的身影。</p>
-
-<p><img src="/images/201312211904.jpeg" alt="WWDC2013 Keynote" /></p>
-
-<p>iBeacon也是我今年WWDC上最喜欢的新特性之一，因为我一直认为更便捷、去中心化的沟通才是未来。在IOS7推出Beta版的时候，我也曾经实践过新推出的Nearby Networking With Multipeer Connectivity。但是相比之下，iBeacon要优秀很多。</p>
-
-<p>目前有不少硬件厂商在生产基于iBeacon的基站，Estimote很早就推出了Estimote Beacons，利用苹果的iBeacon技术，实现Distance、Proximity和Notification三种功能。如果想体验一下，可以在Appstore搜索下载应用Estimote。同时Estimote Beacons提供了一套API，可以方便地进行编程。</p>
-
-<p><a href="https://github.com/Estimote/iOS-SDK">Estimote Beacons的API地址</a></p>
-
-<p><img src="/images/201312211906.jpeg" alt="Estimote Beacons" /></p>
-
-<h2>What is iBeacon?</h2>
-
-<p>iBeacon通过使用低功耗蓝牙技术（Bluetooth Low Energy，也就是通常所说的Bluetooth 4.0或者Bluetooth Smart），可以创建一个信号区域，当设备进入该区域时，相应的应用程序便会提示用户是否需要接入这个信号网络。通过能够放置在任何物体中的小型无线传感器和低功耗蓝牙技术，用户便能使用iPhone来传输数据。</p>
-
-<p><img src="/images/201312211907.jpeg" alt="iBeacon" /></p>
-
-<h2>什么是低功耗蓝牙技术？</h2>
-
-<p>低功耗蓝牙技术的最大特点便在于低功耗，从而能使设备拥有更长的续航时间。不过低功耗蓝牙技术仅支持较低的文件传输速率，因此可以用于可穿戴式智能设备之间的信息传送，但却不能完成像传输音频这样的任务。</p>
-
-<h2>一个简单的Demo</h2>
-
-<p><a href="https://github.com/Hydra2050/BeaconDemo">Demo下载地址</a></p>
-
-<h3>Start a BeaconBroadcast</h3>
-
-<p>1、 创建一个BeaconRegion，作为Beacon基站的广播的Region对象。其中UUID为Beacon基站的唯一标识。</p>
-
-<pre><code>NSUUID* myUUID = [[NSUUID alloc] initWithUUIDString:@"E621E1F8-C36C-495A-93FC-0C247A3E6E5D"];
-self.targetBeaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:myUUID identifier:@"My Beacon Demo 20131221"];
-</code></pre>
-
-<p>2、 创建一个CBPeripheralManager对象</p>
-
-<pre><code> self.peripheraManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil options:nil];
-</code></pre>
-
-<p>3、 开始广播</p>
-
-<pre><code>NSDictionary* peripheraData = [self.boardcastBeaconRegion peripheralDataWithMeasuredPower:nil];
-[self.peripheraManager startAdvertising:peripheraData];
-</code></pre>
-
-<p>开始广播后，可以处理一下回调函数，如：</p>
-
-<pre><code>- (void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral
-- (void)peripheralManagerDidStartAdvertising:(CBPeripheralManager *)peripheral error:(NSError *)error
-</code></pre>
-
-<h3>Start a BeaconMonitor</h3>
-
-<p>1、 创建一个BeaconRegion，作为搜索的Region对象。其中UUID为Beacon基站的唯一标识。</p>
-
-<pre><code>NSUUID* myUUID = [[NSUUID alloc] initWithUUIDString:@"E621E1F8-C36C-495A-93FC-0C247A3E6E5D"];
-self.targetBeaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:myUUID identifier:@"My Beacon Demo 20131221"];
-</code></pre>
-
-<p>2、 创建一个CLLocationManager对象</p>
-
-<pre><code>self.locationManager = [[CLLocationManager alloc] init];
-self.locationManager.delegate = self;
-</code></pre>
-
-<p>3、 开始搜索Beacon基站</p>
-
-<pre><code>[self.locationManager startRangingBeaconsInRegion:self.targetBeaconRegion];
-</code></pre>
-
-<p>接下来可以处理一下回调函数，如：</p>
-
-<pre><code>- (void)locationManager:(CLLocationManager *)manager
-    didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region
-- (void)locationManager:(CLLocationManager *)manager
- didUpdateLocations:(NSArray *)locations
-- (void)locationManager:(CLLocationManager *)manager
-     didEnterRegion:(CLRegion *)region
-- (void)locationManager:(CLLocationManager *)manager
-      didExitRegion:(CLRegion *)region
-- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
-</code></pre>
-
-<p>效果图：</p>
-
-<p><img src="/images/201312211958.PNG" alt="CLProximityImmediate" /></p>
-
-<p><img src="/images/201312211959.PNG" alt="CLProximityNear" /></p>
-
-<p><img src="/images/201312212001.PNG" alt="CLProximityFar" /></p>
-
-<p><img src="/images/201312212002.PNG" alt="CLProximityUnknown" /></p>
-
-<p><img src="/images/201312212003.PNG" alt="didExitRegion" /></p>
-
-<h2>总结</h2>
-
-<p>通过Demo，可以对iBeacon有一个简单的了解。iBeacon可以方便实现室内导航、商品消息推送、支付等功能。网上很多文章认为iBeacon会成为NFC杀手。到底iBeacon能发展到什么地步，让我们拭目以待吧。</p>
-
-<p><a href="http://support.apple.com/kb/HT6048">iOS: Understanding iBeacon</a></p>
 
 		
 		

@@ -5,19 +5,12 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>2013年读过的好书 - 王仙客的博客</title>
+	<title>fishhook和Aspects使用简单示例 - 王仙客的博客</title>
 	<meta name="author" content="王仙客">
 
 	
-	<meta name="description" content="2013年读过的好书 技术类书籍 首先时技术类书籍： 《从小工到专家——程序员修炼之道》
-《Head First 设计模式》
-《iOS 高级编程》
-《Python》 非技术类书籍 非技术类： 《一个人的村庄》
-《1984》
-《少有人走的路》
-《自由在高处》
-《九种孤独》
-《天才在左，疯子在右 &hellip;">
+	<meta name="description" content="fishhook和Aspects使用简单示例 fishhook: A library that enables dynamically rebinding symbols in Mach-O binaries running on iOS. #import &lt;dlfcn.h&gt;
+# &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -27,7 +20,7 @@
 
 	<link href="/atom.xml" rel="alternate" title="王仙客的博客" type="application/atom+xml">
 	
-	<link rel="canonical" href="http://Hydra2050.github.io/blog/2014/01/12/2013nian-du-guo-de-hao-shu/">
+	<link rel="canonical" href="http://Hydra2050.github.io/blog/2015/02/10/fishhookhe-aspectsshi-yong-jian-dan-shi-li/">
 	<link href="/favicon.png" rel="shortcut icon">
 	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -97,36 +90,47 @@
 			
 			<div class="mid-col-container">
 				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-	<h1 class="title" itemprop="name">2013年读过的好书</h1>
-	<div class="entry-content" itemprop="articleBody"><h2>技术类书籍</h2>
+	<h1 class="title" itemprop="name">fishhook和Aspects使用简单示例</h1>
+	<div class="entry-content" itemprop="articleBody"><p><a href="https://github.com/facebook/fishhook">fishhook</a>: A library that enables dynamically rebinding symbols in Mach-O binaries running on iOS.</p>
 
-<p>首先时技术类书籍：</p>
+<pre><code>#import &lt;dlfcn.h&gt;
+#import "fishhook.h"
 
-<ul>
-<li>《从小工到专家——程序员修炼之道》</li>
-<li>《Head First 设计模式》</li>
-<li>《iOS 高级编程》</li>
-<li>《Python》</li>
-</ul>
+static OSStatus (*origin_AudioSessionSetProperty)(unsigned long, unsigned long, const void*);
 
+void save_original_symbols() {
+    origin_AudioSessionSetProperty = dlsym(RTLD_DEFAULT, "AudioSessionSetProperty");
+}
 
-<h2>非技术类书籍</h2>
+OSStatus my_AudioSessionSetProperty(unsigned long inID, unsigned long inDataSize, const void *inData){
+    printf("Calling real AudioSessionSetProperty: inID %ld  \n", inID);
 
-<p>非技术类：</p>
+    return origin_AudioSessionSetProperty(inID, inDataSize, inData);
+}
 
-<ul>
-<li>《一个人的村庄》</li>
-<li>《1984》</li>
-<li>《少有人走的路》</li>
-<li>《自由在高处》</li>
-<li>《九种孤独》</li>
-<li>《天才在左，疯子在右》</li>
-<li>《猎命师传奇：卷二十》</li>
-<li>《上帝掷骰子吗》</li>
-<li>《沉默的大多数》</li>
-<li>《变身》、《新参者》</li>
-</ul>
+int main(int argc, char * argv[]) {
+ @autoreleasepool {
+       save_original_symbols();
+       rebind_symbols((struct rebinding[])AudioSessionSetProperty, 1);
 
+       return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
+     }
+}
+</code></pre>
+
+<h1>Aspects</h1>
+
+<p><a href="https://github.com/steipete/Aspects.git">Aspects</a>: Delightful, simple library for aspect oriented programming.</p>
+
+<pre><code>[[AVAudioSession sharedInstance] aspect_hookSelector:@selector(setCategory:withOptions:error:) withOptions:0 usingBlock:^(id&lt;AspectInfo&gt; info,NSString *category, AVAudioSessionCategoryOptions option, NSError ** error){
+    NSLog(@"AVAudioSession set category with category : %@", category);
+}error:nil];
+</code></pre>
+
+<p>需要注意的一点，参数<code>block</code>需要与hook的函数相符，如果不匹配，会有如下提示：</p>
+
+<pre><code>Aspects: Block signature &lt;NSMethodSignature: 0x7f93b8c35c80&gt; doesn't match &lt;NSMethodSignature: 0x7f93b8c33c30&gt;.
+</code></pre>
 </div>
 
 </article>

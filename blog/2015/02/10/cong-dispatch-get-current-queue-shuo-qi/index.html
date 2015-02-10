@@ -1,0 +1,248 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>从dispatch_get_current_queue()说起 - 王仙客的博客</title>
+	<meta name="author" content="王仙客">
+
+	
+	<meta name="description" content="从dispatch_get_current_queue()说起 dispatch_get_current_queue从iOS6.0开始被废弃掉，在《Effective Object-C 2.0》中，也单独有一个章节讲解。在队列同步操作的时候，有时需要检查当前的执行队列。 &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="王仙客的博客" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://Hydra2050.github.io/blog/2015/02/10/cong-dispatch-get-current-queue-shuo-qi/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("wh2050@sina.cn") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+	<p style="color:white;font-size:24px">王仙客的博客</p>
+	<br>
+	<p style="color:white;font-size:18px">明白一些道理</p>
+	<p style="color:white;font-size:18px">遇到一些有趣的事</p>
+	<br>
+	<li><a href="/">博客</a></li>
+	<li><a href="/blog/archives">所有文章</a></li>
+	<li><a href="/blog/2013/12/04/about/">关于我</a></li>
+</ul>
+
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:wh2050@sina.cn" title="Email">Email</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">从dispatch_get_current_queue()说起</h1>
+	<div class="entry-content" itemprop="articleBody"><p><code>dispatch_get_current_queue</code>从iOS6.0开始被废弃掉，在《Effective Object-C 2.0》中，也单独有一个章节讲解。在队列同步操作的时候，有时需要检查当前的执行队列。在试图使用dispatch_get_current_queue判断当前队列的时候，仍然可能出错。</p>
+
+<h2>使用dispatch_get_current_queue()存在的问题</h2>
+
+<p>先看下面一段代码：</p>
+
+<pre><code>    dispatch_queue_t queueA = dispatch_queue_create("c.b.a", NULL);
+    dispatch_queue_t queueB = dispatch_queue_create("c.b.b", NULL);
+    dispatch_sync(queueA, ^{
+       dispatch_sync(queueB, ^{
+           dispatch_block_t block = ^{
+              // ...
+           };
+           dispatch_sync(queueA, ^{
+               block();
+           });
+       });
+    });
+</code></pre>
+
+<p>运行会发现死锁的情况，尝试使用dispatch_get_current_queue()来解决：</p>
+
+<pre><code>dispatch_sync(queueA, ^{
+           dispatch_sync(queueB, ^{
+               dispatch_block_t block = ^{
+                  // ...
+               };
+               if(dispatch_get_current_queue() == queueA){
+                   block();
+               }else{
+                   dispatch_sync(queueA, ^{
+                       block();
+                   });
+               }
+           });
+        });
+</code></pre>
+
+<p>运行后发现，同样会死锁。dispatch_get_current_queue判断，当前队列为queueB。</p>
+
+<p>如果把每个队列看做一个管道，将管道B放在管道A中，dispatch_get_current_queue只能看到自己这一层，没法打破管道。</p>
+
+<h2>dispatch_get_specific()试一试</h2>
+
+<p>尝试使用dispatch_get_specific()关联键值对的方式判断当前队列：</p>
+
+<pre><code>    dispatch_queue_t queueA = dispatch_queue_create("c.b.a", NULL);
+    dispatch_queue_t queueB = dispatch_queue_create("c.b.b", NULL);
+    static int kQueueSpecificA;
+    static int kQueueSpecificB;
+    dispatch_queue_set_specific(queueA, &amp;kQueueSpecificA, (void *)CFSTR("queueA"), (dispatch_function_t)CFRelease);
+    dispatch_queue_set_specific(queueB, &amp;kQueueSpecificB, (void *)CFSTR("queueB"), (dispatch_function_t)CFRelease);
+    dispatch_sync(queueA, ^{
+       dispatch_sync(queueB, ^{
+           dispatch_block_t block = ^{
+              // ...
+           };
+           void *retrievedValueA = dispatch_get_specific(&amp;kQueueSpecificA);
+           void *retrievedValueB = dispatch_get_specific(&amp;kQueueSpecificB);
+           if(retrievedValueA){
+                NSLog(@"queueA");
+           }
+           if(retrievedValueB){
+                NSLog(@"queueB");
+           }
+           if(retrievedValueA){
+               block();
+           }else{
+               dispatch_sync(queueA, ^{
+                        block();
+                    });
+           }
+       });
+    });
+</code></pre>
+
+<p>运行之后，发现仍然有问题。dispatch_get_specific()仍然无法破壁，窥视外面的管道。</p>
+
+<h2>破壁还需dispatch_set_target_queue()</h2>
+
+<p>dispatch_set_target_queue()将第一个参数指定在第二个参数的队列内执行，同时也使参数A的队列优先级与参数B的队列相同。</p>
+
+<pre><code>dispatch_queue_t queueA = dispatch_queue_create("c.b.a", NULL);
+    dispatch_queue_t queueB = dispatch_queue_create("c.b.b", NULL);
+    static int kQueueSpecificA;
+    static int kQueueSpecificB;
+    dispatch_queue_set_specific(queueA, &amp;kQueueSpecificA, (void *)CFSTR("queueA"), (dispatch_function_t)CFRelease);
+    dispatch_queue_set_specific(queueB, &amp;kQueueSpecificB, (void *)CFSTR("queueB"), (dispatch_function_t)CFRelease);
+    dispatch_set_target_queue(queueB, queueA);
+        dispatch_sync(queueB, ^{
+            dispatch_block_t block = ^{
+                // ...
+            };
+            void *retrievedValueA = dispatch_get_specific(&amp;kQueueSpecificA);
+            void *retrievedValueB = dispatch_get_specific(&amp;kQueueSpecificB);
+            if(retrievedValueA){
+                NSLog(@"queueA");
+            }
+            if(retrievedValueB){
+                NSLog(@"queueB");
+            }
+            if(retrievedValueA){
+                block();
+            }else{
+                dispatch_sync(queueA, ^{
+                    block();
+                });
+            }
+        });
+</code></pre>
+
+<p>  这样执行的结果就没有问题了~</p>
+
+<h2>dispatch_set_target_queue()注意的问题</h2>
+
+<p>执行上面的代码会发现，<code>retrievedValueA</code>和<code>retrievedValueB</code>都不为空。是的，这两个管道已经互通状态了！所以在使用的时候，判断的时候也需要注意。</p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2015
+
+    王仙客
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+		</div>
+	</div>
+</body>
+</html>
