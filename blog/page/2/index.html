@@ -9,7 +9,7 @@
 	<meta name="author" content="王仙客">
 
 	
-	<meta name="description" content="Oct 11th, 2014 The Python Challenge&#8211;Level 1 Level 1的地址：http://www.pythonchallenge.com/pc/def/map.html 分析 网页的标题为What about making trans?，然后再看图片 &hellip;">
+	<meta name="description" content="Oct 19th, 2014 The Python Challenge–Level 2 分析 Level2的地址：http://www.pythonchallenge.com/pc/def/ocr.html 文字提示MAYBE they are in the page source &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -90,6 +90,82 @@
 			<div class="mid-col-container">
 				<div id="content" class="inner">
 <div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-10-19T09:15:54+08:00" data-updated="true" itemprop="datePublished">Oct 19<span>th</span>, 2014</time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/10/19/the-python-challenge-level-2/" itemprop="url">The Python Challenge–Level 2</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2>分析</h2>
+
+<p>Level2的地址：<a href="http://www.pythonchallenge.com/pc/def/ocr.html">http://www.pythonchallenge.com/pc/def/ocr.html</a></p>
+
+<p>文字提示<code>MAYBE they are in the page source</code></p>
+
+<p>查看网页的源码，发现注释的部分：</p>
+
+<pre><code>find rare characters in the mess below:
+</code></pre>
+
+<p>需要从那段内容中找出稀少的字符。</p>
+
+<h2>解决</h2>
+
+<pre><code>text = ‘’’
+      …
+       ‘’’
+result = {}
+for x in text:
+    result[x] = result.get(x,0) + 1
+print(result)
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code>{'(': 6154, ')': 6186, '*': 6034, '+': 6066, 'l': 1, 'i': 1, ' ': 4880, '!': 6079, '#': 6115, '$': 6046, '%': 6104, '&amp;': 6043, 'e': 1, 'y': 1, '{': 6046, '}': 6105, 'q': 1, 't': 1, 'u': 1, 'a': 1, '\n': 1221, '@': 6157, '[': 6108, ']': 6152, '^': 6030, '_': 6112}
+</code></pre>
+
+<p>发现最少的都是个数为1的字母，这样稍加改变：</p>
+
+<pre><code>result = []
+for x in text:
+    if x.isalpha():
+        result.append(x)
+print(''.join(result))
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code>equality
+</code></pre>
+
+<h2>其他的解决方法</h2>
+
+<p>按照惯例，查看解决方法：<a href="http://www.pythonchallenge.com/pcc/def/ocr.html">http://www.pythonchallenge.com/pcc/def/ocr.html</a></p>
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
@@ -725,144 +801,6 @@ static const void *ImageTagKey = &amp;ImageTagKey;
 <li>《变身》、《新参者》</li>
 </ul>
 
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-01-12T13:56:24+08:00" data-updated="true" itemprop="datePublished">Jan 12<span>th</span>, 2014</time></div>
-		<div class="tags">
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/2014/01/12/http-cache/" itemprop="url">HTTP的缓存机制</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<h2>前言</h2>
-
-<p>HTTP的缓存机制，主要体现在HTTP协议头里面的几个字段——Expires、Cache-control、Last-Modified/If-Modified-Since、Etag/If-None-Match等。在移动开发中，了解HTTP的缓存对开发者来说已经必不可少。</p>
-
-<p><img src="/images/2014011216.png" alt="HTTP HEAD" /></p>
-
-<h2>Expires</h2>
-
-<p>HTTP头中的Expires字段，告诉浏览器在Expires显示的时间前，浏览器可以从缓存中读取，而不需要再次去请求。</p>
-
-<h2>Cache-control</h2>
-
-<p>Cache-control与Expires一样，都是告诉浏览器有效期。不过它不只是设置过期时间，还可以设置很多选项：</p>
-
-<ul>
-<li>no-cache指示请求或响应消息不能缓存</li>
-<li>no-store用于防止重要的信息被无意的发布。在请求消息中发送将使得请求和响应消息都不使用缓存。</li>
-<li>max-age指示客户机可以接收生存期不大于指定时间（以秒为单位）的响应。</li>
-<li>min-fresh指示客户机可以接收响应时间小于当前时间加上指定时间的响应。</li>
-<li>max-stale指示客户机可以接收超出超时期间的响应消息。如果指定max-stale消息的值，那么客户机可以接收超出超时期指定值之内的响应消息。</li>
-</ul>
-
-
-<p>如上图：max-age＝600，表示600s内不需要重新请求。</p>
-
-<h2>Last-Modified</h2>
-
-<p><code>Last-Modified</code>：资源的最后修改时间。</p>
-
-<p>如果本地缓存已经过期，即超过了<code>max-age</code>的缓存时间，缓存的HTTP头中存在Last-Modified，则向服务器发送带有If-Modified-Since字段的请求，后面带上<code>Last-Modified</code>所记录的最后修改时间。</p>
-
-<p>服务器收到带有<code>If-Modified-Since</code>的HTTP请求，会将请求的资源修改时间与<code>If-Modified-Since</code>时间对比：如果这段时间没有被修改过，则返回304，告诉浏览器可以继续使用本地缓存；如果资源已经修改过了，则响应请求的资源数据，返回200 OK.</p>
-
-<h2>Etag</h2>
-
-<p><code>Etag</code>：服务器应答数据的时候，生成的当前资源的唯一标识。</p>
-
-<p>如果本地缓存已经过期，即超过了<code>max-age</code>的缓存时间，缓存的HTTP头中存在<code>Etag</code>，则向服务器发送带有<code>If-None-Match</code>字段的请求，后面带上<code>Etag</code>所记录的当前资源的唯一标识。</p>
-
-<p>服务器收到带有<code>If-None-Match</code>的HTTP请求，会将请求的资源唯一标识与<code>If-None-Match</code>的标签的标识对比：如果这段时间没有被修改过，则返回304，告诉浏览器可以继续使用本地缓存；如果资源已经修改过了，则响应请求的资源数据，返回200 OK。</p>
-
-<h2>Etag与Last-Modified的区别？</h2>
-
-<p>HTTP1.1中Etag的出现主要是为了解决几个Last-Modified比较难解决的问题：</p>
-
-<ul>
-<li>Last-Modified标注的最后修改只能精确到秒级，如果某些文件在1秒钟以内，被修改多次的话，它将不能准确标注文件的修改时间</li>
-<li>如果某些文件会被定期生成，当有时内容并没有任何变化，但Last-Modified却改变了，导致文件没法使用缓存</li>
-<li>有可能存在服务器没有准确获取文件修改时间，或者与代理服务器时间不一致等情形</li>
-</ul>
-
-
-<p><code>Etag</code>是服务器生成的对应资源的唯一标识符，能够更加准确的控制缓存。<code>Last-Modified</code>与<code>ETag</code>是可以一起使用的，服务器会优先验证<code>ETag</code>，一致的情况下，才会继续比对<code>Last-Modified</code>。</p>
-
-<h2>跳转、刷新、强制刷新</h2>
-
-<p>浏览器缓存行为还有用户的行为有关:</p>
-
-<table>
-<thead>
-<tr>
-<th>用户操作      </th>
-<th align="center"> Expires/Cache-control </th>
-<th align="center"> Last-Moified/Etag</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>地址栏回车     </td>
-<td align="center"> 有效                  </td>
-<td align="center"> 有效</td>
-</tr>
-<tr>
-<td>页面链接跳转   </td>
-<td align="center"> 有效                  </td>
-<td align="center"> 有效  </td>
-</tr>
-<tr>
-<td>新开窗口      </td>
-<td align="center"> 有效                  </td>
-<td align="center"> 有效</td>
-</tr>
-<tr>
-<td>前进、后退     </td>
-<td align="center"> 有效                  </td>
-<td align="center"> 有效 </td>
-</tr>
-<tr>
-<td>F5刷新        </td>
-<td align="center"> 无效                  </td>
-<td align="center"> 有效</td>
-</tr>
-<tr>
-<td>Ctrl＋F5刷新  </td>
-<td align="center"> 无效                  </td>
-<td align="center"> 无效 </td>
-</tr>
-</tbody>
-</table>
-
-
-<h2>总结</h2>
-
-<p>当本地存在缓存的时候，一次请求的流程：</p>
-
-<p><img src="/images/HTTPCache.png" alt="HTTP Cache" /></p>
-
-<p>参考：<a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">Cache-Control section of RFC 2616</a></p>
 
 		
 		
